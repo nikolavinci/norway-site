@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+:root {
+  --background: #F9F6F0; /* Soft warm ivory */
+  --foreground: #3A3532; /* Deep warm charcoal */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Playfair Display', serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1C1917; /* Warm dark gray */
+    --foreground: #F5F5F4; /* Soft off-white */
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
