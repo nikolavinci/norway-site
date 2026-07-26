@@ -3,7 +3,20 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
-import { Facebook, Twitter, Link2, ChevronLeft } from 'lucide-react';
+import { Link2, ChevronLeft } from 'lucide-react';
+
+// Inline SVGs for social icons removed from lucide-react
+const FacebookIcon = ({ size = 24 }: { size?: number }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+  </svg>
+);
+
+const TwitterIcon = ({ size = 24 }: { size?: number }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>
+  </svg>
+);
 
 const WavyDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) => (
   <div className={`w-full overflow-hidden leading-none ${flip ? 'rotate-180' : ''}`}>
@@ -84,10 +97,10 @@ export default function BlogPostPage() {
             <div className="sticky top-32 flex flex-row md:flex-col gap-4 items-center">
               <span className="text-[10px] uppercase font-bold tracking-widest text-[#5D4E46]/40 hidden md:block rotate-180" style={{ writingMode: 'vertical-rl' }}>Share</span>
               <button className="w-10 h-10 rounded-full border border-[#5D4E46]/10 flex items-center justify-center text-[#5D4E46]/60 hover:bg-[#5D4E46] hover:text-white transition-colors">
-                <Twitter size={18} />
+                <TwitterIcon size={18} />
               </button>
               <button className="w-10 h-10 rounded-full border border-[#5D4E46]/10 flex items-center justify-center text-[#5D4E46]/60 hover:bg-[#5D4E46] hover:text-white transition-colors">
-                <Facebook size={18} />
+                <FacebookIcon size={18} />
               </button>
               <button className="w-10 h-10 rounded-full border border-[#5D4E46]/10 flex items-center justify-center text-[#5D4E46]/60 hover:bg-[#5D4E46] hover:text-white transition-colors">
                 <Link2 size={18} />
