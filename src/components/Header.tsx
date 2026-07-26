@@ -3,12 +3,32 @@
 import Link from 'next/link';
 import { useCartStore } from '../shared/utils/store';
 import { Search, ShoppingBag, User } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { supabase } from '../shared/utils/supabase';
 
 export default function Header() {
   const items = useCartStore((state) => state.items);
   const toggleCart = useCartStore((state) => state.toggleCart);
   
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
+
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
   return (
     <header className="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-40 border-b border-gray-100 font-sans">
@@ -39,9 +59,27 @@ export default function Header() {
           </div>
           
           <div className="flex gap-5 items-center">
-            <Link href="/account/login" className="hover:text-black transition-colors">
-              <User size={20} />
-            </Link>
+            {user ? (
+              <div className="relative group">
+                <button className="flex items-center gap-2 hover:text-black transition-colors">
+                  <User size={20} />
+                </button>
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                  <div className="p-4 border-b border-gray-100">
+                    <p className="text-xs font-bold text-[#5D4E46] truncate">{user.user_metadata?.full_name || 'My Account'}</p>
+                    <p className="text-[10px] text-gray-500 truncate">{user.email}</p>
+                  </div>
+                  <div className="p-2 flex flex-col gap-1">
+                    <Link href="/dashboard" className="px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">Dashboard</Link>
+                    <button onClick={handleLogout} className="px-4 py-2 text-xs font-medium text-left text-red-600 hover:bg-red-50 rounded-lg transition-colors">Log out</button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <Link href="/login" className="hover:text-black transition-colors">
+                <User size={20} />
+              </Link>
+            )}
             <button onClick={toggleCart} className="hover:text-black transition-colors relative">
               <ShoppingBag size={20} />
               {itemCount > 0 && (
