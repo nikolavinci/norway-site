@@ -160,7 +160,7 @@ export default function ProductDetailPage() {
               </div>
               {openAccordion === 'support' && (
                 <div className="px-4 pb-3 text-xs text-[#5D4E46]/80 leading-relaxed">
-                  Our dedicated support team is available around the clock. Reach out via live chat or email us at support@pustatteliers.no for immediate assistance.
+                  Our dedicated support team is available around the clock. Reach out via live chat or email us at support@pustatelier.no for immediate assistance.
                 </div>
               )}
             </div>

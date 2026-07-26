@@ -78,7 +78,7 @@ export default function BlogPostPage() {
             {post.title}
           </h1>
           <div className="flex items-center justify-center gap-3 text-sm text-[#5D4E46]/60 font-medium">
-            <span>By Pust Atteliers</span>
+            <span>By Pust Atelier</span>
             <span>·</span>
             <span>3 min read</span>
           </div>

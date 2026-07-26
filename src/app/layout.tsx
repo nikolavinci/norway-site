@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Pust Atteliers | Authentic Bohemian Handcrafts",
+  title: "Pust Atelier | Authentic Bohemian Handcrafts",
   description: "Discover our curated collection of handcrafted bohemian accessories, home textiles, and sustainably made goods.",
 };
 

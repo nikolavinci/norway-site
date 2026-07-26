@@ -35,7 +35,7 @@ export default function Header() {
       <div className="w-full max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
         {/* Left: Logo */}
         <div className="text-2xl font-serif tracking-widest text-black flex-shrink-0 flex-1">
-          <Link href="/">Pust Atteliers</Link>
+          <Link href="/">Pust Atelier</Link>
         </div>
 
         {/* Center: Nav */}

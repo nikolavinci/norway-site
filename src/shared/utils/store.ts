@@ -66,7 +66,7 @@ export const useCartStore = create<CartState>()(
       }
     }),
     {
-      name: 'pust-atteliers-cart',
+      name: 'pust-atelier-cart',
     }
   )
 );

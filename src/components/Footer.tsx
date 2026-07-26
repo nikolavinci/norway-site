@@ -41,7 +41,7 @@ export default function Footer() {
             <h4 className="font-bold text-[#5D4E46] text-sm tracking-wide">Our Shop</h4>
             <p className="text-xs text-[#5D4E46]/70">Find a location nearest you.</p>
             <p className="text-xs text-[#5D4E46] font-medium flex items-center gap-1">📍 See Our Stores</p>
-            <p className="text-xs text-[#5D4E46] font-medium flex items-center gap-1">✉ info@pustatteliers.com</p>
+            <p className="text-xs text-[#5D4E46] font-medium flex items-center gap-1">✉ info@pustatelier.com</p>
             <div className="border-t border-[#5D4E46]/10 my-1 w-8"></div>
             <Link href="#" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Privacy policy</Link>
             <Link href="#" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Refund policy</Link>
@@ -63,7 +63,7 @@ export default function Footer() {
             <div className="bg-[#987C6F] aspect-square rounded-lg flex flex-col items-center justify-center text-center p-6 text-white shadow-sm hover:shadow-md transition-shadow cursor-pointer relative overflow-hidden group">
               <div className="relative z-10">
                 <p className="text-[10px] uppercase tracking-[0.2em] mb-2 font-bold opacity-80">Home & Lifestyle</p>
-                <h3 className="font-serif text-3xl mb-4 group-hover:scale-105 transition-transform">Pust Atteliers</h3>
+                <h3 className="font-serif text-3xl mb-4 group-hover:scale-105 transition-transform">Pust Atelier</h3>
                 <p className="text-xs opacity-90 mb-4">Our latest collection of authentic artisan home decor</p>
                 <span className="inline-block px-4 py-2 border border-white/50 rounded-full text-xs hover:bg-white hover:text-[#987C6F] transition-colors">Shop Now</span>
               </div>
@@ -73,7 +73,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-[#5D4E46]/10 pt-6 mt-6 flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="text-xs text-[#5D4E46]/60">© 2026, Pust Atteliers. Brewed by nikolavinci</p>
+          <p className="text-xs text-[#5D4E46]/60">© 2026, Pust Atelier. Brewed by nikolavinci</p>
           {/* Payment Methods */}
           <div className="flex flex-wrap gap-1.5 items-center mt-4">
             <div className="h-5 px-2 bg-[#1A1F71] rounded-sm text-white flex items-center justify-center text-[10px] font-black italic shadow-[0_0_0_1px_rgba(0,0,0,0.05)]">VISA</div>
