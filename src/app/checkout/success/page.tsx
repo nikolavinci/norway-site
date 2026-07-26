@@ -6,7 +6,9 @@ import Link from 'next/link';
 import { CheckCircle2 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
-export default function CheckoutSuccessPage() {
+import { Suspense } from 'react';
+
+function CheckoutSuccessContent() {
   const clearCart = useCartStore((state) => state.clearCart);
   const searchParams = useSearchParams();
   const paymentIntent = searchParams.get('payment_intent');
@@ -57,5 +59,13 @@ export default function CheckoutSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#F9F7F2] flex items-center justify-center">Loading...</div>}>
+      <CheckoutSuccessContent />
+    </Suspense>
   );
 }
