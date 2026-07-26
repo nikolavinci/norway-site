@@ -93,15 +93,16 @@ export default function Home() {
         </section>
 
         {/* Top Announcement Marquee */}
-        <div className="bg-[#987C6F] text-white text-xs md:text-sm uppercase tracking-widest py-3 overflow-hidden whitespace-nowrap">
-          <div className="animate-marquee inline-block font-medium">
-            <span className="mx-8">Crafting Timeless Bohemian Handcrafts</span>
-            <span className="mx-8">✨</span>
-            <span className="mx-8">Ethically Sourced, Sustainably Made</span>
-            <span className="mx-8">✨</span>
-            <span className="mx-8">Authentic Pieces for Your Home</span>
-            <span className="mx-8">✨</span>
-            <span className="mx-8">Crafting Timeless Bohemian Handcrafts</span>
+        <div className="bg-[#987C6F] text-white text-xs md:text-sm uppercase tracking-widest py-3 overflow-hidden whitespace-nowrap relative flex">
+          <div className="animate-marquee flex whitespace-nowrap font-medium min-w-full">
+            <span className="mx-8">Crafting Timeless Bohemian Handcrafts ✨ Ethically Sourced, Sustainably Made</span>
+            <span className="mx-8">Crafting Timeless Bohemian Handcrafts ✨ Ethically Sourced, Sustainably Made</span>
+            <span className="mx-8">Crafting Timeless Bohemian Handcrafts ✨ Ethically Sourced, Sustainably Made</span>
+          </div>
+          <div className="animate-marquee flex whitespace-nowrap font-medium min-w-full" aria-hidden="true">
+            <span className="mx-8">Crafting Timeless Bohemian Handcrafts ✨ Ethically Sourced, Sustainably Made</span>
+            <span className="mx-8">Crafting Timeless Bohemian Handcrafts ✨ Ethically Sourced, Sustainably Made</span>
+            <span className="mx-8">Crafting Timeless Bohemian Handcrafts ✨ Ethically Sourced, Sustainably Made</span>
           </div>
         </div>
 
@@ -307,29 +308,29 @@ export default function Home() {
             <div>
               <h2 className="text-3xl font-black text-[#5D4E46] mb-8">Exclusive Deals Await</h2>
               <div className="flex flex-col lg:flex-row gap-6">
-                <div className="flex-1 relative rounded-2xl overflow-hidden min-h-[400px]">
-                  <Image src="https://cdn2.blanxer.com/uploads/69917932e3880672e54e49e5/product_image-img_0979-5376.webp" alt="Save Big" fill className="object-cover" unoptimized />
+                <Link href="/shop" className="flex-1 relative rounded-2xl overflow-hidden min-h-[400px] group cursor-pointer block">
+                  <Image src="https://cdn2.blanxer.com/uploads/69917932e3880672e54e49e5/product_image-img_0979-5376.webp" alt="Save Big" fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-10 text-white">
                     <span className="text-xs font-bold uppercase tracking-widest text-[#AAB084] mb-2">Sale Event</span>
-                    <h3 className="text-5xl font-black mb-4">Save Big</h3>
+                    <h3 className="text-5xl font-black mb-4 group-hover:text-[#AAB084] transition-colors">Save Big</h3>
                     <p className="font-medium opacity-90 mb-6 max-w-sm">Get amazing deals on your favorite items. Limited time only!</p>
-                    <button className="self-start px-8 py-3 bg-[#AAB084] text-white font-bold rounded-full text-sm hover:bg-[#8d946d] transition-colors">
+                    <button className="self-start px-8 py-3 bg-[#AAB084] text-white font-bold rounded-full text-sm group-hover:bg-[#8d946d] transition-colors">
                       Explore Now
                     </button>
                   </div>
-                </div>
+                </Link>
                 
                 <div className="flex-1 grid grid-cols-2 gap-4">
                   {featuredProducts.slice(0, 2).map((product) => (
-                    <div key={product.id} className="bg-[#FDFBF7] p-4 rounded-2xl flex flex-col">
-                      <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden mb-4 group cursor-pointer">
+                    <Link href={`/shop/${product.id}`} key={product.id} className="bg-[#FDFBF7] p-4 rounded-2xl flex flex-col group cursor-pointer block hover:shadow-md transition-shadow">
+                      <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden mb-4">
                         <div className="absolute top-2 right-2 z-10 bg-[#7A75A5] text-white text-[10px] font-black uppercase px-2 py-1 rounded">-20%</div>
                         <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform" unoptimized />
                       </div>
-                      <h4 className="font-bold text-sm text-[#5D4E46] line-clamp-1 mb-1">{product.name}</h4>
+                      <h4 className="font-bold text-sm text-[#5D4E46] line-clamp-1 mb-1 group-hover:text-[#7A75A5] transition-colors">{product.name}</h4>
                       <p className="text-xs font-bold text-[#5D4E46]/60 line-through mb-1">{(product.price * 1.2).toFixed(0)} NOK</p>
                       <p className="text-sm font-black text-[#987C6F]">{product.price} NOK</p>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>

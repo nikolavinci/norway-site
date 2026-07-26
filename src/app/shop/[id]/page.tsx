@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Minus, Plus, ChevronDown, ChevronRight, ChevronLeft, Star } from 'lucide-react';
+import { Minus, Plus, ChevronDown, ChevronRight, ChevronLeft, Star, Heart } from 'lucide-react';
 
 const WavyDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) => (
   <div className={`w-full overflow-hidden leading-none ${flip ? 'rotate-180' : ''}`}>
@@ -23,6 +23,7 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [showSticky, setShowSticky] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   // Dynamic Date calculation
   const getDeliveryDates = () => {
@@ -165,7 +166,7 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 relative">
             <button 
               onClick={() => {
                 for(let i=0; i<quantity; i++) addItem(product);
@@ -174,9 +175,18 @@ export default function ProductDetailPage() {
             >
               Add to cart
             </button>
-            <button className="w-full py-3.5 bg-[#5D4E46] text-white rounded-full text-xs font-bold hover:bg-[#3A3532] transition-colors shadow-md text-center">
-              Buy it now
-            </button>
+            <div className="flex gap-2 w-full">
+              <button className="flex-1 py-3.5 bg-[#5D4E46] text-white rounded-full text-xs font-bold hover:bg-[#3A3532] transition-colors shadow-md text-center">
+                Buy it now
+              </button>
+              <button 
+                onClick={() => setIsFavorite(!isFavorite)}
+                className="w-12 flex-shrink-0 flex items-center justify-center border-2 border-[#5D4E46] rounded-full text-[#5D4E46] hover:bg-[#5D4E46] hover:text-white transition-colors"
+                title="Add to Favorites"
+              >
+                <Heart size={18} fill={isFavorite ? "currentColor" : "none"} />
+              </button>
+            </div>
           </div>
 
           <div className="flex flex-col gap-1.5 mt-2 text-[10px] text-[#5D4E46]/70">

@@ -17,13 +17,22 @@ export default function Footer() {
               <input type="email" placeholder="Email" className="flex-1 px-4 py-2 text-sm outline-none bg-transparent" />
               <button className="px-4 text-[#5D4E46]/50 hover:text-[#5D4E46]">›</button>
             </div>
-            {/* Socials Placeholder */}
             <div className="flex gap-3 mt-4 text-[#5D4E46]/70">
-              <span className="w-5 h-5 flex items-center justify-center border border-current rounded-full text-[10px]">f</span>
-              <span className="w-5 h-5 flex items-center justify-center border border-current rounded-full text-[10px]">in</span>
-              <span className="w-5 h-5 flex items-center justify-center border border-current rounded-full text-[10px]">yt</span>
-              <span className="w-5 h-5 flex items-center justify-center border border-current rounded-full text-[10px]">tt</span>
-              <span className="w-5 h-5 flex items-center justify-center border border-current rounded-full text-[10px]">p</span>
+              <a href="#" aria-label="Facebook" className="w-7 h-7 flex items-center justify-center border border-current rounded-full hover:bg-[#5D4E46] hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              </a>
+              <a href="#" aria-label="Instagram" className="w-7 h-7 flex items-center justify-center border border-current rounded-full hover:bg-[#5D4E46] hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+              </a>
+              <a href="#" aria-label="YouTube" className="w-7 h-7 flex items-center justify-center border border-current rounded-full hover:bg-[#5D4E46] hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 7.1C2.1 8.4 2 10.2 2 12s.1 3.6.5 4.9c.5 1.7 1.8 3 3.5 3.5 1.5.4 4.5.6 6 .6s4.5-.2 6-.6c1.7-.5 3-1.8 3.5-3.5.4-1.3.5-3.1.5-4.9s-.1-3.6-.5-4.9c-.5-1.7-1.8-3-3.5-3.5-1.5-.4-4.5-.6-6-.6s-4.5.2-6 .6c-1.7.5-3 1.8-3.5 3.5z"/><path d="m10 15 5-3-5-3z"/></svg>
+              </a>
+              <a href="#" aria-label="TikTok" className="w-7 h-7 flex items-center justify-center border border-current rounded-full hover:bg-[#5D4E46] hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+              </a>
+              <a href="#" aria-label="Pinterest" className="w-7 h-7 flex items-center justify-center border border-current rounded-full hover:bg-[#5D4E46] hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 20l4-9"/><path d="M10.7 14c.498 1.144 2.227 1.874 3.3 1 1.776-1.448 3.037-5.068 1-7-2.316-2.2-7.142-1.31-7 2.5.023 1.155.105 2.595 1 3"/></svg>
+              </a>
             </div>
           </div>
 
