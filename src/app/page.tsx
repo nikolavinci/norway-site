@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getProducts } from "../shared/utils/products";
 import { ChevronRight, Plus } from "lucide-react";
+import CuratedPicks from "../components/CuratedPicks";
 
 // Reusable Wavy Divider Component
 const WavyDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) => (
@@ -107,39 +108,10 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* Hero Section */}
-        <section className="text-center py-20 px-6">
-          <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tight text-[#5D4E46]">
-            Authentic Craftsmanship, <br/><span className="underline decoration-[#987C6F] underline-offset-4 decoration-4">Bohemian Soul</span>
-          </h1>
-          <p className="text-[#5D4E46]/70 max-w-2xl mx-auto text-sm md:text-base mb-16 leading-relaxed">
-            Thoughtfully designed and ethically made—every piece brings warmth and texture to your everyday life. Discover timeless essentials crafted with love.
-          </p>
-          
-          <h2 className="text-2xl md:text-3xl font-black text-[#5D4E46] mb-8">Curated Picks for the Modern Bohemian</h2>
-          
-          {/* Tabs */}
-          <div className="flex justify-center gap-4 mb-12 text-xs font-bold">
-            <button className="px-6 py-2 bg-[#7A75A5] text-white rounded-full uppercase tracking-wider">Bags</button>
-            <button className="px-6 py-2 border border-[#7A75A5]/30 text-[#7A75A5] rounded-full uppercase tracking-wider hover:bg-[#7A75A5]/10">Home & Living</button>
-            <button className="px-6 py-2 border border-[#7A75A5]/30 text-[#7A75A5] rounded-full uppercase tracking-wider hover:bg-[#7A75A5]/10">Accessories</button>
-          </div>
+        {/* Hero Section -> Replaced with Curated Picks Client Component */}
+        <CuratedPicks products={allProducts} />
 
-          {/* Product Grid */}
-          <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-4">
-            {featuredProducts.map((product) => (
-              <Link href={`/shop/${product.id}`} key={product.id} className="bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow group flex flex-col items-center">
-                <div className="relative w-full aspect-square bg-[#FDFBF7] rounded-lg mb-4 overflow-hidden">
-                  <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
-                </div>
-                <h3 className="font-bold text-sm text-[#5D4E46] mb-1 line-clamp-1">{product.name}</h3>
-                <p className="text-xs text-[#5D4E46]/60 font-medium">{product.price} NOK</p>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        <WavyDivider fill="fill-white" />
+        <div className="w-full h-px bg-[#5D4E46]/10 mb-20" />
 
         {/* Split Feature Section */}
         <section className="bg-white py-20 px-6">
@@ -165,7 +137,7 @@ export default async function Home() {
               { bg: 'bg-[#7A75A5]', title: 'Handwoven Details', sub: 'Artisan Bags', img: 'https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/6997e0b63ccc0711c1c926dc.webp' },
               { bg: 'bg-[#F7F0E3]', title: 'Warm Textures', sub: 'Bohemian Living', img: 'https://cdn2.blanxer.com/uploads/69917932e3880672e54e49e5/product_image-img_0979-5376.webp', text: 'text-[#5D4E46]' },
               { bg: 'bg-[#AAB084]', title: 'Sustainable Materials', sub: 'Ethical Craftsmanship', img: 'https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69958c7c30895633d86899b0.webp' },
-              { bg: 'bg-[#987C6F]', title: 'Everyday Elegance', sub: 'Versatile Totes', img: '/images/bags/bag1.png' }
+              { bg: 'bg-[#987C6F]', title: 'Everyday Elegance', sub: 'Versatile Totes', img: allProducts.find(p => p.category.toLowerCase().includes('bag'))?.image || allProducts[0]?.image || '/placeholder.png' }
             ].map((cat, i) => (
               <div key={i} className={`${cat.bg} p-8 flex flex-col items-center justify-center text-center aspect-square text-white ${cat.text || ''}`}>
                 <div className="relative w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-white/20 shadow-md">
@@ -182,6 +154,11 @@ export default async function Home() {
 
         {/* Masonry Grid Section */}
         <section className="py-20 px-6 max-w-[1440px] mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-black text-[#5D4E46]">Inspiration Gallery</h2>
+            <p className="text-[#5D4E46]/70 text-sm mt-4">Discover how our pieces come to life in beautiful spaces.</p>
+          </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Row 1 */}
             <div className="md:col-span-1 relative aspect-square md:aspect-[3/4] rounded-xl overflow-hidden group">
@@ -193,7 +170,7 @@ export default async function Home() {
             </div>
             <div className="md:col-span-2 flex flex-col gap-4">
               <div className="flex-1 relative rounded-xl overflow-hidden group">
-                <Image src="/images/bags/bag3.png" alt="Accessories" fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
+                <Image src={allProducts.length > 1 ? allProducts[1].image : '/placeholder.png'} alt="Accessories" fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
                 <div className="absolute inset-0 bg-black/30 flex flex-col justify-center items-center p-6 text-center">
                   <span className="text-[10px] text-white/80 uppercase font-bold tracking-widest mb-1">Artisan Quality</span>
                   <h3 className="text-2xl font-black text-white">Handcrafted Bags</h3>
@@ -215,13 +192,13 @@ export default async function Home() {
               </div>
             </div>
             <div className="relative aspect-[16/9] rounded-xl overflow-hidden group">
-              <Image src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/699586d630895633d8681ccb.webp" alt="Storage" fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
+              <Image src={allProducts.length > 3 ? allProducts[3].image : '/placeholder.png'} alt="Storage" fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
               <div className="absolute inset-0 bg-black/30 flex flex-col justify-end p-6">
                 <h3 className="text-2xl font-black text-white">Sustainable Living</h3>
               </div>
             </div>
             <div className="relative aspect-[16/9] rounded-xl overflow-hidden group">
-              <Image src="/images/bags/bag4.png" alt="Plushies" fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
+              <Image src={allProducts.length > 4 ? allProducts[4].image : '/placeholder.png'} alt="Plushies" fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
               <div className="absolute inset-0 bg-black/40 flex flex-col justify-end p-6">
                 <h3 className="text-2xl font-black text-white">Unique Accessories</h3>
               </div>
@@ -241,7 +218,7 @@ export default async function Home() {
               ].map((review, i) => (
                 <div key={i} className="bg-[#FDFBF7] p-8 rounded-xl text-center flex flex-col items-center shadow-sm relative pt-12 mt-6">
                   <div className="absolute -top-6 w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-md">
-                    <Image src={`/images/bags/bag${i+1}.png`} alt="Avatar" fill className="object-cover" unoptimized />
+                    <Image src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i + 15}.jpg`} alt="Avatar" fill className="object-cover" unoptimized />
                   </div>
                   <div className="flex gap-1 text-[#7A75A5] mb-4">
                     <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
@@ -261,17 +238,17 @@ export default async function Home() {
           <h2 className="text-3xl font-black text-[#5D4E46] mb-12 text-center">Unveiling Our Best</h2>
           <div className="relative flex overflow-hidden group">
             <div className="animate-marquee flex gap-4 px-4 whitespace-nowrap min-w-full">
-              {[1, 2, 3, 4, 5, 1, 2, 3].map((img, i) => (
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((img, i) => (
                 <div key={i} className="relative w-64 h-64 flex-shrink-0 rounded-xl overflow-hidden group-hover:pause-animation">
-                  <Image src={`/images/bags/bag${img > 5 ? 1 : img}.png`} alt="Product" fill className="object-cover hover:scale-110 transition-transform duration-700" unoptimized />
+                  <Image src={allProducts[i % allProducts.length]?.image || '/placeholder.png'} alt="Product" fill className="object-cover hover:scale-110 transition-transform duration-700" unoptimized />
                 </div>
               ))}
             </div>
             {/* Duplicate for infinite effect */}
             <div className="animate-marquee flex gap-4 px-4 whitespace-nowrap min-w-full" aria-hidden="true">
-              {[1, 2, 3, 4, 5, 1, 2, 3].map((img, i) => (
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((img, i) => (
                 <div key={i} className="relative w-64 h-64 flex-shrink-0 rounded-xl overflow-hidden group-hover:pause-animation">
-                  <Image src={`/images/bags/bag${img > 5 ? 1 : img}.png`} alt="Product" fill className="object-cover hover:scale-110 transition-transform duration-700" unoptimized />
+                  <Image src={allProducts[i % allProducts.length]?.image || '/placeholder.png'} alt="Product" fill className="object-cover hover:scale-110 transition-transform duration-700" unoptimized />
                 </div>
               ))}
             </div>
