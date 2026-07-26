@@ -1,23 +1,47 @@
 'use client';
 
 import { useCartStore } from '../../shared/utils/store';
-import { PRODUCTS } from '../../shared/utils/products';
+import { getProducts, Product } from '../../shared/utils/products';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
 
-export default function Shop() {
+export default function ShopPage() {
   const addItem = useCartStore((state) => state.addItem);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      const data = await getProducts();
+      setProducts(data);
+      setIsLoading(false);
+    }
+    fetchProducts();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
+        <Loader2 size={40} className="animate-spin text-[#987C6F]" />
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-[#F9F6F0] text-[#3A3532] font-sans pt-32 px-6 pb-24">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-end mb-12 border-b border-[#3A3532]/10 pb-6">
-          <h1 className="text-4xl md:text-5xl font-serif font-light text-[#3A3532]">Shop Collection</h1>
-          <span className="text-sm uppercase tracking-widest text-[#3A3532]/60">{PRODUCTS.length} Products</span>
+    <div className="min-h-screen bg-[#FDFBF7] text-[#5D4E46] font-sans pt-32 pb-24">
+      <div className="max-w-[1440px] mx-auto px-6">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-12 border-b border-[#5D4E46]/10 pb-6">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-serif text-[#5D4E46] mb-2">All Products</h1>
+            <p className="text-[#5D4E46]/60 text-sm max-w-md">Discover our full collection of ethically sourced, handmade bohemian pieces.</p>
+          </div>
+          <span className="text-sm uppercase tracking-widest text-[#5D4E46]/60 mt-4 md:mt-0">{products.length} Products</span>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {PRODUCTS.map((product) => (
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
+          {products.map((product) => (
             <div key={product.id} className="group flex flex-col relative">
               <Link href={`/shop/${product.id}`} className="block relative aspect-[4/5] bg-white overflow-hidden rounded-2xl mb-4 shadow-sm group-hover:shadow-md transition-all">
                 <Image 

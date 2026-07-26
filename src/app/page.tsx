@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { PRODUCTS } from "../shared/utils/products";
+import { getProducts } from "../shared/utils/products";
 import { ChevronRight, Plus } from "lucide-react";
 
 // Reusable Wavy Divider Component
@@ -12,8 +12,9 @@ const WavyDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) =
   </div>
 );
 
-export default function Home() {
-  const featuredProducts = PRODUCTS.slice(0, 4);
+export default async function Home() {
+  const allProducts = await getProducts();
+  const featuredProducts = allProducts.slice(0, 4);
   
   return (
     <div className="flex flex-col min-h-screen text-[#5D4E46] font-sans antialiased bg-[#FDFBF7]">

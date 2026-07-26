@@ -1,17 +1,29 @@
 'use client';
 
 import { useCartStore } from '../shared/utils/store';
-import { PRODUCTS } from '../shared/utils/products';
+import { getProducts, Product } from '../shared/utils/products';
 import Image from 'next/image';
 import Link from 'next/link';
 import { X, Minus, Plus, ChevronDown, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function CartDrawer() {
   const { items, isOpen, toggleCart, updateQuantity, removeItem, getCartTotal, addItem } = useCartStore();
+  const [upsellItems, setUpsellItems] = useState<Product[]>([]);
   
   const [noteOpen, setNoteOpen] = useState(false);
   const [discountOpen, setDiscountOpen] = useState(false);
+
+  useEffect(() => {
+    async function loadUpsell() {
+      const all = await getProducts();
+      const cartItemIds = items.map((item) => item.id);
+      setUpsellItems(all.filter((p) => !cartItemIds.includes(p.id)).slice(0, 3));
+    }
+    if (isOpen) {
+      loadUpsell();
+    }
+  }, [isOpen, items]);
 
   if (!isOpen) return null;
 
@@ -19,10 +31,6 @@ export default function CartDrawer() {
   const freeShippingThreshold = 1000; // Mock threshold in NOK
   const amountToFreeShipping = Math.max(0, freeShippingThreshold - total);
   
-  // Upsell items (items not in cart)
-  const cartItemIds = items.map(i => i.id);
-  const upsellItems = PRODUCTS.filter(p => !cartItemIds.includes(p.id)).slice(0, 3);
-
   return (
     <>
       {/* Backdrop */}

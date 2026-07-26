@@ -1,12 +1,12 @@
 'use client';
 
 import { useCartStore } from '../../../shared/utils/store';
-import { getProductById, PRODUCTS } from '../../../shared/utils/products';
+import { getProductById, getProducts, Product } from '../../../shared/utils/products';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Minus, Plus, ChevronDown, ChevronRight, ChevronLeft, Star, Heart } from 'lucide-react';
+import { Minus, Plus, ChevronDown, ChevronRight, ChevronLeft, Star, Heart, Loader2 } from 'lucide-react';
 
 const WavyDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) => (
   <div className={`w-full overflow-hidden leading-none ${flip ? 'rotate-180' : ''}`}>
@@ -18,12 +18,28 @@ const WavyDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) =
 
 export default function ProductDetailPage() {
   const { id } = useParams();
-  const product = getProductById(id as string);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const addItem = useCartStore((state) => state.addItem);
   const [quantity, setQuantity] = useState(1);
   const [showSticky, setShowSticky] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    async function loadData() {
+      const p = await getProductById(id as string);
+      if (p) {
+        setProduct(p);
+        const all = await getProducts();
+        setRelatedProducts(all.filter(x => x.id !== p.id).slice(0, 4));
+      }
+      setIsLoading(false);
+    }
+    loadData();
+  }, [id]);
 
   // Dynamic Date calculation
   const getDeliveryDates = () => {
@@ -37,7 +53,6 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Show sticky bar when scrolled past the main add-to-cart button
       if (window.scrollY > 600) {
         setShowSticky(true);
       } else {
@@ -48,11 +63,17 @@ export default function ProductDetailPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
+        <Loader2 size={40} className="animate-spin text-[#987C6F]" />
+      </div>
+    );
+  }
+
   if (!product) {
     notFound();
   }
-
-  const relatedProducts = PRODUCTS.filter(p => p.id !== product.id).slice(0, 4);
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-[#5D4E46] font-sans pt-32 pb-0">
@@ -106,7 +127,7 @@ export default function ProductDetailPage() {
               </div>
               <div className="bg-[#F7F0E3] p-4 rounded-xl flex gap-4 items-center">
                 <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0 bg-white shadow-sm">
-                  <Image src={PRODUCTS.find(p => p.id !== product.id)?.image || PRODUCTS[0].image} alt="Related" fill className="object-cover" unoptimized />
+                  <Image src={relatedProducts.length > 0 ? relatedProducts[0].image : '/placeholder.png'} alt="Related" fill className="object-cover" unoptimized />
                 </div>
                 <div>
                   <h4 className="font-bold text-xs text-[#5D4E46]">Baby Essentials Set</h4>

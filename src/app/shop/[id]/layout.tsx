@@ -1,11 +1,12 @@
-import { PRODUCTS } from '../../../shared/utils/products';
+import { getProducts } from '../../../shared/utils/products';
 
-export function generateStaticParams() {
-  return PRODUCTS.map((product) => ({
+export async function generateStaticParams() {
+  const products = await getProducts();
+  return products.map((product) => ({
     id: product.id,
   }));
 }
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function ProductLayout({ children }: { children: React.ReactNode }) {
   return children;
 }
