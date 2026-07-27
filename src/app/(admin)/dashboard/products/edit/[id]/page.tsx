@@ -1,7 +1,12 @@
+import { getProducts } from '@/shared/utils/products';
 import EditProductClient from './EditProductClient';
 
 export async function generateStaticParams() {
-  return [{ id: 'new' }];
+  const products = await getProducts();
+  return [
+    { id: 'new' },
+    ...products.map(p => ({ id: p.id }))
+  ];
 }
 
 export default function EditProductPage() {

@@ -20,12 +20,10 @@ export default function SettingsPage() {
 
   const loadSettings = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('site_settings').select('*');
-    if (!error && data) {
-      const ga = data.find(row => row.key === 'google_analytics_id')?.value || '';
-      const gsc = data.find(row => row.key === 'google_search_console_id')?.value || '';
-      setSettings({ ga_id: ga, gsc_id: gsc });
-    }
+    // Fetch from localStorage instead of Supabase since we don't have a site_settings table yet
+    const ga = localStorage.getItem('google_analytics_id') || '';
+    const gsc = localStorage.getItem('google_search_console_id') || '';
+    setSettings({ ga_id: ga, gsc_id: gsc });
     setLoading(false);
   };
 
@@ -35,10 +33,8 @@ export default function SettingsPage() {
     setMessage(null);
     
     try {
-      // Upsert Google Analytics ID
-      await supabase.from('site_settings').upsert({ key: 'google_analytics_id', value: settings.ga_id }, { onConflict: 'key' });
-      // Upsert Google Search Console ID
-      await supabase.from('site_settings').upsert({ key: 'google_search_console_id', value: settings.gsc_id }, { onConflict: 'key' });
+      localStorage.setItem('google_analytics_id', settings.ga_id);
+      localStorage.setItem('google_search_console_id', settings.gsc_id);
       
       setMessage({ type: 'success', text: 'Settings saved successfully. The tracking codes are now active.' });
     } catch (err: any) {

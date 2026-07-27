@@ -7,9 +7,9 @@ import CuratedPicks from '@/components/CuratedPicks';
 
 // Reusable Wavy Divider Component
 const WavyDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) => (
-  <div className={`w-full overflow-hidden leading-none ${flip ? 'rotate-180' : ''}`}>
-    <svg className="relative block w-full h-[40px] md:h-[60px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-      <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" className={fill}></path>
+  <div className={`w-full overflow-hidden leading-none ${flip ? 'rotate-180' : ''} bg-[#FDFBF7]`}>
+    <svg className="relative block w-full h-[40px] md:h-[60px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,0 C300,120 900,120 1200,0 L1200,120 L0,120 Z" className={fill}></path>
     </svg>
   </div>
 );
@@ -72,10 +72,26 @@ export default async function Home() {
                 />
               </div>
 
-              {/* Decorative Element */}
+              {/* Decorative Element 1 */}
               <div className="absolute left-20 bottom-24 z-10 opacity-20 text-[#987C6F]">
                 <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor" className="animate-[spin_20s_linear_infinite]">
                   <path d="M12 0C12.5 5.5 18.5 11.5 24 12C18.5 12.5 12.5 18.5 12 24C11.5 18.5 5.5 12.5 0 12C5.5 11.5 11.5 5.5 12 0Z" />
+                </svg>
+              </div>
+
+              {/* Extra Decorative Shapes & Elements */}
+              <div className="absolute top-8 right-0 w-16 h-16 bg-[#F7F0E3] rounded-full z-10 animate-bounce" style={{ animationDuration: '6s' }}></div>
+              <div className="absolute bottom-12 left-4 w-24 h-24 bg-[#E4D1FF]/40 rounded-tl-[40px] rounded-br-[40px] z-10 -rotate-12"></div>
+              
+              <div className="absolute top-36 right-0 z-50 text-[#AAB084]">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" className="animate-[spin_15s_linear_infinite]">
+                  <path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10L12 2Z" />
+                </svg>
+              </div>
+
+              <div className="absolute top-24 left-1/2 -translate-x-1/2 z-0 opacity-10">
+                <svg width="120" height="120" viewBox="0 0 100 100" fill="none" stroke="#987C6F" strokeWidth="1" className="animate-pulse">
+                   <circle cx="50" cy="50" r="45" strokeDasharray="4 4" />
                 </svg>
               </div>
             </div>

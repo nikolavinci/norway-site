@@ -9,9 +9,9 @@ import { useState, useEffect } from 'react';
 import { Minus, Plus, ChevronDown, ChevronRight, ChevronLeft, Star, Heart, Loader2 } from 'lucide-react';
 
 const WavyDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) => (
-  <div className={`w-full overflow-hidden leading-none ${flip ? 'rotate-180' : ''}`}>
-    <svg className="relative block w-full h-[40px] md:h-[60px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-      <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" className={fill}></path>
+  <div className={`w-full overflow-hidden leading-none ${flip ? 'rotate-180' : ''} bg-[#FDFBF7]`}>
+    <svg className="relative block w-full h-[40px] md:h-[60px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,0 C300,120 900,120 1200,0 L1200,120 L0,120 Z" className={fill}></path>
     </svg>
   </div>
 );
@@ -90,6 +90,13 @@ export default function ProductDetailPage() {
           </div>
           <div className="relative flex-1 bg-[#FDFBF7] rounded-xl overflow-hidden shadow-sm aspect-square">
             <Image src={product.image} alt={product.name} fill className="object-cover" unoptimized priority />
+            <button 
+              onClick={() => setIsFavorite(!isFavorite)}
+              className="absolute top-4 right-4 z-10 w-12 h-12 flex items-center justify-center bg-white/80 backdrop-blur rounded-full text-[#5D4E46] hover:text-[#FF5A5F] hover:bg-white transition-all shadow-md"
+              title="Add to Favorites"
+            >
+              <Heart size={20} strokeWidth={2.5} fill={isFavorite ? "#FF5A5F" : "none"} className={isFavorite ? "text-[#FF5A5F]" : ""} />
+            </button>
           </div>
         </div>
 
@@ -154,6 +161,30 @@ export default function ProductDetailPage() {
             </div>
             
             <div className="bg-[#F7F0E3] rounded-md overflow-hidden">
+              <div onClick={() => setOpenAccordion(openAccordion === 'care' ? null : 'care')} className="px-4 py-3 flex justify-between items-center cursor-pointer">
+                <span className="text-xs font-medium flex items-center gap-2"><span className="text-sm">✨</span> Product Care</span>
+                <ChevronDown size={14} className={`text-[#5D4E46]/50 transition-transform ${openAccordion === 'care' ? 'rotate-180' : ''}`}/>
+              </div>
+              {openAccordion === 'care' && (
+                <div className="px-4 pb-3 text-xs text-[#5D4E46]/80 leading-relaxed">
+                  Spot clean with a damp cloth and mild soap. Avoid harsh chemicals. For textiles, machine wash cold on a gentle cycle and air dry.
+                </div>
+              )}
+            </div>
+
+            <div className="bg-[#F7F0E3] rounded-md overflow-hidden">
+              <div onClick={() => setOpenAccordion(openAccordion === 'materials' ? null : 'materials')} className="px-4 py-3 flex justify-between items-center cursor-pointer">
+                <span className="text-xs font-medium flex items-center gap-2"><span className="text-sm">🌿</span> Materials</span>
+                <ChevronDown size={14} className={`text-[#5D4E46]/50 transition-transform ${openAccordion === 'materials' ? 'rotate-180' : ''}`}/>
+              </div>
+              {openAccordion === 'materials' && (
+                <div className="px-4 pb-3 text-xs text-[#5D4E46]/80 leading-relaxed">
+                  100% organic cotton and sustainably sourced vegan leather. All our products are handcrafted in small batches to ensure the highest quality.
+                </div>
+              )}
+            </div>
+
+            <div className="bg-[#F7F0E3] rounded-md overflow-hidden">
               <div onClick={() => setOpenAccordion(openAccordion === 'support' ? null : 'support')} className="px-4 py-3 flex justify-between items-center cursor-pointer">
                 <span className="text-xs font-medium flex items-center gap-2"><span className="text-sm">🎧</span> 24/7 Support</span>
                 <ChevronDown size={14} className={`text-[#5D4E46]/50 transition-transform ${openAccordion === 'support' ? 'rotate-180' : ''}`}/>
@@ -196,18 +227,9 @@ export default function ProductDetailPage() {
             >
               Add to cart
             </button>
-            <div className="flex gap-2 w-full">
-              <button className="flex-1 py-3.5 bg-[#5D4E46] text-white rounded-full text-xs font-bold hover:bg-[#3A3532] transition-colors shadow-md text-center">
-                Buy it now
-              </button>
-              <button 
-                onClick={() => setIsFavorite(!isFavorite)}
-                className="w-12 flex-shrink-0 flex items-center justify-center border-2 border-[#5D4E46] rounded-full text-[#5D4E46] hover:bg-[#5D4E46] hover:text-white transition-colors"
-                title="Add to Favorites"
-              >
-                <Heart size={18} fill={isFavorite ? "currentColor" : "none"} />
-              </button>
-            </div>
+            <button className="w-full py-3.5 bg-[#5D4E46] text-white rounded-full text-xs font-bold hover:bg-[#3A3532] transition-colors shadow-md text-center">
+              Buy it now
+            </button>
           </div>
 
           <div className="flex flex-col gap-1.5 mt-2 text-[10px] text-[#5D4E46]/70">
@@ -281,11 +303,11 @@ export default function ProductDetailPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 h-[400px] rounded-xl overflow-hidden shadow-sm">
              <div className="relative h-full bg-[#E4D1FF]">
-               <Image src="/images/bags/bag1.png" alt="Lifestyle 1" fill className="object-cover" unoptimized />
+               <Image src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69958c7c30895633d86899b0.webp" alt="Lifestyle Bags" fill className="object-cover" unoptimized />
                <span className="absolute bottom-4 left-4 bg-[#7A75A5] text-white text-[10px] font-bold uppercase px-3 py-1 rounded">Bags</span>
              </div>
              <div className="relative h-full bg-[#F7F0E3]">
-               <Image src="/images/bags/bag2.png" alt="Lifestyle 2" fill className="object-cover" unoptimized />
+               <Image src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/6997e0b63ccc0711c1c926dc.webp" alt="Lifestyle Textiles" fill className="object-cover" unoptimized />
                <span className="absolute bottom-4 right-4 bg-[#7A75A5] text-white text-[10px] font-bold uppercase px-3 py-1 rounded">Textiles</span>
              </div>
           </div>
