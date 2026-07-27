@@ -17,9 +17,7 @@ export const metadata: Metadata = {
   description: "Discover our curated collection of handcrafted bohemian accessories, home textiles, and sustainably made goods.",
 };
 
-import Header from "../components/Header";
-import CartDrawer from "../components/CartDrawer";
-import Footer from "../components/Footer";
+import Analytics from "../components/Analytics";
 
 export default function RootLayout({
   children,
@@ -31,11 +29,11 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <Analytics />
+      </head>
       <body className="min-h-full flex flex-col bg-[#FDFCF8]">
-        <Header />
-        <CartDrawer />
         {children}
-        <Footer />
       </body>
     </html>
   );

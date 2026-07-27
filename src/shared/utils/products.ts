@@ -8,6 +8,8 @@ export interface Product {
   image: string;
   description: string;
   stock: number;
+  meta_title?: string;
+  meta_description?: string;
 }
 
 export async function getProducts(): Promise<Product[]> {
