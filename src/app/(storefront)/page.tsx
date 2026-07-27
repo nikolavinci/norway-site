@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { getProducts } from '@/shared/utils/products';
-import { ChevronRight, Plus } from 'lucide-react';
+import { getBlogs } from '@/shared/utils/blogs';
+import { ChevronRight, Plus, Heart, ShoppingBag } from 'lucide-react';
 import CuratedPicks from '@/components/CuratedPicks';
 
 // Reusable Wavy Divider Component
@@ -16,6 +17,7 @@ const WavyDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) =
 export default async function Home() {
   const allProducts = await getProducts();
   const featuredProducts = allProducts.slice(0, 4);
+  const latestBlogs = await getBlogs().then(b => b.slice(0, 3));
   
   return (
     <div className="flex flex-col min-h-screen text-[#5D4E46] font-sans antialiased bg-[#FDFBF7]">
@@ -61,17 +63,21 @@ export default async function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredProducts.map((product, index) => (
               <div key={product.id} className="bg-white rounded-3xl p-6 shadow-xl flex flex-col relative group hover:-translate-y-2 transition-transform duration-300">
-                {/* Badges */}
-                <div className="absolute top-4 left-4 z-10">
+                {/* Badges and Heart */}
+                <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
                   <span className="bg-[#FFD6A5] text-[#D97D27] text-[10px] font-black uppercase px-2 py-1 rounded">New</span>
                 </div>
                 {index === 1 && (
-                  <div className="absolute top-4 right-4 z-10">
+                  <div className="absolute top-12 left-4 z-10">
                     <span className="bg-[#E4D1FF] text-[#6A3F9C] text-[10px] font-black uppercase px-2 py-1 rounded">-15%</span>
                   </div>
                 )}
                 
-                <Link href={`/shop/${product.id}`} className="relative h-48 w-full mb-6">
+                <button className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/80 backdrop-blur flex items-center justify-center text-[#5D4E46]/40 hover:text-[#FF5A5F] hover:bg-white transition-all shadow-sm">
+                  <Heart size={16} strokeWidth={2.5} />
+                </button>
+                
+                <Link href={`/shop/${product.id}`} className="relative h-48 w-full mb-6 mt-4">
                   <Image src={product.image} alt={product.name} fill className="object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-500" unoptimized />
                 </Link>
                 
@@ -85,9 +91,9 @@ export default async function Home() {
                   </div>
                 </div>
 
-                {/* Plus Button */}
-                <Link href={`/shop/${product.id}`} className="absolute bottom-4 right-4 w-8 h-8 rounded-full bg-[#EAE5FE] text-[#7A5FCF] flex items-center justify-center hover:bg-[#D4CBFD] transition-colors shadow-sm">
-                  <Plus size={18} strokeWidth={3} />
+                {/* ShoppingBag Button */}
+                <Link href={`/shop/${product.id}`} className="absolute bottom-4 right-4 w-10 h-10 rounded-full bg-[#EAE5FE] text-[#7A5FCF] flex items-center justify-center hover:bg-[#D4CBFD] hover:scale-110 transition-all shadow-sm z-20">
+                  <ShoppingBag size={18} strokeWidth={2.5} />
                 </Link>
               </div>
             ))}
@@ -266,17 +272,13 @@ export default async function Home() {
                 <a href="#" className="text-xs font-bold text-[#5D4E46]/60 hover:text-[#7A75A5] uppercase tracking-widest">View All</a>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                  { title: "Must-Have Bags for Your Summer Getaway", img: "https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69958c7c30895633d86899b0.webp" },
-                  { title: "Eco-Friendly Textiles for a Sustainable Home", img: "https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/6997e0b63ccc0711c1c926dc.webp" },
-                  { title: "Styling Your Space with Bohemian Prints", img: "https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69fc3289f1cedf3765d321d1.webp" }
-                ].map((blog, i) => (
-                  <Link href={`/blog/${i}`} key={i} className="group cursor-pointer block">
-                    <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4">
-                      <Image src={blog.img} alt={blog.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
+                {latestBlogs.map((blog, i) => (
+                  <Link href={`/blog/${blog.id}`} key={blog.id} className="group cursor-pointer block">
+                    <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4 bg-gray-100">
+                      <Image src={blog.img || '/placeholder.png'} alt={blog.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
                     </div>
-                    <p className="text-[10px] font-bold text-[#987C6F] uppercase tracking-widest mb-2">March 4, 2024</p>
-                    <h3 className="font-bold text-lg leading-snug group-hover:text-[#7A75A5] transition-colors">{blog.title}</h3>
+                    <p className="text-[10px] font-bold text-[#987C6F] uppercase tracking-widest mb-2">{new Date(blog.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                    <h3 className="font-bold text-lg leading-snug group-hover:text-[#7A75A5] transition-colors line-clamp-2">{blog.title}</h3>
                   </Link>
                 ))}
               </div>
