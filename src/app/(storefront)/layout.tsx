@@ -1,6 +1,6 @@
-import Header from "../../components/Header";
-import CartDrawer from "../../components/CartDrawer";
-import Footer from "../../components/Footer";
+import Header from '@/components/Header';
+import CartDrawer from '@/components/CartDrawer';
+import Footer from '@/components/Footer';
 
 export default function StorefrontLayout({
   children,

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { createProduct, uploadProductImage } from '../../../../../shared/utils/products';
+import { createProduct, uploadProductImage } from '@/shared/utils/products';
 import { useRouter } from 'next/navigation';
 import { Loader2, Image as ImageIcon, ArrowLeft, Settings2 } from 'lucide-react';
 import Link from 'next/link';

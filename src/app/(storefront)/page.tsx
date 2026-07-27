@@ -1,8 +1,8 @@
-import Image from "next/image";
-import Link from "next/link";
-import { getProducts } from "../shared/utils/products";
-import { ChevronRight, Plus } from "lucide-react";
-import CuratedPicks from "../components/CuratedPicks";
+import Image from 'next/image';
+import Link from 'next/link';
+import { getProducts } from '@/shared/utils/products';
+import { ChevronRight, Plus } from 'lucide-react';
+import CuratedPicks from '@/components/CuratedPicks';
 
 // Reusable Wavy Divider Component
 const WavyDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) => (

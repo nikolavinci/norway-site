@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { supabase } from '../../../shared/utils/supabase';
+import { supabase } from '@/shared/utils/supabase';
 import { Users, ShoppingBag, DollarSign, Activity } from 'lucide-react';
 
 export default function DashboardOverview() {

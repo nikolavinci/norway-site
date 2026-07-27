@@ -1,4 +1,4 @@
-import { getProducts } from '../../../shared/utils/products';
+import { getProducts } from '@/shared/utils/products';
 
 export async function generateStaticParams() {
   const products = await getProducts();

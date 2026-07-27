@@ -1,7 +1,7 @@
 'use client';
 
-import { useCartStore } from '../../../shared/utils/store';
-import { getProductById, getProducts, Product } from '../../../shared/utils/products';
+import { useCartStore } from '@/shared/utils/store';
+import { getProductById, getProducts, Product } from '@/shared/utils/products';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound, useParams } from 'next/navigation';

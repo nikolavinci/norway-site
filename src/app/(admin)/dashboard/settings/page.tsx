@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '../../../../shared/utils/supabase';
+import { supabase } from '@/shared/utils/supabase';
 import { Loader2, Save, BarChart, Search } from 'lucide-react';
 
 export default function SettingsPage() {

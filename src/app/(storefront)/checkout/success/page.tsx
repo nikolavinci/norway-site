@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { useCartStore } from '../../../shared/utils/store';
+import { useCartStore } from '@/shared/utils/store';
 import Link from 'next/link';
 import { CheckCircle2 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { useCartStore } from '../../shared/utils/store';
+import { useCartStore } from '@/shared/utils/store';
 import Link from 'next/link';
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid recreating the `Stripe` object on every render.

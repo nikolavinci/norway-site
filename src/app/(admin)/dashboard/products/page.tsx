@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Product, getProducts, deleteProduct } from '../../../../shared/utils/products';
+import { Product, getProducts, deleteProduct } from '@/shared/utils/products';
 import { Edit2, Trash2, Plus, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
