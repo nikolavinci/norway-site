@@ -26,6 +26,7 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [showSticky, setShowSticky] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
@@ -356,11 +357,11 @@ export default function ProductDetailPage() {
               { q: "What if I have questions or need assistance?", a: "Our support team is available 24/7. Reach out to us via email or the contact form." }
             ].map((faq, i) => (
               <div key={i} className="border border-[#5D4E46]/10 rounded-xl overflow-hidden shadow-sm">
-                <div className="bg-[#FDFBF7] px-6 py-4 flex justify-between items-center cursor-pointer hover:bg-[#f5f3ef] transition-colors">
+                <div onClick={() => setOpenFaqIndex(openFaqIndex === i ? null : i)} className="bg-[#FDFBF7] px-6 py-4 flex justify-between items-center cursor-pointer hover:bg-[#f5f3ef] transition-colors">
                   <h4 className="font-bold text-sm text-[#5D4E46]">{faq.q}</h4>
-                  <ChevronDown size={16} className="text-[#5D4E46]/50" />
+                  <ChevronDown size={16} className={`text-[#5D4E46]/50 transition-transform ${openFaqIndex === i ? 'rotate-180' : ''}`} />
                 </div>
-                {i === 0 && (
+                {openFaqIndex === i && (
                   <div className="px-6 py-4 bg-white text-sm text-[#5D4E46]/80 leading-relaxed border-t border-[#5D4E46]/5">
                     {faq.a}
                   </div>
@@ -375,21 +376,21 @@ export default function ProductDetailPage() {
       {showSticky && (
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#5D4E46]/10 p-4 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] animate-fade-in-up">
           <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 relative bg-[#FDFBF7] rounded-md overflow-hidden">
+            <div className="flex items-center gap-2 sm:gap-4 flex-1">
+              <div className="hidden sm:block w-12 h-12 relative bg-[#FDFBF7] rounded-md overflow-hidden shrink-0">
                 <Image src={product.image} alt={product.name} fill className="object-cover" unoptimized />
               </div>
-              <div className="hidden sm:block">
-                <h4 className="font-bold text-sm text-[#5D4E46]">{product.name}</h4>
-                <p className="text-xs font-bold text-[#5D4E46]/70">{product.price} NOK</p>
+              <div className="block flex-1 min-w-0">
+                <h4 className="font-bold text-[10px] sm:text-sm text-[#5D4E46] truncate">{product.name}</h4>
+                <p className="text-[10px] sm:text-xs font-bold text-[#5D4E46]/70">{product.price} NOK</p>
               </div>
             </div>
             
-            <div className="flex items-center gap-4">
-              <div className="hidden md:flex items-center border border-[#5D4E46]/10 rounded-md bg-[#FDFBF7] w-24">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-2 text-[#5D4E46]/60"><Minus size={12} /></button>
-                <span className="flex-1 text-center text-xs font-bold">{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)} className="p-2 text-[#5D4E46]/60"><Plus size={12} /></button>
+            <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+              <div className="flex items-center border border-[#5D4E46]/10 rounded-md bg-[#FDFBF7] w-16 sm:w-24">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-1.5 sm:p-2 text-[#5D4E46]/60"><Minus size={12} /></button>
+                <span className="flex-1 text-center text-[10px] sm:text-xs font-bold">{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)} className="p-1.5 sm:p-2 text-[#5D4E46]/60"><Plus size={12} /></button>
               </div>
               <button 
                 onClick={() => {
