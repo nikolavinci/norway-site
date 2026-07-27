@@ -26,6 +26,16 @@ const WavyDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) =
 
 import { getBlogById, getBlogs } from '@/shared/utils/blogs';
 
+export async function generateStaticParams() {
+  const blogs = await getBlogs();
+  if (blogs.length === 0) {
+    return [{ slug: 'dummy' }];
+  }
+  return blogs.map((blog) => ({
+    slug: String(blog.id),
+  }));
+}
+
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
   const post = await getBlogById(params.slug);
   

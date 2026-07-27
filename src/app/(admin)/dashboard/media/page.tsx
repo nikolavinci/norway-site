@@ -29,7 +29,7 @@ export default function MediaLibraryPage() {
       });
       
       // Sort by latest
-      filesWithUrls.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      filesWithUrls.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
       
       setFiles(filesWithUrls);
     }
