@@ -46,13 +46,46 @@ export default async function Home() {
               </Link>
             </div>
 
-            {/* Right: Feature Image */}
-            <div className="relative h-[400px] md:h-[500px] w-full rounded-[2rem] overflow-hidden shadow-2xl">
+            {/* Right: Bohemian Moodboard (Desktop) */}
+            <div className="relative h-[500px] w-full hidden md:block">
+              {/* Main Arch Image */}
+              <div className="absolute right-8 top-0 w-64 h-80 rounded-t-full rounded-b-3xl overflow-hidden shadow-2xl z-20 hover:scale-105 transition-transform duration-500">
+                <Image 
+                  src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69fc3289f1cedf3765d321d1.webp"
+                  alt="Bohemian Interior" fill className="object-cover" priority unoptimized
+                />
+              </div>
+              
+              {/* Secondary overlapping image (Textile/Close-up) */}
+              <div className="absolute left-12 top-16 w-48 h-56 rounded-full overflow-hidden shadow-xl z-30 border-4 border-[#FDFBF7] hover:-translate-y-2 transition-transform duration-500">
+                <Image 
+                  src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/6997e0b63ccc0711c1c926dc.webp"
+                  alt="Organic Textiles" fill className="object-cover" unoptimized
+                />
+              </div>
+
+              {/* Bottom overlapping image (Bag) */}
+              <div className="absolute right-32 bottom-8 w-56 h-48 rounded-2xl overflow-hidden shadow-xl z-40 border-4 border-[#FDFBF7] hover:-translate-y-2 transition-transform duration-500">
+                <Image 
+                  src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69958c7c30895633d86899b0.webp"
+                  alt="Handmade Bag" fill className="object-cover" unoptimized
+                />
+              </div>
+
+              {/* Decorative Element */}
+              <div className="absolute left-20 bottom-24 z-10 opacity-20 text-[#987C6F]">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor" className="animate-[spin_20s_linear_infinite]">
+                  <path d="M12 0C12.5 5.5 18.5 11.5 24 12C18.5 12.5 12.5 18.5 12 24C11.5 18.5 5.5 12.5 0 12C5.5 11.5 11.5 5.5 12 0Z" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Right: Mobile-only view (simplified arch) */}
+            <div className="relative h-[400px] w-full rounded-t-full rounded-b-3xl overflow-hidden shadow-2xl md:hidden mt-8">
               <Image 
                 src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69fc3289f1cedf3765d321d1.webp"
                 alt="Bohemian Interior" fill className="object-cover" priority unoptimized
               />
-              <div className="absolute inset-0 bg-[#987C6F]/10 mix-blend-multiply"></div>
             </div>
             
           </div>
