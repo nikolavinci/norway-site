@@ -1,8 +1,6 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
-import { notFound, useParams } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { Link2, ChevronLeft } from 'lucide-react';
 
 // Inline SVGs for social icons removed from lucide-react
@@ -26,41 +24,17 @@ const WavyDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) =
   </div>
 );
 
-// Mock blog data
-const BLOG_POSTS = [
-  { 
-    slug: '0', 
-    title: "Must-Have Bags for Your Summer Getaway", 
-    date: "March 4, 2024",
-    img: "https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69958c7c30895633d86899b0.webp",
-    content: "When it comes to summer travel, having the perfect bag is essential. Not only does it need to carry all your essentials, but it should also effortlessly complement your sunny wardrobe. Our newest collection of handcrafted bohemian bags offers the perfect blend of style and practicality for any destination. Whether you're strolling through coastal towns or exploring vibrant city markets, these woven wonders are designed to be your most reliable companion."
-  },
-  { 
-    slug: '1', 
-    title: "Eco-Friendly Textiles for a Sustainable Home", 
-    date: "March 4, 2024",
-    img: "https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/6997e0b63ccc0711c1c926dc.webp",
-    content: "Transforming your living space into a sustainable sanctuary starts with the materials you choose. Our eco-friendly textiles are crafted with deep respect for the environment, utilizing natural dyes and ethically sourced fibers. By integrating these earthy elements into your home, you're not just enhancing its aesthetic appeal—you're supporting artisan communities and promoting a greener future. Discover how a simple throw or cushion can make a world of difference."
-  },
-  { 
-    slug: '2', 
-    title: "Styling Your Space with Bohemian Prints", 
-    date: "March 4, 2024",
-    img: "https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69fc3289f1cedf3765d321d1.webp",
-    content: "Bohemian interior design is all about breaking the rules and embracing creative freedom. Mixing and matching bold prints can breathe life into any room, adding layers of texture and personality. Start with a neutral base and introduce vibrant patterns through rugs, tapestries, and accent pillows. Don't be afraid to combine contrasting motifs—the key is to find a unifying color palette that ties the eclectic mix together into a harmonious and inviting space."
-  }
-];
+import { getBlogById, getBlogs } from '@/shared/utils/blogs';
 
-export default function BlogPostPage() {
-  const { slug } = useParams();
-  const postIndex = parseInt(slug as string);
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+  const post = await getBlogById(params.slug);
   
-  if (isNaN(postIndex) || postIndex < 0 || postIndex >= BLOG_POSTS.length) {
+  if (!post) {
     return notFound();
   }
 
-  const post = BLOG_POSTS[postIndex];
-  const relatedPosts = BLOG_POSTS.filter((_, i) => i !== postIndex);
+  const allPosts = await getBlogs();
+  const relatedPosts = allPosts.filter(p => p.id !== post.id).slice(0, 2);
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-[#5D4E46] font-sans pt-32 pb-0">
@@ -73,7 +47,7 @@ export default function BlogPostPage() {
 
         {/* Header */}
         <header className="text-center mb-12">
-          <p className="text-xs font-bold text-[#987C6F] uppercase tracking-widest mb-4">{post.date} · Lifestyle</p>
+          <p className="text-xs font-bold text-[#987C6F] uppercase tracking-widest mb-4">{new Date(post.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} · Lifestyle</p>
           <h1 className="text-4xl md:text-5xl font-black text-[#5D4E46] leading-tight mb-8 max-w-3xl mx-auto">
             {post.title}
           </h1>
@@ -86,7 +60,7 @@ export default function BlogPostPage() {
 
         {/* Featured Image */}
         <div className="relative w-full aspect-[21/9] rounded-2xl overflow-hidden mb-16 shadow-lg">
-          <Image src={post.img} alt={post.title} fill className="object-cover" unoptimized priority />
+          <Image src={post.img || '/placeholder.png'} alt={post.title} fill className="object-cover" unoptimized priority />
         </div>
 
         {/* Content & Sharing Layout */}
@@ -141,11 +115,11 @@ export default function BlogPostPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
             {relatedPosts.map((related) => (
-              <Link href={`/blog/${related.slug}`} key={related.slug} className="group cursor-pointer block">
+              <Link href={`/blog/${related.id}`} key={related.id} className="group cursor-pointer block">
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-6 shadow-sm">
-                  <Image src={related.img} alt={related.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
+                  <Image src={related.img || '/placeholder.png'} alt={related.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
                 </div>
-                <p className="text-[10px] font-bold text-[#987C6F] uppercase tracking-widest mb-3">{related.date}</p>
+                <p className="text-[10px] font-bold text-[#987C6F] uppercase tracking-widest mb-3">{new Date(related.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
                 <h3 className="font-bold text-2xl leading-snug group-hover:text-[#7A75A5] transition-colors">{related.title}</h3>
               </Link>
             ))}

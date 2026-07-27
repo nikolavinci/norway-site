@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2, Image as ImageIcon, ArrowLeft, Settings2 } from 'lucide-react';
 import Link from 'next/link';
+import { createBlog } from '@/shared/utils/blogs';
 
 export default function BlogEditorPage() {
   const router = useRouter();
@@ -21,12 +22,21 @@ export default function BlogEditorPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null);
     
-    // Placeholder for actual Supabase insert logic
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      await createBlog({
+        title: formData.title,
+        content: formData.content,
+        img: formData.image,
+        meta_title: formData.meta_title,
+        meta_description: formData.meta_description
+      });
       router.push('/dashboard/blog');
-    }, 1000);
+    } catch (err: any) {
+      setError(err.message || "Failed to create blog post");
+      setIsSubmitting(false);
+    }
   };
 
   return (
