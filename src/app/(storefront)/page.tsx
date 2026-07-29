@@ -72,6 +72,22 @@ export default async function Home() {
                 />
               </div>
 
+              {/* NEW: Left overlapping small image */}
+              <div className="absolute left-0 bottom-32 w-32 h-32 rounded-lg overflow-hidden shadow-xl z-30 border-2 border-[#FDFBF7] -rotate-6 hover:rotate-0 transition-transform duration-500">
+                <Image 
+                  src="https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&q=80&w=400"
+                  alt="Craft Detail" fill className="object-cover" unoptimized
+                />
+              </div>
+
+              {/* NEW: Top right overlapping small image */}
+              <div className="absolute -right-4 top-24 w-28 h-28 rounded-full overflow-hidden shadow-xl z-30 border-2 border-[#FDFBF7] hover:scale-110 transition-transform duration-500">
+                <Image 
+                  src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=80&w=400"
+                  alt="Texture Detail" fill className="object-cover" unoptimized
+                />
+              </div>
+
               {/* Decorative Element 1 */}
               <div className="absolute left-20 bottom-24 z-10 opacity-20 text-[#987C6F]">
                 <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor" className="animate-[spin_20s_linear_infinite]">
@@ -88,6 +104,9 @@ export default async function Home() {
                   <path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10L12 2Z" />
                 </svg>
               </div>
+
+              {/* NEW: Extra abstract shape */}
+              <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-48 h-8 bg-[#987C6F]/10 rounded-full z-10 -rotate-45 blur-[2px]"></div>
 
               <div className="absolute top-24 left-1/2 -translate-x-1/2 z-0 opacity-10">
                 <svg width="120" height="120" viewBox="0 0 100 100" fill="none" stroke="#987C6F" strokeWidth="1" className="animate-pulse">
