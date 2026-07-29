@@ -4,7 +4,7 @@ import { useCartStore } from '@/shared/utils/store';
 import { getProductById, getProducts, Product } from '@/shared/utils/products';
 import Image from 'next/image';
 import Link from 'next/link';
-import { notFound, useParams } from 'next/navigation';
+import { notFound, useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { Minus, Plus, ChevronDown, ChevronRight, ChevronLeft, Star, Heart, Loader2 } from 'lucide-react';
 
@@ -18,6 +18,7 @@ const WavyDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) =
 
 export default function ProductDetailPage() {
   const { id } = useParams();
+  const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -228,7 +229,13 @@ export default function ProductDetailPage() {
             >
               Add to cart
             </button>
-            <button className="w-full py-3.5 bg-[#5D4E46] text-white rounded-full text-xs font-bold hover:bg-[#3A3532] transition-colors shadow-md text-center">
+            <button 
+              onClick={() => {
+                for(let i=0; i<quantity; i++) addItem(product);
+                router.push('/checkout');
+              }}
+              className="w-full py-3.5 bg-[#5D4E46] text-white rounded-full text-xs font-bold hover:bg-[#3A3532] transition-colors shadow-md text-center"
+            >
               Buy it now
             </button>
           </div>

@@ -214,19 +214,33 @@ export default async function Home() {
           <h2 className="text-3xl font-black text-[#5D4E46] mb-12 text-center">Unveiling Our Best</h2>
           <div className="relative flex overflow-hidden group">
             <div className="animate-marquee flex gap-4 px-4 whitespace-nowrap min-w-full">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((img, i) => (
-                <div key={i} className="relative w-64 h-64 flex-shrink-0 rounded-xl overflow-hidden group-hover:pause-animation">
-                  <Image src={allProducts[i % allProducts.length]?.image || '/placeholder.png'} alt="Product" fill className="object-cover hover:scale-110 transition-transform duration-700" unoptimized />
-                </div>
-              ))}
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((_, i) => {
+                const product = allProducts[i % allProducts.length];
+                if (!product) return null;
+                return (
+                  <Link href={`/shop/${product.id}`} key={i} className="relative w-64 h-64 flex-shrink-0 rounded-xl overflow-hidden group/item">
+                    <Image src={product.image || '/placeholder.png'} alt={product.name} fill className="object-cover group-hover/item:scale-110 transition-transform duration-700" unoptimized />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4 text-center">
+                      <span className="text-white font-bold text-lg">{product.name}</span>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
             {/* Duplicate for infinite effect */}
             <div className="animate-marquee flex gap-4 px-4 whitespace-nowrap min-w-full" aria-hidden="true">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((img, i) => (
-                <div key={i} className="relative w-64 h-64 flex-shrink-0 rounded-xl overflow-hidden group-hover:pause-animation">
-                  <Image src={allProducts[i % allProducts.length]?.image || '/placeholder.png'} alt="Product" fill className="object-cover hover:scale-110 transition-transform duration-700" unoptimized />
-                </div>
-              ))}
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((_, i) => {
+                const product = allProducts[i % allProducts.length];
+                if (!product) return null;
+                return (
+                  <Link href={`/shop/${product.id}`} key={i} className="relative w-64 h-64 flex-shrink-0 rounded-xl overflow-hidden group/item">
+                    <Image src={product.image || '/placeholder.png'} alt={product.name} fill className="object-cover group-hover/item:scale-110 transition-transform duration-700" unoptimized />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4 text-center">
+                      <span className="text-white font-bold text-lg">{product.name}</span>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </section>
