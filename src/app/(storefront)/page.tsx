@@ -4,6 +4,8 @@ import { getProducts } from '@/shared/utils/products';
 import { getBlogs } from '@/shared/utils/blogs';
 import { ChevronRight, Plus, Heart, ShoppingBag } from 'lucide-react';
 import CuratedPicks from '@/components/CuratedPicks';
+import HeroSlider from '@/components/HeroSlider';
+import ProductCard from '@/components/ProductCard';
 
 // Reusable Wavy Divider Component
 const WavyDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) => (
@@ -46,81 +48,9 @@ export default async function Home() {
               </Link>
             </div>
 
-            {/* Right: Bohemian Moodboard (Desktop) */}
-            <div className="relative h-[500px] w-full hidden md:block">
-              {/* Main Arch Image */}
-              <div className="absolute right-8 top-0 w-64 h-80 rounded-t-full rounded-b-3xl overflow-hidden shadow-2xl z-20 hover:scale-105 transition-transform duration-500">
-                <Image 
-                  src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69fc3289f1cedf3765d321d1.webp"
-                  alt="Bohemian Interior" fill className="object-cover" priority unoptimized
-                />
-              </div>
-              
-              {/* Secondary overlapping image (Textile/Close-up) */}
-              <div className="absolute left-12 top-16 w-48 h-56 rounded-full overflow-hidden shadow-xl z-30 border-4 border-[#FDFBF7] hover:-translate-y-2 transition-transform duration-500">
-                <Image 
-                  src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/6997e0b63ccc0711c1c926dc.webp"
-                  alt="Organic Textiles" fill className="object-cover" unoptimized
-                />
-              </div>
-
-              {/* Bottom overlapping image (Bag) */}
-              <div className="absolute right-32 bottom-8 w-56 h-48 rounded-2xl overflow-hidden shadow-xl z-40 border-4 border-[#FDFBF7] hover:-translate-y-2 transition-transform duration-500">
-                <Image 
-                  src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69958c7c30895633d86899b0.webp"
-                  alt="Handmade Bag" fill className="object-cover" unoptimized
-                />
-              </div>
-
-              {/* NEW: Left overlapping small image */}
-              <div className="absolute left-0 bottom-32 w-32 h-32 rounded-lg overflow-hidden shadow-xl z-30 border-2 border-[#FDFBF7] -rotate-6 hover:rotate-0 transition-transform duration-500">
-                <Image 
-                  src="https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&q=80&w=400"
-                  alt="Craft Detail" fill className="object-cover" unoptimized
-                />
-              </div>
-
-              {/* NEW: Top right overlapping small image */}
-              <div className="absolute -right-4 top-24 w-28 h-28 rounded-full overflow-hidden shadow-xl z-30 border-2 border-[#FDFBF7] hover:scale-110 transition-transform duration-500">
-                <Image 
-                  src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=80&w=400"
-                  alt="Texture Detail" fill className="object-cover" unoptimized
-                />
-              </div>
-
-              {/* Decorative Element 1 */}
-              <div className="absolute left-20 bottom-24 z-10 opacity-20 text-[#987C6F]">
-                <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor" className="animate-[spin_20s_linear_infinite]">
-                  <path d="M12 0C12.5 5.5 18.5 11.5 24 12C18.5 12.5 12.5 18.5 12 24C11.5 18.5 5.5 12.5 0 12C5.5 11.5 11.5 5.5 12 0Z" />
-                </svg>
-              </div>
-
-              {/* Extra Decorative Shapes & Elements */}
-              <div className="absolute top-8 right-0 w-16 h-16 bg-[#F7F0E3] rounded-full z-10 animate-bounce" style={{ animationDuration: '6s' }}></div>
-              <div className="absolute bottom-12 left-4 w-24 h-24 bg-[#E4D1FF]/40 rounded-tl-[40px] rounded-br-[40px] z-10 -rotate-12"></div>
-              
-              <div className="absolute top-36 right-0 z-50 text-[#AAB084]">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" className="animate-[spin_15s_linear_infinite]">
-                  <path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10L12 2Z" />
-                </svg>
-              </div>
-
-              {/* NEW: Extra abstract shape */}
-              <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-48 h-8 bg-[#987C6F]/10 rounded-full z-10 -rotate-45 blur-[2px]"></div>
-
-              <div className="absolute top-24 left-1/2 -translate-x-1/2 z-0 opacity-10">
-                <svg width="120" height="120" viewBox="0 0 100 100" fill="none" stroke="#987C6F" strokeWidth="1" className="animate-pulse">
-                   <circle cx="50" cy="50" r="45" strokeDasharray="4 4" />
-                </svg>
-              </div>
-            </div>
-
-            {/* Right: Mobile-only view (simplified arch) */}
-            <div className="relative h-[400px] w-full rounded-t-full rounded-b-3xl overflow-hidden shadow-2xl md:hidden mt-8">
-              <Image 
-                src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69fc3289f1cedf3765d321d1.webp"
-                alt="Bohemian Interior" fill className="object-cover" priority unoptimized
-              />
+            {/* Right: Elegant Auto-Slider */}
+            <div className="w-full relative z-20">
+              <HeroSlider />
             </div>
             
           </div>
@@ -130,43 +60,12 @@ export default async function Home() {
         <section className="max-w-[1440px] mx-auto px-6 -mt-32 relative z-20 mb-24">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredProducts.map((product, index) => (
-              <div key={product.id} className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col group">
-                <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden mb-4 bg-[#FDFBF7]">
-                  {/* Badges */}
-                  <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-                    <span className="bg-[#FFD6A5] text-[#D97D27] text-[10px] font-black uppercase px-2 py-1 rounded">New</span>
-                    {index === 1 && (
-                      <span className="bg-[#E4D1FF] text-[#6A3F9C] text-[10px] font-black uppercase px-2 py-1 rounded">-15%</span>
-                    )}
-                  </div>
-                  
-                  {/* Heart Icon */}
-                  <button className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#5D4E46]/40 hover:text-[#FF5A5F] transition-all shadow-sm">
-                    <Heart size={16} strokeWidth={2.5} />
-                  </button>
-
-                  <Link href={`/shop/${product.id}`}>
-                    <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
-                  </Link>
-
-                  {/* Shopify Quick Add style */}
-                  <div className="absolute bottom-3 left-3 right-3 translate-y-[150%] group-hover:translate-y-0 transition-transform duration-300 z-20">
-                    <button className="w-full bg-white/95 backdrop-blur text-[#5D4E46] py-3 rounded-lg text-xs font-bold shadow-md hover:bg-[#5D4E46] hover:text-white transition-colors flex items-center justify-center gap-2">
-                      <ShoppingBag size={14} /> Quick Add
-                    </button>
-                  </div>
-                </div>
-                
-                {/* Product Info */}
-                <Link href={`/shop/${product.id}`} className="flex flex-col flex-1 px-1">
-                  <span className="text-[10px] text-[#5D4E46]/50 uppercase tracking-widest font-bold mb-1">Pust Atelier</span>
-                  <h3 className="font-bold text-[#5D4E46] text-sm leading-snug mb-1 group-hover:text-[#A3BCB6] transition-colors line-clamp-1">{product.name}</h3>
-                  <div className="text-sm font-medium text-[#5D4E46]">
-                    {product.price} NOK 
-                    {index === 1 && <span className="text-[#5D4E46]/40 line-through ml-2 text-xs font-normal">{(product.price * 1.15).toFixed(0)} NOK</span>}
-                  </div>
-                </Link>
-              </div>
+              <ProductCard 
+                key={product.id} 
+                product={product} 
+                isNew={true} 
+                discount={index === 1 ? '-15%' : undefined} 
+              />
             ))}
           </div>
         </section>

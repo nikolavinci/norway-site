@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Product } from '../shared/utils/products';
-import { Heart, ShoppingBag } from 'lucide-react';
+import ProductCard from './ProductCard';
 
 export default function CuratedPicks({ products }: { products: Product[] }) {
   const [activeTab, setActiveTab] = useState('Bags');
@@ -51,30 +51,7 @@ export default function CuratedPicks({ products }: { products: Product[] }) {
 
       <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-4 min-h-[300px]">
         {displayProducts.map((product) => (
-          <div key={product.id} className="bg-white p-4 rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 group flex flex-col text-left animate-fade-in-up">
-            
-            <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden mb-4 bg-[#FDFBF7]">
-              <button className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#5D4E46]/40 hover:text-[#FF5A5F] transition-all shadow-sm">
-                <Heart size={16} strokeWidth={2.5} />
-              </button>
-
-              <Link href={`/shop/${product.id}`}>
-                <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
-              </Link>
-
-              <div className="absolute bottom-3 left-3 right-3 translate-y-[150%] group-hover:translate-y-0 transition-transform duration-300 z-20">
-                <button className="w-full bg-white/95 backdrop-blur text-[#5D4E46] py-3 rounded-lg text-xs font-bold shadow-md hover:bg-[#5D4E46] hover:text-white transition-colors flex items-center justify-center gap-2">
-                  <ShoppingBag size={14} /> Quick Add
-                </button>
-              </div>
-            </div>
-
-            <Link href={`/shop/${product.id}`} className="flex flex-col flex-1 px-1">
-              <span className="text-[10px] text-[#5D4E46]/50 uppercase tracking-widest font-bold mb-1">Pust Atelier</span>
-              <h3 className="font-bold text-sm text-[#5D4E46] mb-1 group-hover:text-[#A3BCB6] transition-colors">{product.name}</h3>
-              <p className="text-sm text-[#5D4E46] font-medium">{product.price} NOK</p>
-            </Link>
-          </div>
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
     </section>
