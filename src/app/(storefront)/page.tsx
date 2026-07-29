@@ -111,38 +111,41 @@ export default async function Home() {
         <section className="max-w-[1440px] mx-auto px-6 -mt-32 relative z-20 mb-24">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredProducts.map((product, index) => (
-              <div key={product.id} className="bg-white rounded-3xl p-6 shadow-xl flex flex-col relative group hover:-translate-y-2 transition-transform duration-300">
-                {/* Badges and Heart */}
-                <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
-                  <span className="bg-[#FFD6A5] text-[#D97D27] text-[10px] font-black uppercase px-2 py-1 rounded">New</span>
-                </div>
-                {index === 1 && (
-                  <div className="absolute top-12 left-4 z-10">
-                    <span className="bg-[#E4D1FF] text-[#6A3F9C] text-[10px] font-black uppercase px-2 py-1 rounded">-15%</span>
+              <div key={product.id} className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col group">
+                <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden mb-4 bg-[#FDFBF7]">
+                  {/* Badges */}
+                  <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
+                    <span className="bg-[#FFD6A5] text-[#D97D27] text-[10px] font-black uppercase px-2 py-1 rounded">New</span>
+                    {index === 1 && (
+                      <span className="bg-[#E4D1FF] text-[#6A3F9C] text-[10px] font-black uppercase px-2 py-1 rounded">-15%</span>
+                    )}
                   </div>
-                )}
-                
-                <button className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/80 backdrop-blur flex items-center justify-center text-[#5D4E46]/40 hover:text-[#FF5A5F] hover:bg-white transition-all shadow-sm">
-                  <Heart size={16} strokeWidth={2.5} />
-                </button>
-                
-                <Link href={`/shop/${product.id}`} className="relative h-48 w-full mb-6 mt-4">
-                  <Image src={product.image} alt={product.name} fill className="object-contain drop-shadow-lg group-hover:scale-105 transition-transform duration-500" unoptimized />
-                </Link>
-                
-                <div className="text-center mt-auto">
-                  <Link href={`/shop/${product.id}`}>
-                    <h3 className="font-bold text-[#5D4E46] text-lg leading-tight mb-1 group-hover:text-[#A3BCB6] transition-colors line-clamp-1">{product.name}</h3>
-                  </Link>
-                  <div className="text-sm font-medium text-[#5D4E46]/80">
-                    {product.price} NOK 
-                    {index === 1 && <span className="text-gray-400 line-through ml-2 text-xs">{(product.price * 1.15).toFixed(0)} NOK</span>}
-                  </div>
-                </div>
+                  
+                  {/* Heart Icon */}
+                  <button className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#5D4E46]/40 hover:text-[#FF5A5F] transition-all shadow-sm">
+                    <Heart size={16} strokeWidth={2.5} />
+                  </button>
 
-                {/* ShoppingBag Button */}
-                <Link href={`/shop/${product.id}`} className="absolute bottom-4 right-4 w-10 h-10 rounded-full bg-[#EAE5FE] text-[#7A5FCF] flex items-center justify-center hover:bg-[#D4CBFD] hover:scale-110 transition-all shadow-sm z-20">
-                  <ShoppingBag size={18} strokeWidth={2.5} />
+                  <Link href={`/shop/${product.id}`}>
+                    <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
+                  </Link>
+
+                  {/* Shopify Quick Add style */}
+                  <div className="absolute bottom-3 left-3 right-3 translate-y-[150%] group-hover:translate-y-0 transition-transform duration-300 z-20">
+                    <button className="w-full bg-white/95 backdrop-blur text-[#5D4E46] py-3 rounded-lg text-xs font-bold shadow-md hover:bg-[#5D4E46] hover:text-white transition-colors flex items-center justify-center gap-2">
+                      <ShoppingBag size={14} /> Quick Add
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Product Info */}
+                <Link href={`/shop/${product.id}`} className="flex flex-col flex-1 px-1">
+                  <span className="text-[10px] text-[#5D4E46]/50 uppercase tracking-widest font-bold mb-1">Pust Atelier</span>
+                  <h3 className="font-bold text-[#5D4E46] text-sm leading-snug mb-1 group-hover:text-[#A3BCB6] transition-colors line-clamp-1">{product.name}</h3>
+                  <div className="text-sm font-medium text-[#5D4E46]">
+                    {product.price} NOK 
+                    {index === 1 && <span className="text-[#5D4E46]/40 line-through ml-2 text-xs font-normal">{(product.price * 1.15).toFixed(0)} NOK</span>}
+                  </div>
                 </Link>
               </div>
             ))}
