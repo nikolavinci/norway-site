@@ -1,8 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, ShoppingBag } from 'lucide-react';
+import { Heart, ShoppingBag, Check } from 'lucide-react';
 import { Product } from '../shared/utils/products';
 import { useCartStore } from '../shared/utils/store';
 
@@ -14,13 +15,20 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, isNew, discount }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
-  const toggleCart = useCartStore((state) => state.toggleCart);
+  const [isAdded, setIsAdded] = useState(false);
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    if (isAdded) return;
+    
     addItem(product);
-    toggleCart();
+    setIsAdded(true);
+    
+    setTimeout(() => {
+      setIsAdded(false);
+    }, 2000);
   };
 
   return (
@@ -47,9 +55,22 @@ export default function ProductCard({ product, isNew, discount }: ProductCardPro
         <div className="absolute bottom-3 left-3 right-3 translate-y-0 lg:translate-y-[150%] lg:group-hover:translate-y-0 transition-transform duration-300 z-20">
           <button 
             onClick={handleQuickAdd}
-            className="w-full bg-white/95 backdrop-blur text-[#5D4E46] py-3 rounded-lg text-xs font-bold shadow-md hover:bg-[#5D4E46] hover:text-white transition-colors flex items-center justify-center gap-2"
+            className={`w-full py-3 rounded-lg text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2
+              ${isAdded 
+                ? 'bg-green-600 text-white' 
+                : 'bg-white/95 backdrop-blur text-[#5D4E46] hover:bg-[#5D4E46] hover:text-white'
+              }
+            `}
           >
-            <ShoppingBag size={14} /> Quick Add
+            {isAdded ? (
+              <>
+                <Check size={14} className="animate-bounce" /> Added!
+              </>
+            ) : (
+              <>
+                <ShoppingBag size={14} /> Quick Add
+              </>
+            )}
           </button>
         </div>
       </div>
