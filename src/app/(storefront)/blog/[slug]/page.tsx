@@ -38,13 +38,43 @@ export async function generateStaticParams() {
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
-  const post = await getBlogById(resolvedParams.slug);
+  
+  // Dummy Blog Fallbacks
+  const dummyBlogs: Record<string, any> = {
+    'dummy-1': {
+      id: 'dummy-1',
+      title: 'The Art of Bohemian Living',
+      img: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=80&w=800',
+      created_at: new Date().toISOString(),
+      content: 'Embrace the imperfect, the handcrafted, and the soulful. Bohemian interior design isn’t just an aesthetic; it is a philosophy of slow living. Incorporating natural textures like jute, rattan, and raw cotton creates a space that breathes. When you surround yourself with items that have a story—like our handcrafted Moroccan Kilim bags or organic cotton textiles—you invite warmth and authenticity into your daily routines.'
+    },
+    'dummy-2': {
+      id: 'dummy-2',
+      title: 'Ethical Sourcing: Behind the Seams',
+      img: 'https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&q=80&w=800',
+      created_at: new Date().toISOString(),
+      content: 'We believe that true beauty cannot exist without fairness. Every thread, every stitch in our collections is a testament to sustainable craftsmanship. We work directly with artisans who utilize generational techniques to weave textiles that respect both the earth and the hands that make them. By choosing ethically sourced home goods, you aren’t just decorating a room; you are preserving a culture.'
+    },
+    'dummy-3': {
+      id: 'dummy-3',
+      title: '5 Ways to Elevate Your Space with Textiles',
+      img: 'https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69fc3289f1cedf3765d321d1.webp',
+      created_at: new Date().toISOString(),
+      content: 'Textiles are the unsung heroes of interior design. They soften harsh architectural lines and act as the acoustic dampeners of a busy home. Start by layering mismatched cushions on a neutral sofa to add immediate visual interest. Don’t be afraid to mix patterns! A damask jacquard pairs beautifully with a simple linen throw. Finally, consider draping a heavy cotton quilt over an accent chair to invite instant coziness.'
+    }
+  };
+
+  const post = dummyBlogs[resolvedParams.slug] || await getBlogById(resolvedParams.slug);
   
   if (!post) {
     return notFound();
   }
 
-  const allPosts = await getBlogs();
+  let allPosts = await getBlogs();
+  if (allPosts.length === 0) {
+    allPosts = Object.values(dummyBlogs);
+  }
+  
   const relatedPosts = allPosts.filter(p => p.id !== post.id).slice(0, 2);
 
   return (

@@ -256,7 +256,26 @@ export default async function Home() {
                 <a href="#" className="text-xs font-bold text-[#5D4E46]/60 hover:text-[#7A75A5] uppercase tracking-widest">View All</a>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {latestBlogs.map((blog, i) => (
+                {(latestBlogs.length > 0 ? latestBlogs : [
+                  {
+                    id: 'dummy-1',
+                    title: 'The Art of Bohemian Living',
+                    img: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=80&w=800',
+                    created_at: new Date().toISOString()
+                  },
+                  {
+                    id: 'dummy-2',
+                    title: 'Ethical Sourcing: Behind the Seams',
+                    img: 'https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&q=80&w=800',
+                    created_at: new Date().toISOString()
+                  },
+                  {
+                    id: 'dummy-3',
+                    title: '5 Ways to Elevate Your Space with Textiles',
+                    img: 'https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69fc3289f1cedf3765d321d1.webp',
+                    created_at: new Date().toISOString()
+                  }
+                ]).map((blog, i) => (
                   <Link href={`/blog/${blog.id}`} key={blog.id} className="group cursor-pointer block">
                     <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4 bg-gray-100">
                       <Image src={blog.img || '/placeholder.png'} alt={blog.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
