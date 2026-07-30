@@ -1,20 +1,12 @@
 import type { NextConfig } from "next";
 import bundleAnalyzer from '@next/bundle-analyzer';
 
-const isGithubActions = process.env.GITHUB_ACTIONS || false;
-let basePath = '';
-
-if (isGithubActions) {
-  basePath = '/norway-site';
-}
-
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 });
 
 const nextConfig: NextConfig = {
   output: 'export',
-  basePath: basePath,
   trailingSlash: true,
   images: {
     unoptimized: true,
