@@ -6,15 +6,15 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const slides = [
   {
-    image: "https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69fc3289f1cedf3765d321d1.webp",
+    image: "/images/boho_hero_banner.png",
     alt: "Bohemian Interior"
   },
   {
-    image: "https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/6997e0b63ccc0711c1c926dc.webp",
+    image: "/images/boho_hero_banner.png",
     alt: "Organic Textiles"
   },
   {
-    image: "https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69958c7c30895633d86899b0.webp",
+    image: "/images/boho_hero_banner.png",
     alt: "Handmade Bag"
   }
 ];

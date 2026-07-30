@@ -93,7 +93,7 @@ export default async function Home() {
         <section className="bg-white py-20 px-6">
           <div className="max-w-[1440px] mx-auto flex flex-col lg:flex-row items-center gap-16 mb-16">
             <div className="flex-1 relative aspect-[4/3] w-full rounded-2xl overflow-hidden shadow-lg">
-              <Image src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69fc3289f1cedf3765d321d1.webp" alt="Playful Space" fill className="object-cover" />
+              <Image src="/images/boho_hero_banner.png" alt="Playful Space" fill className="object-cover" />
             </div>
             <div className="flex-1 space-y-6">
               <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#7A75A5]">New Arrival</span>
@@ -110,9 +110,9 @@ export default async function Home() {
           {/* Colored Category Blocks */}
           <div className="max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-4">
             {[
-              { bg: 'bg-[#7A75A5]', title: 'Handwoven Details', sub: 'Artisan Bags', img: 'https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/6997e0b63ccc0711c1c926dc.webp' },
-              { bg: 'bg-[#F7F0E3]', title: 'Warm Textures', sub: 'Bohemian Living', img: 'https://cdn2.blanxer.com/uploads/69917932e3880672e54e49e5/product_image-img_0979-5376.webp', text: 'text-[#5D4E46]' },
-              { bg: 'bg-[#AAB084]', title: 'Sustainable Materials', sub: 'Ethical Craftsmanship', img: 'https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69958c7c30895633d86899b0.webp' },
+              { bg: 'bg-[#7A75A5]', title: 'Handwoven Details', sub: 'Artisan Bags', img: '/images/boho_hero_banner.png' },
+              { bg: 'bg-[#F7F0E3]', title: 'Warm Textures', sub: 'Bohemian Living', img: '/images/boho_hero_banner.png', text: 'text-[#5D4E46]' },
+              { bg: 'bg-[#AAB084]', title: 'Sustainable Materials', sub: 'Ethical Craftsmanship', img: '/images/boho_hero_banner.png' },
               { bg: 'bg-[#987C6F]', title: 'Everyday Elegance', sub: 'Versatile Totes', img: allProducts.find(p => p.category.toLowerCase().includes('bag'))?.image || allProducts[0]?.image || '/placeholder.png' }
             ].map((cat, i) => (
               <div key={i} className={`${cat.bg} p-8 flex flex-col items-center justify-center text-center aspect-square text-white ${cat.text || ''}`}>
@@ -138,7 +138,7 @@ export default async function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Row 1 */}
             <div className="md:col-span-1 relative aspect-square md:aspect-[3/4] rounded-xl overflow-hidden group">
-              <Image src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/6997e0b63ccc0711c1c926dc.webp" alt="Furniture" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+              <Image src="/images/boho_hero_banner.png" alt="Furniture" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-black/20 flex flex-col justify-end p-6">
                 <span className="text-[10px] text-white/80 uppercase font-bold tracking-widest mb-1">Earthy Tones</span>
                 <h3 className="text-2xl font-black text-white">Bohemian Decor</h3>
@@ -153,7 +153,7 @@ export default async function Home() {
                 </div>
               </div>
               <div className="flex-1 relative rounded-xl overflow-hidden group">
-                <Image src="https://cdn2.blanxer.com/uploads/69917932e3880672e54e49e5/product_image-img_4361-8664.webp" alt="Playtime" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                <Image src="/images/boho_hero_banner.png" alt="Playtime" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-black/20 flex flex-col justify-center items-center p-6 text-center">
                   <h3 className="text-2xl font-black text-white">Living Essentials</h3>
                 </div>
@@ -162,7 +162,7 @@ export default async function Home() {
             
             {/* Row 2 */}
             <div className="relative aspect-[16/9] rounded-xl overflow-hidden group">
-              <Image src="https://cdn2.blanxer.com/uploads/69917932e3880672e54e49e5/product_image-img_1325-9484.webp" alt="Wardrobe" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+              <Image src="/images/boho_hero_banner.png" alt="Wardrobe" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-black/30 flex flex-col justify-end p-6">
                 <h3 className="text-2xl font-black text-white">Textile Artistry</h3>
               </div>
@@ -272,7 +272,7 @@ export default async function Home() {
                   {
                     id: 'dummy-3',
                     title: '5 Ways to Elevate Your Space with Textiles',
-                    img: 'https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69fc3289f1cedf3765d321d1.webp',
+                    img: '/images/boho_hero_banner.png',
                     created_at: new Date().toISOString()
                   }
                 ]).map((blog, i) => (
@@ -292,7 +292,7 @@ export default async function Home() {
               <h2 className="text-3xl font-black text-[#5D4E46] mb-8">Exclusive Deals Await</h2>
               <div className="flex flex-col lg:flex-row gap-6">
                 <Link href="/shop" className="flex-1 relative rounded-2xl overflow-hidden min-h-[400px] group cursor-pointer block">
-                  <Image src="https://cdn2.blanxer.com/uploads/69917932e3880672e54e49e5/product_image-img_0979-5376.webp" alt="Save Big" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <Image src="/images/boho_hero_banner.png" alt="Save Big" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-10 text-white">
                     <span className="text-xs font-bold uppercase tracking-widest text-[#AAB084] mb-2">Sale Event</span>
                     <h3 className="text-5xl font-black mb-4 group-hover:text-[#AAB084] transition-colors">Save Big</h3>

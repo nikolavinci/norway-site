@@ -22,7 +22,7 @@ export default async function Collections() {
       title: 'Accessories',
       slug: 'accessories',
       description: 'The little things that make a big difference.',
-      image: products.find(p => p.category.toLowerCase().includes('accessory'))?.image || 'https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/6997e0b63ccc0711c1c926dc.webp',
+      image: products.find(p => p.category.toLowerCase().includes('accessory'))?.image || '/images/boho_hero_banner.png',
     }
   ];
 

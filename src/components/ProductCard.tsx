@@ -32,8 +32,8 @@ export default function ProductCard({ product, isNew, discount }: ProductCardPro
   };
 
   return (
-    <div className="bg-white p-4 rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 group flex flex-col text-left animate-fade-in-up">
-      <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden mb-4 bg-[#FDFBF7]">
+    <div className="group flex flex-col text-left animate-fade-in-up">
+      <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden mb-4 bg-[#FDFBF7] shadow-sm group-hover:shadow-md transition-shadow duration-300">
         {/* Badges */}
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
           {isNew && (
@@ -75,7 +75,7 @@ export default function ProductCard({ product, isNew, discount }: ProductCardPro
         </div>
       </div>
 
-      <Link href={`/shop/${product.id}`} className="flex flex-col flex-1 px-1">
+      <Link href={`/shop/${product.id}`} className="flex flex-col flex-1 pt-1">
         <span className="text-[10px] text-[#5D4E46]/50 uppercase tracking-widest font-bold mb-1">Pust Atelier</span>
         <h3 className="font-bold text-sm text-[#5D4E46] mb-1 group-hover:text-[#A3BCB6] transition-colors line-clamp-1">{product.name}</h3>
         <p className="text-sm text-[#5D4E46] font-medium">

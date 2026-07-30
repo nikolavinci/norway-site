@@ -58,7 +58,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     'dummy-3': {
       id: 'dummy-3',
       title: '5 Ways to Elevate Your Space with Textiles',
-      img: 'https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69fc3289f1cedf3765d321d1.webp',
+      img: '/images/boho_hero_banner.png',
       created_at: new Date().toISOString(),
       content: 'Textiles are the unsung heroes of interior design. They soften harsh architectural lines and act as the acoustic dampeners of a busy home. Start by layering mismatched cushions on a neutral sofa to add immediate visual interest. Don’t be afraid to mix patterns! A damask jacquard pairs beautifully with a simple linen throw. Finally, consider draping a heavy cotton quilt over an accent chair to invite instant coziness.'
     }

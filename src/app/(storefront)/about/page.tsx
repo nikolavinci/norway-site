@@ -58,12 +58,12 @@ export default function About() {
             {
               title: "Master Craftsmanship",
               desc: "Our partners are generational artisans who pour decades of knowledge into every stitch, weave, and carve.",
-              img: "https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/6997e0b63ccc0711c1c926dc.webp"
+              img: "/images/boho_hero_banner.png"
             },
             {
               title: "Timeless Design",
               desc: "Trends fade, but true style endures. We design with a bohemian soul and a minimalist eye for pieces that last.",
-              img: "https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69fc3289f1cedf3765d321d1.webp"
+              img: "/images/boho_hero_banner.png"
             }
           ].map((value, idx) => (
             <div key={idx} className="group">

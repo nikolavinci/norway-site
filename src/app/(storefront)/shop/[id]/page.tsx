@@ -311,11 +311,11 @@ export default function ProductDetailPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 h-[400px] rounded-xl overflow-hidden shadow-sm">
              <div className="relative h-full bg-[#E4D1FF]">
-               <Image src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69958c7c30895633d86899b0.webp" alt="Lifestyle Bags" fill className="object-cover" />
+               <Image src="/images/boho_hero_banner.png" alt="Lifestyle Bags" fill className="object-cover" />
                <span className="absolute bottom-4 left-4 bg-[#7A75A5] text-white text-[10px] font-bold uppercase px-3 py-1 rounded">Bags</span>
              </div>
              <div className="relative h-full bg-[#F7F0E3]">
-               <Image src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/6997e0b63ccc0711c1c926dc.webp" alt="Lifestyle Textiles" fill className="object-cover" />
+               <Image src="/images/boho_hero_banner.png" alt="Lifestyle Textiles" fill className="object-cover" />
                <span className="absolute bottom-4 right-4 bg-[#7A75A5] text-white text-[10px] font-bold uppercase px-3 py-1 rounded">Textiles</span>
              </div>
           </div>
