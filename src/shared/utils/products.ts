@@ -19,11 +19,9 @@ export async function getProducts(): Promise<Product[]> {
     return [];
   }
   
-  const basePath = process.env.NODE_ENV === 'production' ? '/norway-site' : '';
-  
   return data.map((p: any) => ({
     ...p,
-    image: p.image.startsWith('/') ? `${basePath}${p.image}` : p.image
+    image: p.image
   })) as Product[];
 }
 
@@ -34,12 +32,11 @@ export async function getProductById(id: string): Promise<Product | null> {
     return null;
   }
   
-  const basePath = process.env.NODE_ENV === 'production' ? '/norway-site' : '';
   const p = data as any;
-  
+
   return {
     ...p,
-    image: p.image.startsWith('/') ? `${basePath}${p.image}` : p.image
+    image: p.image
   } as Product;
 }
 
