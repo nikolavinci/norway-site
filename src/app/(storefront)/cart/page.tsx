@@ -40,7 +40,7 @@ export default function CartPage() {
                   <div key={item.id} className="py-6 grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
                     <div className="col-span-1 md:col-span-6 flex gap-6 items-center">
                       <Link href={`/shop/${item.id}`} className="relative w-24 h-32 bg-[#F9F6F0] rounded-xl overflow-hidden flex-shrink-0 shadow-sm group">
-                        <Image src={item.image} alt={item.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
+                        <Image src={item.image} alt={item.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                       </Link>
                       <div>
                         <Link href={`/shop/${item.id}`} className="font-bold text-lg hover:text-[#AAB084] transition-colors block mb-1">{item.name}</Link>

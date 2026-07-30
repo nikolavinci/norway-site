@@ -76,7 +76,7 @@ export default function CartDrawer() {
               items.map((item) => (
                 <div key={item.id} className="flex gap-4 group">
                   <div className="relative w-24 h-24 bg-[#F9F6F0] rounded-lg overflow-hidden flex-shrink-0">
-                    <Image src={item.image} alt={item.name} fill className="object-cover" unoptimized />
+                    <Image src={item.image} alt={item.name} fill className="object-cover" />
                   </div>
                   <div className="flex-1 flex flex-col justify-between py-1">
                     <div className="flex justify-between items-start">
@@ -122,7 +122,7 @@ export default function CartDrawer() {
                 {upsellItems.map(p => (
                   <div key={p.id} className="relative min-w-[120px] max-w-[120px] snap-start flex flex-col group">
                     <div className="relative aspect-square rounded-lg overflow-hidden mb-2 bg-white">
-                      <Image src={p.image} alt={p.name} fill className="object-cover" unoptimized />
+                      <Image src={p.image} alt={p.name} fill className="object-cover" />
                       <span className="absolute top-1 right-1 bg-[#7A75A5] text-white text-[8px] font-black uppercase px-1.5 py-0.5 rounded">-15%</span>
                       {/* Hover action buttons */}
                       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center bg-white rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity">

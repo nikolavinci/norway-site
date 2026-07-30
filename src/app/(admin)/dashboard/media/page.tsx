@@ -91,7 +91,7 @@ export default function MediaLibraryPage() {
             {files.map((file) => (
               <div key={file.id} className="group relative rounded-xl border border-[#5D4E46]/10 overflow-hidden bg-[#FDFBF7] aspect-square flex flex-col hover:shadow-md transition-all">
                 <div className="relative flex-1 bg-gray-100">
-                  <Image src={file.url} alt={file.name} fill className="object-cover" unoptimized />
+                  <Image src={file.url} alt={file.name} fill className="object-cover" />
                 </div>
                 <div className="p-2 text-xs truncate border-t border-[#5D4E46]/10 bg-white font-medium text-[#5D4E46]/80">
                   {file.name}

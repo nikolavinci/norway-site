@@ -27,9 +27,7 @@ export default function About() {
               src="https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&q=80&w=800" 
               alt="Artisan crafting textiles"
               fill
-              className="object-cover"
-              unoptimized
-            />
+              className="object-cover" />
           </div>
         </div>
       </section>
@@ -74,9 +72,7 @@ export default function About() {
                   src={value.img} 
                   alt={value.title} 
                   fill 
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
-                  unoptimized
-                />
+                  className="object-cover group-hover:scale-105 transition-transform duration-700" />
               </div>
               <h3 className="text-2xl font-black mb-3">{value.title}</h3>
               <p className="text-[#5D4E46]/70 leading-relaxed">{value.desc}</p>

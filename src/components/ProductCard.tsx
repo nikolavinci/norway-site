@@ -41,10 +41,10 @@ export default function ProductCard({ product, isNew, discount }: ProductCardPro
         </button>
 
         <Link href={`/shop/${product.id}`}>
-          <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
+          <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
         </Link>
 
-        <div className="absolute bottom-3 left-3 right-3 translate-y-[150%] group-hover:translate-y-0 transition-transform duration-300 z-20">
+        <div className="absolute bottom-3 left-3 right-3 translate-y-0 lg:translate-y-[150%] lg:group-hover:translate-y-0 transition-transform duration-300 z-20">
           <button 
             onClick={handleQuickAdd}
             className="w-full bg-white/95 backdrop-blur text-[#5D4E46] py-3 rounded-lg text-xs font-bold shadow-md hover:bg-[#5D4E46] hover:text-white transition-colors flex items-center justify-center gap-2"

@@ -36,8 +36,9 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = await getBlogById(params.slug);
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params;
+  const post = await getBlogById(resolvedParams.slug);
   
   if (!post) {
     return notFound();
@@ -70,7 +71,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
         {/* Featured Image */}
         <div className="relative w-full aspect-[21/9] rounded-2xl overflow-hidden mb-16 shadow-lg">
-          <Image src={post.img || '/placeholder.png'} alt={post.title} fill className="object-cover" unoptimized priority />
+          <Image src={post.img || '/placeholder.png'} alt={post.title} fill className="object-cover" priority />
         </div>
 
         {/* Content & Sharing Layout */}
@@ -127,7 +128,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             {relatedPosts.map((related) => (
               <Link href={`/blog/${related.id}`} key={related.id} className="group cursor-pointer block">
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-6 shadow-sm">
-                  <Image src={related.img || '/placeholder.png'} alt={related.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
+                  <Image src={related.img || '/placeholder.png'} alt={related.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
                 <p className="text-[10px] font-bold text-[#987C6F] uppercase tracking-widest mb-3">{new Date(related.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
                 <h3 className="font-bold text-2xl leading-snug group-hover:text-[#7A75A5] transition-colors">{related.title}</h3>

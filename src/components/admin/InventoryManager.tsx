@@ -130,7 +130,7 @@ export default function InventoryManager() {
               <tr key={product.id} className="hover:bg-[#FDFBF7]/50 transition-colors">
                 <td className="px-6 py-4 flex items-center gap-4">
                   <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100">
-                    <Image src={product.image || '/placeholder.png'} alt={product.name} fill className="object-cover" unoptimized />
+                    <Image src={product.image || '/placeholder.png'} alt={product.name} fill className="object-cover" />
                   </div>
                   <span className="font-bold">{product.name}</span>
                 </td>

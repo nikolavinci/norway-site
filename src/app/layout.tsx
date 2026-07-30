@@ -30,6 +30,8 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
+        <link rel="preconnect" href="https://images.unsplash.com" />
+        <link rel="preconnect" href="https://cdn2.blanxer.com" />
         <Analytics />
       </head>
       <body className="min-h-full flex flex-col bg-[#FDFCF8]">

@@ -157,7 +157,7 @@ export default function Header() {
                     className="group"
                   >
                     <div className="relative aspect-[4/5] bg-white/5 rounded-xl overflow-hidden mb-4 border border-white/10 group-hover:border-white/30 transition-colors">
-                      <Image src={product.image} alt={product.name} fill className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" unoptimized />
+                      <Image src={product.image} alt={product.name} fill className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
                     </div>
                     <h4 className="text-white font-bold text-sm line-clamp-1 group-hover:text-[#AAB084] transition-colors">{product.name}</h4>
                     <p className="text-white/60 text-xs font-medium">{product.price} NOK</p>

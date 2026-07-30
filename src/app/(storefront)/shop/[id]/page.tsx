@@ -86,12 +86,12 @@ export default function ProductDetailPage() {
           <div className="hidden md:flex flex-col gap-4 w-20 flex-shrink-0">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="relative aspect-square bg-white rounded-xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-[#987C6F] transition-colors shadow-sm">
-                <Image src={product.image} alt={`${product.name} view ${i}`} fill className="object-cover" unoptimized />
+                <Image src={product.image} alt={`${product.name} view ${i}`} fill className="object-cover" />
               </div>
             ))}
           </div>
           <div className="relative flex-1 bg-[#FDFBF7] rounded-xl overflow-hidden shadow-sm aspect-square">
-            <Image src={product.image} alt={product.name} fill className="object-cover" unoptimized priority />
+            <Image src={product.image} alt={product.name} fill className="object-cover" priority />
             <button 
               onClick={() => setIsFavorite(!isFavorite)}
               className="absolute top-4 right-4 z-10 w-12 h-12 flex items-center justify-center bg-white/80 backdrop-blur rounded-full text-[#5D4E46] hover:text-[#FF5A5F] hover:bg-white transition-all shadow-md"
@@ -136,7 +136,7 @@ export default function ProductDetailPage() {
               </div>
               <div className="bg-[#F7F0E3] p-4 rounded-xl flex gap-4 items-center">
                 <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0 bg-white shadow-sm">
-                  <Image src={relatedProducts.length > 0 ? relatedProducts[0].image : '/placeholder.png'} alt="Related" fill className="object-cover" unoptimized />
+                  <Image src={relatedProducts.length > 0 ? relatedProducts[0].image : '/placeholder.png'} alt="Related" fill className="object-cover" />
                 </div>
                 <div>
                   <h4 className="font-bold text-xs text-[#5D4E46]">Baby Essentials Set</h4>
@@ -311,11 +311,11 @@ export default function ProductDetailPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 h-[400px] rounded-xl overflow-hidden shadow-sm">
              <div className="relative h-full bg-[#E4D1FF]">
-               <Image src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69958c7c30895633d86899b0.webp" alt="Lifestyle Bags" fill className="object-cover" unoptimized />
+               <Image src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69958c7c30895633d86899b0.webp" alt="Lifestyle Bags" fill className="object-cover" />
                <span className="absolute bottom-4 left-4 bg-[#7A75A5] text-white text-[10px] font-bold uppercase px-3 py-1 rounded">Bags</span>
              </div>
              <div className="relative h-full bg-[#F7F0E3]">
-               <Image src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/6997e0b63ccc0711c1c926dc.webp" alt="Lifestyle Textiles" fill className="object-cover" unoptimized />
+               <Image src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/6997e0b63ccc0711c1c926dc.webp" alt="Lifestyle Textiles" fill className="object-cover" />
                <span className="absolute bottom-4 right-4 bg-[#7A75A5] text-white text-[10px] font-bold uppercase px-3 py-1 rounded">Textiles</span>
              </div>
           </div>
@@ -336,7 +336,7 @@ export default function ProductDetailPage() {
             {relatedProducts.map(p => (
               <Link href={`/shop/${p.id}`} key={p.id} className="group">
                 <div className="relative aspect-square bg-white rounded-xl overflow-hidden mb-4 shadow-sm">
-                  <Image src={p.image} alt={p.name} fill className="object-contain p-4 group-hover:scale-105 transition-transform" unoptimized />
+                  <Image src={p.image} alt={p.name} fill className="object-contain p-4 group-hover:scale-105 transition-transform" />
                   <span className="absolute top-3 right-3 bg-[#7A75A5] text-white text-[10px] font-black uppercase px-2 py-1 rounded">-15%</span>
                 </div>
                 <div className="text-center">
@@ -385,7 +385,7 @@ export default function ProductDetailPage() {
           <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-4">
             <div className="flex items-center gap-2 sm:gap-4 flex-1">
               <div className="hidden sm:block w-12 h-12 relative bg-[#FDFBF7] rounded-md overflow-hidden shrink-0">
-                <Image src={product.image} alt={product.name} fill className="object-cover" unoptimized />
+                <Image src={product.image} alt={product.name} fill className="object-cover" />
               </div>
               <div className="block flex-1 min-w-0">
                 <h4 className="font-bold text-[10px] sm:text-sm text-[#5D4E46] truncate">{product.name}</h4>

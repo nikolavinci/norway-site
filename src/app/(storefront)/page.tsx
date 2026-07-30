@@ -93,7 +93,7 @@ export default async function Home() {
         <section className="bg-white py-20 px-6">
           <div className="max-w-[1440px] mx-auto flex flex-col lg:flex-row items-center gap-16 mb-16">
             <div className="flex-1 relative aspect-[4/3] w-full rounded-2xl overflow-hidden shadow-lg">
-              <Image src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69fc3289f1cedf3765d321d1.webp" alt="Playful Space" fill className="object-cover" unoptimized />
+              <Image src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/69fc3289f1cedf3765d321d1.webp" alt="Playful Space" fill className="object-cover" />
             </div>
             <div className="flex-1 space-y-6">
               <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#7A75A5]">New Arrival</span>
@@ -117,7 +117,7 @@ export default async function Home() {
             ].map((cat, i) => (
               <div key={i} className={`${cat.bg} p-8 flex flex-col items-center justify-center text-center aspect-square text-white ${cat.text || ''}`}>
                 <div className="relative w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-white/20 shadow-md">
-                  <Image src={cat.img} alt={cat.title} fill className="object-cover" unoptimized />
+                  <Image src={cat.img} alt={cat.title} fill className="object-cover" />
                 </div>
                 <p className="text-[10px] uppercase tracking-wider mb-1 opacity-80 font-bold">{cat.sub}</p>
                 <h3 className="font-black text-lg">{cat.title}</h3>
@@ -138,7 +138,7 @@ export default async function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Row 1 */}
             <div className="md:col-span-1 relative aspect-square md:aspect-[3/4] rounded-xl overflow-hidden group">
-              <Image src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/6997e0b63ccc0711c1c926dc.webp" alt="Furniture" fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
+              <Image src="https://cdn2.blanxer.com/69917932e3880672e54e49e5/hero_image/6997e0b63ccc0711c1c926dc.webp" alt="Furniture" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-black/20 flex flex-col justify-end p-6">
                 <span className="text-[10px] text-white/80 uppercase font-bold tracking-widest mb-1">Earthy Tones</span>
                 <h3 className="text-2xl font-black text-white">Bohemian Decor</h3>
@@ -146,14 +146,14 @@ export default async function Home() {
             </div>
             <div className="md:col-span-2 flex flex-col gap-4">
               <div className="flex-1 relative rounded-xl overflow-hidden group">
-                <Image src={allProducts.length > 1 ? allProducts[1].image : '/placeholder.png'} alt="Accessories" fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
+                <Image src={allProducts.length > 1 ? allProducts[1].image : '/placeholder.png'} alt="Accessories" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-black/30 flex flex-col justify-center items-center p-6 text-center">
                   <span className="text-[10px] text-white/80 uppercase font-bold tracking-widest mb-1">Artisan Quality</span>
                   <h3 className="text-2xl font-black text-white">Handcrafted Bags</h3>
                 </div>
               </div>
               <div className="flex-1 relative rounded-xl overflow-hidden group">
-                <Image src="https://cdn2.blanxer.com/uploads/69917932e3880672e54e49e5/product_image-img_4361-8664.webp" alt="Playtime" fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
+                <Image src="https://cdn2.blanxer.com/uploads/69917932e3880672e54e49e5/product_image-img_4361-8664.webp" alt="Playtime" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-black/20 flex flex-col justify-center items-center p-6 text-center">
                   <h3 className="text-2xl font-black text-white">Living Essentials</h3>
                 </div>
@@ -162,19 +162,19 @@ export default async function Home() {
             
             {/* Row 2 */}
             <div className="relative aspect-[16/9] rounded-xl overflow-hidden group">
-              <Image src="https://cdn2.blanxer.com/uploads/69917932e3880672e54e49e5/product_image-img_1325-9484.webp" alt="Wardrobe" fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
+              <Image src="https://cdn2.blanxer.com/uploads/69917932e3880672e54e49e5/product_image-img_1325-9484.webp" alt="Wardrobe" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-black/30 flex flex-col justify-end p-6">
                 <h3 className="text-2xl font-black text-white">Textile Artistry</h3>
               </div>
             </div>
             <div className="relative aspect-[16/9] rounded-xl overflow-hidden group">
-              <Image src={allProducts.length > 3 ? allProducts[3].image : '/placeholder.png'} alt="Storage" fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
+              <Image src={allProducts.length > 3 ? allProducts[3].image : '/placeholder.png'} alt="Storage" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-black/30 flex flex-col justify-end p-6">
                 <h3 className="text-2xl font-black text-white">Sustainable Living</h3>
               </div>
             </div>
             <div className="relative aspect-[16/9] rounded-xl overflow-hidden group">
-              <Image src={allProducts.length > 4 ? allProducts[4].image : '/placeholder.png'} alt="Plushies" fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
+              <Image src={allProducts.length > 4 ? allProducts[4].image : '/placeholder.png'} alt="Plushies" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-black/40 flex flex-col justify-end p-6">
                 <h3 className="text-2xl font-black text-white">Unique Accessories</h3>
               </div>
@@ -194,7 +194,7 @@ export default async function Home() {
               ].map((review, i) => (
                 <div key={i} className="bg-[#FDFBF7] p-8 rounded-xl text-center flex flex-col items-center shadow-sm relative pt-12 mt-6">
                   <div className="absolute -top-6 w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-md">
-                    <Image src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i + 15}.jpg`} alt="Avatar" fill className="object-cover" unoptimized />
+                    <Image src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i + 15}.jpg`} alt="Avatar" fill className="object-cover" />
                   </div>
                   <div className="flex gap-1 text-[#7A75A5] mb-4">
                     <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
@@ -219,7 +219,7 @@ export default async function Home() {
                 if (!product) return null;
                 return (
                   <Link href={`/shop/${product.id}`} key={i} className="relative w-64 h-64 flex-shrink-0 rounded-xl overflow-hidden group/item">
-                    <Image src={product.image || '/placeholder.png'} alt={product.name} fill className="object-cover group-hover/item:scale-110 transition-transform duration-700" unoptimized />
+                    <Image src={product.image || '/placeholder.png'} alt={product.name} fill className="object-cover group-hover/item:scale-110 transition-transform duration-700" />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4 text-center">
                       <span className="text-white font-bold text-lg">{product.name}</span>
                     </div>
@@ -234,7 +234,7 @@ export default async function Home() {
                 if (!product) return null;
                 return (
                   <Link href={`/shop/${product.id}`} key={i} className="relative w-64 h-64 flex-shrink-0 rounded-xl overflow-hidden group/item">
-                    <Image src={product.image || '/placeholder.png'} alt={product.name} fill className="object-cover group-hover/item:scale-110 transition-transform duration-700" unoptimized />
+                    <Image src={product.image || '/placeholder.png'} alt={product.name} fill className="object-cover group-hover/item:scale-110 transition-transform duration-700" />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4 text-center">
                       <span className="text-white font-bold text-lg">{product.name}</span>
                     </div>
@@ -259,7 +259,7 @@ export default async function Home() {
                 {latestBlogs.map((blog, i) => (
                   <Link href={`/blog/${blog.id}`} key={blog.id} className="group cursor-pointer block">
                     <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4 bg-gray-100">
-                      <Image src={blog.img || '/placeholder.png'} alt={blog.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
+                      <Image src={blog.img || '/placeholder.png'} alt={blog.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     </div>
                     <p className="text-[10px] font-bold text-[#987C6F] uppercase tracking-widest mb-2">{new Date(blog.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
                     <h3 className="font-bold text-lg leading-snug group-hover:text-[#7A75A5] transition-colors line-clamp-2">{blog.title}</h3>
@@ -273,7 +273,7 @@ export default async function Home() {
               <h2 className="text-3xl font-black text-[#5D4E46] mb-8">Exclusive Deals Await</h2>
               <div className="flex flex-col lg:flex-row gap-6">
                 <Link href="/shop" className="flex-1 relative rounded-2xl overflow-hidden min-h-[400px] group cursor-pointer block">
-                  <Image src="https://cdn2.blanxer.com/uploads/69917932e3880672e54e49e5/product_image-img_0979-5376.webp" alt="Save Big" fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
+                  <Image src="https://cdn2.blanxer.com/uploads/69917932e3880672e54e49e5/product_image-img_0979-5376.webp" alt="Save Big" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-10 text-white">
                     <span className="text-xs font-bold uppercase tracking-widest text-[#AAB084] mb-2">Sale Event</span>
                     <h3 className="text-5xl font-black mb-4 group-hover:text-[#AAB084] transition-colors">Save Big</h3>
@@ -289,7 +289,7 @@ export default async function Home() {
                     <Link href={`/shop/${product.id}`} key={product.id} className="bg-[#FDFBF7] p-4 rounded-2xl flex flex-col group cursor-pointer block hover:shadow-md transition-shadow">
                       <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden mb-4">
                         <div className="absolute top-2 right-2 z-10 bg-[#7A75A5] text-white text-[10px] font-black uppercase px-2 py-1 rounded">-20%</div>
-                        <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform" unoptimized />
+                        <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform" />
                       </div>
                       <h4 className="font-bold text-sm text-[#5D4E46] line-clamp-1 mb-1 group-hover:text-[#7A75A5] transition-colors">{product.name}</h4>
                       <p className="text-xs font-bold text-[#5D4E46]/60 line-through mb-1">{(product.price * 1.2).toFixed(0)} NOK</p>
