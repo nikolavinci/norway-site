@@ -17,7 +17,7 @@ export default function PaymentsPage() {
   }, []);
 
   const loadSettings = async () => {
-    const { data } = await supabase.from('site_settings').select('*').limit(1).single();
+    const { data } = await supabase.from('site_settings').select('*').limit(1).maybeSingle();
     if (data) {
       setIsLive(data.is_stripe_live);
       setTestKey(data.stripe_public_key_test || '');
@@ -28,26 +28,39 @@ export default function PaymentsPage() {
 
   const saveSettings = async () => {
     setSaving(true);
-    const { data: existing } = await supabase.from('site_settings').select('id').limit(1).single();
+    setMessage('');
     
-    if (existing) {
-      await supabase.from('site_settings').update({
-        is_stripe_live: isLive,
-        stripe_public_key_test: testKey,
-        stripe_public_key_live: liveKey,
-        updated_at: new Date()
-      }).eq('id', existing.id);
-    } else {
-      await supabase.from('site_settings').insert([{
-        is_stripe_live: isLive,
-        stripe_public_key_test: testKey,
-        stripe_public_key_live: liveKey,
-      }]);
+    try {
+      const { data: existing } = await supabase.from('site_settings').select('id').limit(1).maybeSingle();
+      
+      let error;
+      if (existing) {
+        const result = await supabase.from('site_settings').update({
+          is_stripe_live: isLive,
+          stripe_public_key_test: testKey,
+          stripe_public_key_live: liveKey,
+          updated_at: new Date()
+        }).eq('id', existing.id);
+        error = result.error;
+      } else {
+        const result = await supabase.from('site_settings').insert([{
+          is_stripe_live: isLive,
+          stripe_public_key_test: testKey,
+          stripe_public_key_live: liveKey,
+        }]);
+        error = result.error;
+      }
+      
+      if (error) throw error;
+      
+      setMessage('Settings saved securely!');
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err: any) {
+      console.error(err);
+      setMessage(`Error saving settings: ${err.message}`);
+    } finally {
+      setSaving(false);
     }
-    
-    setMessage('Settings saved securely!');
-    setTimeout(() => setMessage(''), 3000);
-    setSaving(false);
   };
 
   if (loading) return <div className="flex justify-center p-12"><Loader2 className="animate-spin text-[#987C6F]" size={32} /></div>;
