@@ -11,11 +11,21 @@ export default function Checkout() {
   const shippingCost = 150;
   const totalAmount = getCartTotal() > 0 ? getCartTotal() + shippingCost : 0;
 
+  const [isProcessingVipps, setIsProcessingVipps] = useState(false);
+
+  const handleVippsCheckout = () => {
+    setIsProcessingVipps(true);
+    setTimeout(() => {
+      clearCart();
+      window.location.href = '/checkout/success';
+    }, 2500); // 2.5 second mock transaction delay
+  };
+
   const handleStripeCheckout = async () => {
     if (totalAmount <= 0) return;
     
     // We get the setting from our public site_settings
-    const { data: settings } = await import('@/shared/utils/supabase').then(m => m.supabase.from('site_settings').select('*').limit(1).single());
+    const { data: settings } = await import('@/shared/utils/supabase').then(m => m.supabase.from('site_settings').select('*').limit(1).maybeSingle());
     
     try {
       const { supabase } = await import('@/shared/utils/supabase');
@@ -31,9 +41,16 @@ export default function Checkout() {
       if (data?.url) {
         window.location.href = data.url;
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to create checkout session:', err);
-      alert('Stripe checkout failed. Check if Edge Functions are deployed.');
+      // Improve error reporting to help user debug Edge Function issues
+      let errorMessage = 'Stripe checkout failed.';
+      if (err.message) {
+        errorMessage += `\nError: ${err.message}`;
+      } else {
+        errorMessage += '\nCheck if Edge Functions are deployed (supabase functions deploy create-checkout-session).';
+      }
+      alert(errorMessage);
     }
   };
 
@@ -101,9 +118,13 @@ export default function Checkout() {
                   <div className="bg-[#FF5B24]/10 border border-[#FF5B24]/20 rounded-xl p-8 text-center">
                     <h3 className="font-bold text-[#FF5B24] mb-2 text-lg">Pay easily with Vipps</h3>
                     <p className="text-[#3A3532]/70 text-sm mb-6 max-w-sm mx-auto">You will be redirected to the Vipps app to approve the transaction securely.</p>
-                    <Link href="/checkout/success" onClick={() => clearCart()} className="block w-full py-4 bg-[#FF5B24] text-white rounded-full text-sm font-bold shadow-md hover:bg-[#e04a1b] transition-colors">
-                      Betal med Vipps
-                    </Link>
+                    <button 
+                      onClick={handleVippsCheckout} 
+                      disabled={isProcessingVipps}
+                      className="block w-full py-4 bg-[#FF5B24] text-white rounded-full text-sm font-bold shadow-md hover:bg-[#e04a1b] transition-colors disabled:opacity-70 flex justify-center items-center gap-2"
+                    >
+                      {isProcessingVipps ? 'Vent litt...' : 'Betal med Vipps'}
+                    </button>
                   </div>
                 ) : (
                   <div className="bg-white border border-[#3A3532]/10 rounded-xl p-8 text-center shadow-sm">
