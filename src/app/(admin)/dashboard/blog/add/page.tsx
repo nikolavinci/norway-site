@@ -71,6 +71,45 @@ export default function BlogEditorPage() {
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-[#5D4E46]/5">
               <h3 className="text-lg font-bold text-[#5D4E46] border-b border-[#5D4E46]/10 pb-4 mb-6">Featured Image</h3>
               <div className="flex flex-col gap-4">
+                {formData.image ? (
+                  <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-gray-100 border border-[#5D4E46]/20">
+                    <img src={formData.image} alt="Featured" className="w-full h-full object-cover" />
+                    <button type="button" onClick={() => setFormData({...formData, image: ''})} className="absolute top-2 right-2 bg-white text-red-500 p-2 rounded-full shadow-md hover:bg-red-50">
+                      <ImageIcon size={14} className="hidden" />
+                      <span className="text-xs font-bold px-2">Remove</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center w-full">
+                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-[#5D4E46]/20 border-dashed rounded-xl cursor-pointer bg-[#FDFBF7] hover:bg-gray-50 transition-colors">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <ImageIcon className="w-8 h-8 mb-3 text-[#5D4E46]/40" />
+                        <p className="mb-2 text-sm text-[#5D4E46]/60 font-bold">Click to upload image</p>
+                      </div>
+                      <input type="file" className="hidden" accept="image/*" onChange={async (e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          try {
+                            const { supabase } = await import('@/shared/utils/supabase');
+                            const file = e.target.files[0];
+                            const fileExt = file.name.split('.').pop();
+                            const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+                            
+                            const { error } = await supabase.storage.from('media').upload(fileName, file);
+                            if (error) throw error;
+                            
+                            const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(fileName);
+                            setFormData({...formData, image: publicUrl});
+                          } catch(err) {
+                            alert('Failed to upload image');
+                          }
+                        }
+                      }} />
+                    </label>
+                  </div>
+                )}
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="text-xs text-gray-400 font-bold uppercase">OR PASTE URL:</span>
+                </div>
                 <input type="text" placeholder="https://..." value={formData.image} onChange={(e) => setFormData({...formData, image: e.target.value})} className="w-full p-3 bg-[#FDFBF7] border border-[#5D4E46]/20 rounded-xl text-sm outline-none focus:border-[#987C6F]" />
               </div>
             </div>
