@@ -84,8 +84,12 @@ export default function ProductDetailPage() {
         {/* Left: Images */}
         <div className="lg:col-span-6 xl:col-span-5 flex gap-4">
           <div className="hidden md:flex flex-col gap-4 w-20 flex-shrink-0">
-            {[1, 2, 3, 4].map((i) => (
+            {product.gallery && product.gallery.length > 0 ? product.gallery.map((imgUrl, i) => (
               <div key={i} className="relative aspect-square bg-white rounded-xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-[#987C6F] transition-colors shadow-sm">
+                <Image src={imgUrl} alt={`${product.name} gallery ${i}`} fill className="object-cover" />
+              </div>
+            )) : [1, 2, 3, 4].map((i) => (
+              <div key={i} className="relative aspect-square bg-white rounded-xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-[#987C6F] transition-colors shadow-sm opacity-50">
                 <Image src={product.image} alt={`${product.name} view ${i}`} fill className="object-cover" />
               </div>
             ))}
@@ -162,29 +166,47 @@ export default function ProductDetailPage() {
               )}
             </div>
             
-            <div className="bg-[#F7F0E3] rounded-md overflow-hidden">
-              <div onClick={() => setOpenAccordion(openAccordion === 'care' ? null : 'care')} className="px-4 py-3 flex justify-between items-center cursor-pointer">
-                <span className="text-xs font-medium flex items-center gap-2"><span className="text-sm">✨</span> Product Care</span>
-                <ChevronDown size={14} className={`text-[#5D4E46]/50 transition-transform ${openAccordion === 'care' ? 'rotate-180' : ''}`}/>
-              </div>
-              {openAccordion === 'care' && (
-                <div className="px-4 pb-3 text-xs text-[#5D4E46]/80 leading-relaxed">
-                  Spot clean with a damp cloth and mild soap. Avoid harsh chemicals. For textiles, machine wash cold on a gentle cycle and air dry.
+            {product.care_instructions && (
+              <div className="bg-[#F7F0E3] rounded-md overflow-hidden">
+                <div onClick={() => setOpenAccordion(openAccordion === 'care' ? null : 'care')} className="px-4 py-3 flex justify-between items-center cursor-pointer">
+                  <span className="text-xs font-medium flex items-center gap-2"><span className="text-sm">✨</span> Product Care</span>
+                  <ChevronDown size={14} className={`text-[#5D4E46]/50 transition-transform ${openAccordion === 'care' ? 'rotate-180' : ''}`}/>
                 </div>
-              )}
-            </div>
+                {openAccordion === 'care' && (
+                  <div className="px-4 pb-3 text-xs text-[#5D4E46]/80 leading-relaxed">
+                    {product.care_instructions}
+                  </div>
+                )}
+              </div>
+            )}
 
-            <div className="bg-[#F7F0E3] rounded-md overflow-hidden">
-              <div onClick={() => setOpenAccordion(openAccordion === 'materials' ? null : 'materials')} className="px-4 py-3 flex justify-between items-center cursor-pointer">
-                <span className="text-xs font-medium flex items-center gap-2"><span className="text-sm">🌿</span> Materials</span>
-                <ChevronDown size={14} className={`text-[#5D4E46]/50 transition-transform ${openAccordion === 'materials' ? 'rotate-180' : ''}`}/>
-              </div>
-              {openAccordion === 'materials' && (
-                <div className="px-4 pb-3 text-xs text-[#5D4E46]/80 leading-relaxed">
-                  100% organic cotton and sustainably sourced vegan leather. All our products are handcrafted in small batches to ensure the highest quality.
+            {product.materials && (
+              <div className="bg-[#F7F0E3] rounded-md overflow-hidden">
+                <div onClick={() => setOpenAccordion(openAccordion === 'materials' ? null : 'materials')} className="px-4 py-3 flex justify-between items-center cursor-pointer">
+                  <span className="text-xs font-medium flex items-center gap-2"><span className="text-sm">🌿</span> Materials</span>
+                  <ChevronDown size={14} className={`text-[#5D4E46]/50 transition-transform ${openAccordion === 'materials' ? 'rotate-180' : ''}`}/>
                 </div>
-              )}
-            </div>
+                {openAccordion === 'materials' && (
+                  <div className="px-4 pb-3 text-xs text-[#5D4E46]/80 leading-relaxed">
+                    {product.materials}
+                  </div>
+                )}
+              </div>
+            )}
+            
+            {product.dimensions && (
+              <div className="bg-[#F7F0E3] rounded-md overflow-hidden">
+                <div onClick={() => setOpenAccordion(openAccordion === 'dimensions' ? null : 'dimensions')} className="px-4 py-3 flex justify-between items-center cursor-pointer">
+                  <span className="text-xs font-medium flex items-center gap-2"><span className="text-sm">📏</span> Dimensions / Size</span>
+                  <ChevronDown size={14} className={`text-[#5D4E46]/50 transition-transform ${openAccordion === 'dimensions' ? 'rotate-180' : ''}`}/>
+                </div>
+                {openAccordion === 'dimensions' && (
+                  <div className="px-4 pb-3 text-xs text-[#5D4E46]/80 leading-relaxed">
+                    {product.dimensions}
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="bg-[#F7F0E3] rounded-md overflow-hidden">
               <div onClick={() => setOpenAccordion(openAccordion === 'support' ? null : 'support')} className="px-4 py-3 flex justify-between items-center cursor-pointer">

@@ -22,7 +22,11 @@ export default function EditProductPage() {
     stock: '',
     image: '',
     meta_title: '',
-    meta_description: ''
+    meta_description: '',
+    materials: '',
+    care_instructions: '',
+    dimensions: '',
+    gallery: [] as string[]
   });
   const [file, setFile] = useState<File | null>(null);
 
@@ -39,7 +43,11 @@ export default function EditProductPage() {
             stock: p.stock.toString(),
             image: p.image,
             meta_title: p.meta_title || '',
-            meta_description: p.meta_description || ''
+            meta_description: p.meta_description || '',
+            materials: p.materials || '',
+            care_instructions: p.care_instructions || '',
+            dimensions: p.dimensions || '',
+            gallery: p.gallery || []
           });
         }
       } catch (err) {
@@ -70,7 +78,11 @@ export default function EditProductPage() {
         stock: parseInt(formData.stock, 10) || 0,
         image: imageUrl,
         meta_title: formData.meta_title,
-        meta_description: formData.meta_description
+        meta_description: formData.meta_description,
+        materials: formData.materials,
+        care_instructions: formData.care_instructions,
+        dimensions: formData.dimensions,
+        gallery: formData.gallery
       };
 
       await updateProduct(id as string, productPayload);
@@ -129,21 +141,98 @@ export default function EditProductPage() {
               <h3 className="text-lg font-bold text-[#5D4E46] border-b border-[#5D4E46]/10 pb-4 mb-6">Organization</h3>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-[#5D4E46]/70 mb-2">Category</label>
-                <input required type="text" value={formData.category} onChange={(e) => setFormData({...formData, category: e.target.value})} className="w-full p-4 bg-[#FDFBF7] border border-[#5D4E46]/20 rounded-xl outline-none focus:border-[#987C6F] transition-colors" />
+                <div className="flex gap-2">
+                  <select value={formData.category} onChange={(e) => setFormData({...formData, category: e.target.value})} className="w-full p-4 bg-[#FDFBF7] border border-[#5D4E46]/20 rounded-xl outline-none focus:border-[#987C6F] transition-colors">
+                    <option value="">Select a category</option>
+                    <option value="Bags">Bags</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Decor">Decor</option>
+                    {formData.category && !['Bags', 'Accessories', 'Decor', ''].includes(formData.category) && (
+                      <option value={formData.category}>{formData.category}</option>
+                    )}
+                  </select>
+                  <button type="button" onClick={() => {
+                    const newCat = prompt("Enter new category name:");
+                    if (newCat) setFormData({...formData, category: newCat});
+                  }} className="px-4 bg-[#FDFBF7] border border-[#5D4E46]/20 rounded-xl hover:bg-gray-50 font-bold" title="Add New Category">+</button>
+                </div>
               </div>
             </div>
 
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-[#5D4E46]/5">
               <h3 className="text-lg font-bold text-[#5D4E46] border-b border-[#5D4E46]/10 pb-4 mb-6">Product Image</h3>
               <div className="flex flex-col gap-4">
-                <label className="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-[#5D4E46]/30 rounded-xl bg-[#FDFBF7] hover:bg-gray-50 cursor-pointer transition-colors group">
-                  <input type="file" className="hidden" accept="image/*" onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)} />
-                  <ImageIcon className="text-[#987C6F] mb-3 group-hover:scale-110 transition-transform" size={32} />
-                  <span className="text-sm font-bold text-[#5D4E46] text-center">{file ? file.name : (formData.image ? 'Change Image' : 'Upload File')}</span>
-                </label>
-                
-                <input type="text" placeholder="Or enter image URL..." value={formData.image} onChange={(e) => setFormData({...formData, image: e.target.value})} className="w-full p-3 bg-[#FDFBF7] border border-[#5D4E46]/20 rounded-xl text-sm outline-none focus:border-[#987C6F]" />
+                {formData.image || file ? (
+                  <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-100 border border-[#5D4E46]/20">
+                    <img src={file ? URL.createObjectURL(file) : formData.image} alt="Product" className="w-full h-full object-cover" />
+                    <button type="button" onClick={() => { setFile(null); setFormData({...formData, image: ''}) }} className="absolute top-2 right-2 bg-white text-red-500 p-2 rounded-full shadow-md hover:bg-red-50">
+                      <span className="text-xs font-bold px-2">Remove</span>
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-[#5D4E46]/30 rounded-xl bg-[#FDFBF7] hover:bg-gray-50 cursor-pointer transition-colors group">
+                    <input type="file" className="hidden" accept="image/*" onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)} />
+                    <ImageIcon className="text-[#987C6F] mb-3 group-hover:scale-110 transition-transform" size={32} />
+                    <span className="text-sm font-bold text-[#5D4E46] text-center">Upload Image</span>
+                  </label>
+                )}
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-[#5D4E46]/5">
+          <h3 className="text-lg font-bold text-[#5D4E46] border-b border-[#5D4E46]/10 pb-4 mb-6">Product Details & Gallery</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#5D4E46]/70 mb-2">Materials</label>
+                <textarea rows={2} value={formData.materials} onChange={(e) => setFormData({...formData, materials: e.target.value})} className="w-full p-4 bg-[#FDFBF7] border border-[#5D4E46]/20 rounded-xl outline-none focus:border-[#987C6F] transition-colors"></textarea>
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#5D4E46]/70 mb-2">Care Instructions</label>
+                <textarea rows={2} value={formData.care_instructions} onChange={(e) => setFormData({...formData, care_instructions: e.target.value})} className="w-full p-4 bg-[#FDFBF7] border border-[#5D4E46]/20 rounded-xl outline-none focus:border-[#987C6F] transition-colors"></textarea>
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#5D4E46]/70 mb-2">Dimensions / Size</label>
+                <input type="text" value={formData.dimensions} onChange={(e) => setFormData({...formData, dimensions: e.target.value})} className="w-full p-4 bg-[#FDFBF7] border border-[#5D4E46]/20 rounded-xl outline-none focus:border-[#987C6F] transition-colors" />
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#5D4E46]/70 mb-2">Image Gallery</label>
+              <div className="grid grid-cols-3 gap-4 mb-4">
+                {formData.gallery.map((url, idx) => (
+                  <div key={idx} className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 border border-[#5D4E46]/20">
+                    <img src={url} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
+                    <button type="button" onClick={() => setFormData({...formData, gallery: formData.gallery.filter((_, i) => i !== idx)})} className="absolute top-1 right-1 bg-white text-red-500 p-1 rounded-full shadow-md hover:bg-red-50">
+                      <span className="text-xs font-bold px-1">X</span>
+                    </button>
+                  </div>
+                ))}
+                <label className="flex flex-col items-center justify-center aspect-square border-2 border-dashed border-[#5D4E46]/30 rounded-xl bg-[#FDFBF7] hover:bg-gray-50 cursor-pointer transition-colors">
+                  <input type="file" multiple className="hidden" accept="image/*" onChange={async (e) => {
+                    if (e.target.files && e.target.files.length > 0) {
+                      const files = Array.from(e.target.files);
+                      try {
+                        const { supabase } = await import('@/shared/utils/supabase');
+                        const newUrls = await Promise.all(files.map(async (f) => {
+                          const fileExt = f.name.split('.').pop();
+                          const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+                          await supabase.storage.from('products').upload(fileName, f);
+                          const { data: { publicUrl } } = supabase.storage.from('products').getPublicUrl(fileName);
+                          return publicUrl;
+                        }));
+                        setFormData(prev => ({...prev, gallery: [...prev.gallery, ...newUrls]}));
+                      } catch(err) {
+                        alert('Failed to upload images');
+                      }
+                    }
+                  }} />
+                  <span className="text-2xl font-bold text-[#5D4E46]/60">+</span>
+                </label>
+              </div>
+              <p className="text-xs text-gray-400">Upload multiple images to display in the product page gallery.</p>
             </div>
           </div>
         </div>

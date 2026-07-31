@@ -10,6 +10,10 @@ export interface Product {
   stock: number;
   meta_title?: string;
   meta_description?: string;
+  gallery?: string[];
+  materials?: string;
+  care_instructions?: string;
+  dimensions?: string;
 }
 
 export async function getProducts(): Promise<Product[]> {
