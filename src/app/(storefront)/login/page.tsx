@@ -88,7 +88,7 @@ export default function LoginPage() {
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3.5 bg-[#FDFBF7] border border-[#5D4E46]/20 rounded-xl text-sm outline-none focus:border-[#987C6F] transition-colors"
+                  className="w-full pl-11 pr-4 py-3.5 bg-[#FDFBF7] border border-[#5D4E46]/20 rounded-xl text-sm text-[#3A3532] outline-none focus:border-[#987C6F] transition-colors"
                   placeholder="Jane Doe"
                 />
               </div>
@@ -106,7 +106,7 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-11 pr-4 py-3.5 bg-[#FDFBF7] border border-[#5D4E46]/20 rounded-xl text-sm outline-none focus:border-[#987C6F] transition-colors"
+                className="w-full pl-11 pr-4 py-3.5 bg-[#FDFBF7] border border-[#5D4E46]/20 rounded-xl text-sm text-[#3A3532] outline-none focus:border-[#987C6F] transition-colors"
                 placeholder="you@example.com"
               />
             </div>
@@ -128,7 +128,7 @@ export default function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-11 pr-4 py-3.5 bg-[#FDFBF7] border border-[#5D4E46]/20 rounded-xl text-sm outline-none focus:border-[#987C6F] transition-colors"
+                className="w-full pl-11 pr-4 py-3.5 bg-[#FDFBF7] border border-[#5D4E46]/20 rounded-xl text-sm text-[#3A3532] outline-none focus:border-[#987C6F] transition-colors"
                 placeholder="••••••••"
               />
             </div>
