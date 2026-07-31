@@ -17,22 +17,33 @@ export default function MediaLibraryPage() {
 
   const loadFiles = async () => {
     setLoading(true);
-    const { data, error } = await supabase.storage.from('products').list('');
     
-    if (data && !error) {
-      // Filter out placeholders or empty folders
-      const validFiles = data.filter(f => f.name !== '.emptyFolderPlaceholder' && f.metadata);
-      
-      const filesWithUrls = validFiles.map(file => {
-        const { data: { publicUrl } } = supabase.storage.from('products').getPublicUrl(file.name);
-        return { ...file, url: publicUrl };
-      });
-      
-      // Sort by latest
-      filesWithUrls.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
-      
-      setFiles(filesWithUrls);
+    // Fetch from both 'products' and 'media' buckets
+    const [productsRes, mediaRes] = await Promise.all([
+      supabase.storage.from('products').list(''),
+      supabase.storage.from('media').list('')
+    ]);
+    
+    let allFiles: any[] = [];
+
+    if (productsRes.data && !productsRes.error) {
+      const valid = productsRes.data.filter(f => f.name !== '.emptyFolderPlaceholder' && f.metadata);
+      allFiles = [...allFiles, ...valid.map(f => {
+        const { data: { publicUrl } } = supabase.storage.from('products').getPublicUrl(f.name);
+        return { ...f, url: publicUrl, bucket: 'products' };
+      })];
     }
+
+    if (mediaRes.data && !mediaRes.error) {
+      const valid = mediaRes.data.filter(f => f.name !== '.emptyFolderPlaceholder' && f.metadata);
+      allFiles = [...allFiles, ...valid.map(f => {
+        const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(f.name);
+        return { ...f, url: publicUrl, bucket: 'media' };
+      })];
+    }
+    
+    allFiles.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
+    setFiles(allFiles);
     setLoading(false);
   };
 
@@ -40,7 +51,13 @@ export default function MediaLibraryPage() {
     if (!e.target.files || e.target.files.length === 0) return;
     setUploading(true);
     try {
-      await uploadProductImage(e.target.files[0]);
+      const file = e.target.files[0];
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+      
+      const { error } = await supabase.storage.from('media').upload(fileName, file);
+      if (error) throw error;
+      
       await loadFiles();
     } catch (err) {
       console.error(err);
@@ -49,10 +66,10 @@ export default function MediaLibraryPage() {
     setUploading(false);
   };
 
-  const handleDelete = async (fileName: string) => {
+  const handleDelete = async (fileName: string, bucket: string = 'media') => {
     if (!confirm('Are you sure you want to delete this image?')) return;
     try {
-      await supabase.storage.from('products').remove([fileName]);
+      await supabase.storage.from(bucket).remove([fileName]);
       await loadFiles();
     } catch (err) {
       console.error(err);
@@ -107,7 +124,7 @@ export default function MediaLibraryPage() {
                     <Copy size={16} />
                   </button>
                   <button 
-                    onClick={() => handleDelete(file.name)}
+                    onClick={() => handleDelete(file.name, file.bucket)}
                     className="p-2 bg-white text-red-500 rounded-full hover:bg-red-50 transition-colors"
                     title="Delete Image"
                   >
