@@ -1,81 +1,41 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useCartStore } from '@/shared/utils/store';
 import Link from 'next/link';
 
-// Make sure to call `loadStripe` outside of a component’s render to avoid recreating the `Stripe` object on every render.
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 'pk_test_mock');
-
-function CheckoutForm({ clientSecret, totalAmount }: { clientSecret: string; totalAmount: number }) {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!stripe || !elements) return;
-
-    setIsProcessing(true);
-
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/checkout/success`,
-      },
-    });
-
-    if (error) {
-      setErrorMessage(error.message || 'An unknown error occurred');
-    }
-    
-    setIsProcessing(false);
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="mt-6">
-      <div className="border border-[#3A3532]/20 rounded-md p-4 bg-white shadow-sm">
-        <PaymentElement />
-      </div>
-      {errorMessage && <div className="text-red-500 text-sm mt-4">{errorMessage}</div>}
-      <button 
-        disabled={isProcessing || !stripe || !elements}
-        className="w-full py-4 mt-6 bg-[#3A3532] text-white rounded-full text-xs uppercase tracking-widest font-medium hover:bg-[#C88267] transition-colors disabled:opacity-50"
-      >
-        {isProcessing ? 'Processing...' : `Pay ${totalAmount} NOK`}
-      </button>
-    </form>
-  );
-}
-
 export default function Checkout() {
   const { items, getCartTotal, clearCart } = useCartStore();
-  const [clientSecret, setClientSecret] = useState('');
-  const [stripeError, setStripeError] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'vipps' | 'card'>('vipps');
   
   const shippingCost = 150;
   const totalAmount = getCartTotal() > 0 ? getCartTotal() + shippingCost : 0;
 
-  useEffect(() => {
-    if (totalAmount > 0 && paymentMethod === 'card') {
-      fetch('/api/create-payment-intent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: totalAmount }),
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error('Failed to fetch secret');
-          return res.json();
-        })
-        .then((data) => setClientSecret(data.clientSecret))
-        .catch(() => setStripeError(true));
+  const handleStripeCheckout = async () => {
+    if (totalAmount <= 0) return;
+    
+    // We get the setting from our public site_settings
+    const { data: settings } = await import('@/shared/utils/supabase').then(m => m.supabase.from('site_settings').select('*').limit(1).single());
+    
+    try {
+      const { supabase } = await import('@/shared/utils/supabase');
+      const { data, error } = await supabase.functions.invoke('create-checkout-session', {
+        body: { 
+          items, 
+          email: 'customer@example.com', // In a real app, bind to the email input state
+          isLive: settings?.is_stripe_live 
+        },
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      console.error('Failed to create checkout session:', err);
+      alert('Stripe checkout failed. Check if Edge Functions are deployed.');
     }
-  }, [totalAmount, paymentMethod]);
+  };
 
   const inputClasses = "w-full border border-[#3A3532]/20 rounded-md p-3 bg-white text-[#3A3532] font-medium placeholder:text-[#3A3532]/40 focus:outline-none focus:border-[#5D4E46] focus:ring-1 focus:ring-[#5D4E46] transition-all";
 
@@ -126,7 +86,7 @@ export default function Checkout() {
                 <label className={`flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-all ${paymentMethod === 'card' ? 'border-[#5D4E46] bg-[#5D4E46]/5 ring-1 ring-[#5D4E46]' : 'border-[#3A3532]/20 hover:border-[#3A3532]/40 bg-white'}`}>
                   <div className="flex items-center gap-3">
                     <input type="radio" name="payment" value="card" checked={paymentMethod === 'card'} onChange={() => setPaymentMethod('card')} className="w-4 h-4 accent-[#5D4E46]" />
-                    <span className="font-bold">Credit Card (Stripe)</span>
+                    <span className="font-bold">Credit Card & Klarna (Stripe)</span>
                   </div>
                   <div className="flex gap-1">
                     <div className="w-8 h-5 bg-gray-200 rounded-sm"></div>
@@ -146,32 +106,12 @@ export default function Checkout() {
                     </Link>
                   </div>
                 ) : (
-                  <div>
-                    {stripeError ? (
-                      <div className="bg-white border border-[#3A3532]/10 rounded-xl p-6 shadow-sm">
-                        <div className="bg-orange-50 text-orange-800 text-xs font-bold px-3 py-2 rounded-md mb-6 inline-block">
-                          Test Mode Active
-                        </div>
-                        <div className="space-y-4">
-                          <input type="text" placeholder="Card Number" className="w-full border border-[#3A3532]/20 rounded p-3 bg-white" />
-                          <div className="grid grid-cols-2 gap-4">
-                            <input type="text" placeholder="MM/YY" className="w-full border border-[#3A3532]/20 rounded p-3 bg-white" />
-                            <input type="text" placeholder="CVC" className="w-full border border-[#3A3532]/20 rounded p-3 bg-white" />
-                          </div>
-                        </div>
-                        <Link href="/checkout/success" onClick={() => clearCart()} className="block text-center w-full mt-6 py-4 bg-[#3A3532] text-white rounded-full text-xs uppercase tracking-widest font-bold hover:bg-[#C88267] transition-colors">
-                          Pay {totalAmount} NOK (Mock)
-                        </Link>
-                      </div>
-                    ) : clientSecret && totalAmount > 0 ? (
-                      <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'stripe' } }}>
-                        <CheckoutForm clientSecret={clientSecret} totalAmount={totalAmount} />
-                      </Elements>
-                    ) : (
-                      <div className="text-[#3A3532]/60 font-medium text-center py-8">
-                        {totalAmount > 0 ? 'Loading secure gateway...' : 'Your cart is empty.'}
-                      </div>
-                    )}
+                  <div className="bg-white border border-[#3A3532]/10 rounded-xl p-8 text-center shadow-sm">
+                    <h3 className="font-bold text-[#5D4E46] mb-2 text-lg">Pay securely with Stripe</h3>
+                    <p className="text-[#3A3532]/70 text-sm mb-6 max-w-sm mx-auto">You will be securely redirected to Stripe to pay via Credit Card, Apple Pay, or Klarna.</p>
+                    <button onClick={handleStripeCheckout} className="block text-center w-full mt-6 py-4 bg-[#3A3532] text-white rounded-full text-xs uppercase tracking-widest font-bold hover:bg-[#C88267] transition-colors">
+                      Proceed to Payment ({totalAmount} NOK)
+                    </button>
                   </div>
                 )}
               </div>
