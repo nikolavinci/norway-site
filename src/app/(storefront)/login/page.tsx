@@ -29,7 +29,9 @@ export default function LoginPage() {
           password,
         });
         if (error) throw error;
-        router.push('/');
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectTo = urlParams.get('redirectTo') || '/';
+        router.push(redirectTo);
       } else {
         const { error } = await supabase.auth.signUp({
           email,

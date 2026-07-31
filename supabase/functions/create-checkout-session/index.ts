@@ -30,17 +30,20 @@ serve(async (req) => {
       httpClient: Stripe.createFetchHttpClient(),
     });
 
-    const lineItems = items.map((item: any) => ({
-      price_data: {
-        currency: 'nok',
-        product_data: {
-          name: item.name,
-          images: item.image ? [item.image] : [],
+    const lineItems = items.map((item: any) => {
+      const imageUrl = item.image ? (item.image.startsWith('http') ? item.image : `${baseUrl}${item.image.startsWith('/') ? '' : '/'}${item.image}`) : null;
+      return {
+        price_data: {
+          currency: 'nok',
+          product_data: {
+            name: item.name,
+            images: imageUrl ? [imageUrl] : [],
+          },
+          unit_amount: Math.round(item.price * 100), // Stripe expects amounts in cents/øre
         },
-        unit_amount: Math.round(item.price * 100), // Stripe expects amounts in cents/øre
-      },
-      quantity: item.quantity,
-    }));
+        quantity: item.quantity,
+      };
+    });
 
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({

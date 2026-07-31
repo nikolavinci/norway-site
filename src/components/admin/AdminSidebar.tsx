@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from '../../shared/utils/supabase';
-import { Package, Heart, LogOut, Settings, Users, ShoppingBag, PenTool, CreditCard, BarChart2, Image as ImageIcon } from 'lucide-react';
+import { Package, Heart, LogOut, Settings, Users, ShoppingBag, PenTool, CreditCard, BarChart2, Image as ImageIcon, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -65,6 +65,7 @@ export default function AdminSidebar() {
             <NavLink href="/dashboard" icon={Settings} label="Overview" />
             <NavLink href="/dashboard/orders" icon={ShoppingBag} label="My Orders" />
             <NavLink href="/dashboard/favorites" icon={Heart} label="Saved Items" />
+            <NavLink href="/dashboard/addresses" icon={MapPin} label="Address Book" />
           </>
         )}
       </div>
