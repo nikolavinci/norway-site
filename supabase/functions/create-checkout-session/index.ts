@@ -13,7 +13,8 @@ serve(async (req) => {
   }
 
   try {
-    const { items, email, isLive } = await req.json();
+    const { items, email, isLive, origin } = await req.json();
+    const baseUrl = origin || req.headers.get('origin') || 'http://localhost:3000';
 
     // Get the correct secret key from environment variables based on the database flag
     const STRIPE_SECRET_KEY = isLive 
@@ -46,8 +47,8 @@ serve(async (req) => {
       payment_method_types: ['card', 'klarna'],
       line_items: lineItems,
       mode: 'payment',
-      success_url: `${req.headers.get('origin')}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get('origin')}/cart`,
+      success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/cart`,
       customer_email: email,
     });
 

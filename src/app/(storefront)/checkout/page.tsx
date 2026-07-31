@@ -33,7 +33,8 @@ export default function Checkout() {
         body: { 
           items, 
           email: 'customer@example.com', // In a real app, bind to the email input state
-          isLive: settings?.is_stripe_live 
+          isLive: settings?.is_stripe_live,
+          origin: window.location.origin
         },
       });
 
