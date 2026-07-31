@@ -403,29 +403,29 @@ export default function ProductDetailPage() {
 
       {/* Sticky Bottom Bar */}
       {showSticky && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#5D4E46]/10 p-4 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] animate-fade-in-up">
-          <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2 sm:gap-4 flex-1">
-              <div className="hidden sm:block w-12 h-12 relative bg-[#FDFBF7] rounded-md overflow-hidden shrink-0">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#5D4E46]/10 p-3 sm:p-4 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] animate-fade-in-up">
+          <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-3 sm:gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 flex-1">
+              <div className="w-12 h-12 relative bg-[#FDFBF7] rounded-md overflow-hidden shrink-0 shadow-sm border border-[#5D4E46]/10">
                 <Image src={product.image} alt={product.name} fill className="object-cover" />
               </div>
               <div className="block flex-1 min-w-0">
-                <h4 className="font-bold text-[10px] sm:text-sm text-[#5D4E46] truncate">{product.name}</h4>
+                <h4 className="font-bold text-xs sm:text-sm text-[#5D4E46] truncate">{product.name}</h4>
                 <p className="text-[10px] sm:text-xs font-bold text-[#5D4E46]/70">{product.price} NOK</p>
               </div>
             </div>
             
             <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-              <div className="flex items-center border border-[#5D4E46]/10 rounded-md bg-[#FDFBF7] w-16 sm:w-24">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-1.5 sm:p-2 text-[#5D4E46]/60"><Minus size={12} /></button>
-                <span className="flex-1 text-center text-[10px] sm:text-xs font-bold">{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)} className="p-1.5 sm:p-2 text-[#5D4E46]/60"><Plus size={12} /></button>
+              <div className="flex items-center border border-[#5D4E46]/10 rounded-md bg-[#FDFBF7] w-20 sm:w-24">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-2 sm:p-2 text-[#5D4E46]/60 hover:bg-[#5D4E46]/5"><Minus size={14} /></button>
+                <span className="flex-1 text-center text-xs font-bold">{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)} className="p-2 sm:p-2 text-[#5D4E46]/60 hover:bg-[#5D4E46]/5"><Plus size={14} /></button>
               </div>
               <button 
                 onClick={() => {
                   for(let i=0; i<quantity; i++) addItem(product);
                 }}
-                className="px-8 py-3 bg-[#7A75A5] text-white rounded-full text-sm font-bold hover:bg-[#635f8d] transition-colors whitespace-nowrap shadow-md"
+                className="px-4 sm:px-8 py-3 bg-[#7A75A5] text-white rounded-md sm:rounded-full text-xs sm:text-sm font-bold hover:bg-[#635f8d] transition-colors whitespace-nowrap shadow-md"
               >
                 Add to cart
               </button>

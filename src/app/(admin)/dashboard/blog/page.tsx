@@ -64,8 +64,11 @@ export default function BlogManagerPage() {
                   <td className="px-6 py-4 font-bold">{blog.title}</td>
                   <td className="px-6 py-4">{new Date(blog.created_at).toLocaleDateString()}</td>
                   <td className="px-6 py-4 text-right">
+                    <Link href={`/dashboard/blog/edit/${blog.id}`} className="text-[#987C6F] hover:text-[#5D4E46] p-2 transition-colors">
+                      <Edit2 size={16} className="inline" />
+                    </Link>
                     <button onClick={() => handleDelete(blog.id)} className="text-red-400 hover:text-red-600 p-2 transition-colors ml-2">
-                      <Trash2 size={16} />
+                      <Trash2 size={16} className="inline" />
                     </button>
                   </td>
                 </tr>

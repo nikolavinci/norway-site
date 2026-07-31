@@ -110,18 +110,18 @@ export default async function Home() {
           {/* Colored Category Blocks */}
           <div className="max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-4">
             {[
-              { bg: 'bg-[#7A75A5]', title: 'Handwoven Details', sub: 'Artisan Bags', img: '/images/boho_hero_banner.png' },
-              { bg: 'bg-[#F7F0E3]', title: 'Warm Textures', sub: 'Bohemian Living', img: '/images/boho_hero_banner.png', text: 'text-[#5D4E46]' },
-              { bg: 'bg-[#AAB084]', title: 'Sustainable Materials', sub: 'Ethical Craftsmanship', img: '/images/boho_hero_banner.png' },
-              { bg: 'bg-[#987C6F]', title: 'Everyday Elegance', sub: 'Versatile Totes', img: allProducts.find(p => p.category.toLowerCase().includes('bag'))?.image || allProducts[0]?.image || '/placeholder.png' }
+              { bg: 'bg-[#7A75A5]', title: 'Handwoven Details', sub: 'Artisan Bags', img: '/images/boho_hero_banner.png', link: '/collections' },
+              { bg: 'bg-[#F7F0E3]', title: 'Warm Textures', sub: 'Bohemian Living', img: '/images/boho_hero_banner.png', text: 'text-[#3A3532]', link: '/shop' },
+              { bg: 'bg-[#AAB084]', title: 'Sustainable Materials', sub: 'Ethical Craftsmanship', img: '/images/boho_hero_banner.png', link: '/collections' },
+              { bg: 'bg-[#987C6F]', title: 'Everyday Elegance', sub: 'Versatile Totes', img: allProducts.find(p => p.category.toLowerCase().includes('bag'))?.image || allProducts[0]?.image || '/placeholder.png', link: '/shop' }
             ].map((cat, i) => (
-              <div key={i} className={`${cat.bg} p-8 flex flex-col items-center justify-center text-center aspect-square text-white ${cat.text || ''}`}>
-                <div className="relative w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-white/20 shadow-md">
+              <Link href={cat.link} key={i} className={`${cat.bg} p-8 flex flex-col items-center justify-center text-center aspect-square ${cat.text || 'text-white'} group block hover:opacity-95 transition-opacity`}>
+                <div className="relative w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-white/20 shadow-md group-hover:scale-105 transition-transform duration-300">
                   <Image src={cat.img} alt={cat.title} fill className="object-cover" />
                 </div>
-                <p className="text-[10px] uppercase tracking-wider mb-1 opacity-80 font-bold">{cat.sub}</p>
+                <p className={`text-[10px] uppercase tracking-wider mb-1 font-bold ${cat.text ? 'opacity-70' : 'opacity-80'}`}>{cat.sub}</p>
                 <h3 className="font-black text-lg">{cat.title}</h3>
-              </div>
+              </Link>
             ))}
           </div>
         </section>
@@ -212,31 +212,17 @@ export default async function Home() {
         {/* Unveiling Our Best (Carousel-style image strip) */}
         <section className="py-20 overflow-hidden">
           <h2 className="text-3xl font-black text-[#5D4E46] mb-12 text-center">Unveiling Our Best</h2>
-          <div className="relative flex overflow-hidden group">
-            <div className="animate-marquee flex gap-4 px-4 whitespace-nowrap min-w-full">
+          <div className="w-full">
+            <div className="flex gap-4 px-6 overflow-x-auto snap-x snap-mandatory pb-8 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {[1, 2, 3, 4, 5, 6, 7, 8].map((_, i) => {
                 const product = allProducts[i % allProducts.length];
                 if (!product) return null;
                 return (
-                  <Link href={`/shop/${product.id}`} key={i} className="relative w-64 h-64 flex-shrink-0 rounded-xl overflow-hidden group/item">
-                    <Image src={product.image || '/placeholder.png'} alt={product.name} fill className="object-cover group-hover/item:scale-110 transition-transform duration-700" />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4 text-center">
-                      <span className="text-white font-bold text-lg">{product.name}</span>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-            {/* Duplicate for infinite effect */}
-            <div className="animate-marquee flex gap-4 px-4 whitespace-nowrap min-w-full" aria-hidden="true">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((_, i) => {
-                const product = allProducts[i % allProducts.length];
-                if (!product) return null;
-                return (
-                  <Link href={`/shop/${product.id}`} key={i} className="relative w-64 h-64 flex-shrink-0 rounded-xl overflow-hidden group/item">
-                    <Image src={product.image || '/placeholder.png'} alt={product.name} fill className="object-cover group-hover/item:scale-110 transition-transform duration-700" />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4 text-center">
-                      <span className="text-white font-bold text-lg">{product.name}</span>
+                  <Link href={`/shop/${product.id}`} key={i} className="relative w-64 h-64 sm:w-80 sm:h-80 flex-shrink-0 snap-center rounded-xl overflow-hidden group">
+                    <Image src={product.image || '/placeholder.png'} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 text-center">
+                      <span className="text-white font-bold text-lg mb-2">{product.name}</span>
+                      <span className="text-white/80 text-sm font-medium px-4 py-2 bg-black/40 rounded-full">{product.price} NOK</span>
                     </div>
                   </Link>
                 );
