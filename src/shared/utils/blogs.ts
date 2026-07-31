@@ -3,6 +3,7 @@ import { supabase } from './supabase';
 export interface Blog {
   id: string;
   title: string;
+  slug?: string;
   content: string;
   img: string | null;
   meta_title: string | null;
@@ -29,6 +30,14 @@ export async function getBlogById(id: string): Promise<Blog | null> {
 }
 
 export async function createBlog(blog: Partial<Blog>): Promise<Blog | null> {
+  // Generate slug if not provided
+  if (!blog.slug && blog.title) {
+    blog.slug = blog.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)+/g, '');
+  }
+
   const { data, error } = await supabase.from('blogs').insert([blog]).select().single();
   if (error) {
     throw error;

@@ -80,31 +80,35 @@ export default function BlogEditorPage() {
                     </button>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center w-full">
-                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-[#5D4E46]/20 border-dashed rounded-xl cursor-pointer bg-[#FDFBF7] hover:bg-gray-50 transition-colors">
-                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <ImageIcon className="w-8 h-8 mb-3 text-[#5D4E46]/40" />
-                        <p className="mb-2 text-sm text-[#5D4E46]/60 font-bold">Click to upload image</p>
-                      </div>
-                      <input type="file" className="hidden" accept="image/*" onChange={async (e) => {
+                  <div className="flex flex-col gap-2">
+                    <button type="button" onClick={() => {
+                      const input = document.createElement('input');
+                      input.type = 'file';
+                      input.accept = 'image/*';
+                      input.onchange = async (e: any) => {
                         if (e.target.files && e.target.files[0]) {
                           try {
                             const { supabase } = await import('@/shared/utils/supabase');
                             const file = e.target.files[0];
                             const fileExt = file.name.split('.').pop();
                             const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-                            
                             const { error } = await supabase.storage.from('media').upload(fileName, file);
                             if (error) throw error;
-                            
                             const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(fileName);
                             setFormData({...formData, image: publicUrl});
                           } catch(err) {
                             alert('Failed to upload image');
                           }
                         }
-                      }} />
-                    </label>
+                      };
+                      input.click();
+                    }} className="w-full py-4 border-2 border-[#5D4E46]/20 border-dashed rounded-xl bg-[#FDFBF7] hover:bg-gray-50 flex items-center justify-center gap-2 text-[#5D4E46]/60 font-bold transition-colors">
+                      <ImageIcon size={20} /> Upload from Device
+                    </button>
+                    
+                    <Link href="/dashboard/media" target="_blank" className="text-center w-full py-3 bg-gray-100 rounded-xl text-xs font-bold text-[#5D4E46] hover:bg-gray-200 transition-colors">
+                      Open Media Library (Copy URL)
+                    </Link>
                   </div>
                 )}
                 <div className="flex items-center gap-2 mt-2">
