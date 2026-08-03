@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Heart, ShoppingBag, Check } from 'lucide-react';
 import { Product } from '../shared/utils/products';
 import { useCartStore } from '../shared/utils/store';
+import { trackSelectItem, trackAddToCart } from '../shared/utils/analytics';
 
 interface ProductCardProps {
   product: Product;
@@ -24,6 +25,7 @@ export default function ProductCard({ product, isNew, discount }: ProductCardPro
     if (isAdded) return;
     
     addItem(product);
+    trackAddToCart(product, 1);
     setIsAdded(true);
     
     setTimeout(() => {
@@ -48,7 +50,7 @@ export default function ProductCard({ product, isNew, discount }: ProductCardPro
           <Heart size={16} strokeWidth={2.5} />
         </button>
 
-        <Link href={`/shop/${product.id}`}>
+        <Link href={`/shop/${product.id}`} onClick={() => trackSelectItem(product, 'Product Card', 1)}>
           <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
         </Link>
 
@@ -75,7 +77,7 @@ export default function ProductCard({ product, isNew, discount }: ProductCardPro
         </div>
       </div>
 
-      <Link href={`/shop/${product.id}`} className="flex flex-col flex-1 pt-1">
+      <Link href={`/shop/${product.id}`} onClick={() => trackSelectItem(product, 'Product Card', 1)} className="flex flex-col flex-1 pt-1">
         <span className="text-[10px] text-[#5D4E46]/50 uppercase tracking-widest font-bold mb-1">Pust Atelier</span>
         <h3 className="font-bold text-sm text-[#5D4E46] mb-1 group-hover:text-[#A3BCB6] transition-colors line-clamp-1">{product.name}</h3>
         <p className="text-sm text-[#5D4E46] font-medium">

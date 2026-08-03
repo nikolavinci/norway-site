@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { X, Minus, Plus, ChevronDown, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { trackAddToCart, trackRemoveFromCart } from '../shared/utils/analytics';
 
 export default function CartDrawer() {
   const { items, isOpen, toggleCart, updateQuantity, removeItem, getCartTotal, addItem } = useCartStore();
@@ -97,7 +98,7 @@ export default function CartDrawer() {
                           <Plus size={12} />
                         </button>
                       </div>
-                      <button onClick={() => removeItem(item.id)} className="text-[#5D4E46]/40 hover:text-red-500 transition-colors p-2">
+                      <button onClick={() => { trackRemoveFromCart(item); removeItem(item.id); }} className="text-[#5D4E46]/40 hover:text-red-500 transition-colors p-2">
                         {/* Trash Icon mock using X for simplicity or text */}
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
                       </button>
@@ -129,7 +130,7 @@ export default function CartDrawer() {
                         <Link href={`/shop/${p.id}`} onClick={toggleCart} className="p-2 border-r border-[#5D4E46]/10 hover:bg-[#f5f5f5] rounded-l-full">
                           <Eye size={12} />
                         </Link>
-                        <button onClick={() => addItem(p)} className="p-2 hover:bg-[#f5f5f5] rounded-r-full">
+                        <button onClick={() => { trackAddToCart(p, 1); addItem(p); }} className="p-2 hover:bg-[#f5f5f5] rounded-r-full">
                           <Plus size={12} />
                         </button>
                       </div>

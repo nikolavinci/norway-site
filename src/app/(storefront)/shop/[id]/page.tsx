@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { notFound, useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { Minus, Plus, ChevronDown, ChevronRight, ChevronLeft, Star, Heart, Loader2 } from 'lucide-react';
+import { trackViewItem, trackAddToCart } from '@/shared/utils/analytics';
 
 const WavyDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) => (
   <div className={`w-full overflow-hidden leading-none ${flip ? 'rotate-180' : ''} bg-[#FDFBF7]`}>
@@ -35,6 +36,7 @@ export default function ProductDetailPage() {
       const p = await getProductById(id as string);
       if (p) {
         setProduct(p);
+        trackViewItem(p);
         const all = await getProducts();
         setRelatedProducts(all.filter(x => x.id !== p.id).slice(0, 4));
       }
@@ -246,6 +248,7 @@ export default function ProductDetailPage() {
             <button 
               onClick={() => {
                 for(let i=0; i<quantity; i++) addItem(product);
+                trackAddToCart(product, quantity);
               }}
               className="w-full py-3.5 border-2 border-[#5D4E46] rounded-full text-xs font-bold hover:bg-[#5D4E46] hover:text-white transition-colors text-center"
             >
@@ -254,6 +257,7 @@ export default function ProductDetailPage() {
             <button 
               onClick={() => {
                 for(let i=0; i<quantity; i++) addItem(product);
+                trackAddToCart(product, quantity);
                 router.push('/checkout');
               }}
               className="w-full py-3.5 bg-[#5D4E46] text-white rounded-full text-xs font-bold hover:bg-[#3A3532] transition-colors shadow-md text-center"

@@ -4,9 +4,10 @@ import { useCartStore } from '@/shared/utils/store';
 import { getProducts, Product } from '@/shared/utils/products';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Loader2, Filter } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
+import { trackViewItemList } from '@/shared/utils/analytics';
 
 export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -35,17 +36,24 @@ export default function ShopPage() {
   const categories = ['All', ...Array.from(new Set(products.map(p => p.category)))];
 
   // Filter and sort products
-  let displayProducts = [...products];
-  
-  if (selectedCategory !== 'All') {
-    displayProducts = displayProducts.filter(p => p.category === selectedCategory);
-  }
+  const displayProducts = useMemo(() => {
+    let result = [...products];
+    if (selectedCategory !== 'All') {
+      result = result.filter(p => p.category === selectedCategory);
+    }
+    if (sortOrder === 'price-low') {
+      result.sort((a, b) => a.price - b.price);
+    } else if (sortOrder === 'price-high') {
+      result.sort((a, b) => b.price - a.price);
+    }
+    return result;
+  }, [products, selectedCategory, sortOrder]);
 
-  if (sortOrder === 'price-low') {
-    displayProducts.sort((a, b) => a.price - b.price);
-  } else if (sortOrder === 'price-high') {
-    displayProducts.sort((a, b) => b.price - a.price);
-  }
+  useEffect(() => {
+    if (displayProducts.length > 0) {
+      trackViewItemList(displayProducts, `Shop Page - ${selectedCategory}`);
+    }
+  }, [displayProducts, selectedCategory]);
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-[#5D4E46] font-sans pt-32 pb-24">

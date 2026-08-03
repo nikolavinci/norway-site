@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/shared/utils/supabase';
 import { getUserAddresses, addUserAddress, UserAddress } from '@/shared/utils/addresses';
 import { Loader2, Plus, MapPin } from 'lucide-react';
+import { trackBeginCheckout } from '@/shared/utils/analytics';
 
 export default function Checkout() {
   const router = useRouter();
@@ -57,12 +58,23 @@ export default function Checkout() {
         console.error("Failed to load addresses", err);
       }
       setLoadingUser(false);
+      trackBeginCheckout(items, getCartTotal());
     }
     checkUser();
-  }, [router]);
+  }, [router, items, getCartTotal]);
+
+  const saveOrderContextForSuccess = () => {
+    sessionStorage.setItem('pendingPurchase', JSON.stringify({
+      items,
+      totalAmount,
+      shippingCost,
+      transactionId: `TXN-${Date.now()}` // Mock ID or could be updated on return
+    }));
+  };
 
   const handleVippsCheckout = () => {
     setIsProcessingVipps(true);
+    saveOrderContextForSuccess();
     setTimeout(() => {
       clearCart();
       window.location.href = '/checkout/success';
@@ -113,6 +125,7 @@ export default function Checkout() {
 
       if (error) throw error;
       if (data?.url) {
+        saveOrderContextForSuccess();
         window.location.href = data.url;
       }
     } catch (err: any) {

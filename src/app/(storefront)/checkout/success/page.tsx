@@ -7,6 +7,7 @@ import { CheckCircle2 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
 import { Suspense } from 'react';
+import { trackPurchase } from '@/shared/utils/analytics';
 
 function CheckoutSuccessContent() {
   const clearCart = useCartStore((state) => state.clearCart);
@@ -16,10 +17,26 @@ function CheckoutSuccessContent() {
 
   useEffect(() => {
     if (!hasCleared.current) {
+      const pendingStr = sessionStorage.getItem('pendingPurchase');
+      if (pendingStr) {
+        try {
+          const pendingData = JSON.parse(pendingStr);
+          trackPurchase(
+            paymentIntent || pendingData.transactionId,
+            pendingData.items,
+            pendingData.totalAmount,
+            pendingData.shippingCost
+          );
+        } catch (e) {
+          console.error("Failed to parse pending purchase", e);
+        }
+        sessionStorage.removeItem('pendingPurchase');
+      }
+
       clearCart();
       hasCleared.current = true;
     }
-  }, [clearCart]);
+  }, [clearCart, paymentIntent]);
 
   return (
     <div className="min-h-screen bg-[#F9F7F2] text-[#3A3532] font-sans flex flex-col items-center justify-center pt-20 px-6">
