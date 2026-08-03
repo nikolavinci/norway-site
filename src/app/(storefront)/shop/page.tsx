@@ -24,14 +24,6 @@ export default function ShopPage() {
     fetchProducts();
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
-        <Loader2 size={40} className="animate-spin text-[#987C6F]" />
-      </div>
-    );
-  }
-
   // Extract unique categories
   const categories = ['All', ...Array.from(new Set(products.map(p => p.category)))];
 
@@ -54,6 +46,16 @@ export default function ShopPage() {
       trackViewItemList(displayProducts, `Shop Page - ${selectedCategory}`);
     }
   }, [displayProducts, selectedCategory]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
+        <Loader2 size={40} className="animate-spin text-[#987C6F]" />
+      </div>
+    );
+  }
+
+
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-[#5D4E46] font-sans pt-32 pb-24">
