@@ -6,12 +6,20 @@ import { ChevronRight, Plus, Heart, ShoppingBag } from 'lucide-react';
 import CuratedPicks from '@/components/CuratedPicks';
 import HeroSlider from '@/components/HeroSlider';
 import ProductCard from '@/components/ProductCard';
+import FeaturedCarousel from '@/components/FeaturedCarousel';
 
-// Reusable Wavy Divider Component
 const WavyDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) => (
-  <div className={`w-full overflow-hidden leading-none ${flip ? 'rotate-180' : ''} bg-[#FDFBF7]`}>
+  <div className={`w-full overflow-hidden leading-none ${flip ? 'rotate-180' : ''} bg-transparent`}>
     <svg className="relative block w-full h-[40px] md:h-[60px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
       <path d="M0,0 C300,120 900,120 1200,0 L1200,120 L0,120 Z" className={fill}></path>
+    </svg>
+  </div>
+);
+
+const TornEdgeDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) => (
+  <div className={`w-full overflow-hidden leading-none ${flip ? 'rotate-180' : ''}`}>
+    <svg viewBox="0 0 1200 60" preserveAspectRatio="none" className="w-full h-12 md:h-16 block" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,60 C150,55 300,65 450,55 C600,45 750,65 900,55 C1050,45 1200,60 1200,60 L1200,0 L0,0 Z" className={fill} />
     </svg>
   </div>
 );
@@ -56,18 +64,9 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Overlapping Featured Products */}
+        {/* Featured Products Carousel */}
         <section className="max-w-[1440px] mx-auto px-6 -mt-32 relative z-20 mb-24">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product, index) => (
-              <ProductCard 
-                key={product.id} 
-                product={product} 
-                isNew={true} 
-                discount={index === 1 ? '-15%' : undefined} 
-              />
-            ))}
-          </div>
+          <FeaturedCarousel products={allProducts.slice(0, 8)} />
         </section>
 
         {/* Top Announcement Marquee */}
@@ -87,10 +86,10 @@ export default async function Home() {
         {/* Hero Section -> Replaced with Curated Picks Client Component */}
         <CuratedPicks products={allProducts} />
 
-        <div className="w-full h-px bg-[#5D4E46]/10 mb-20" />
+        <TornEdgeDivider fill="fill-[#FDFBF7]" flip={true} />
 
         {/* Split Feature Section */}
-        <section className="bg-white py-20 px-6">
+        <section className="bg-white py-10 px-6">
           <div className="max-w-[1440px] mx-auto flex flex-col lg:flex-row items-center gap-16 mb-16">
             <div className="flex-1 relative aspect-[4/3] w-full rounded-2xl overflow-hidden shadow-lg">
               <Image src="/images/boho_hero_banner.png" alt="Playful Space" fill className="object-cover" />
@@ -126,7 +125,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <WavyDivider fill="fill-[#FDFBF7]" />
+        <TornEdgeDivider fill="fill-[#white]" />
 
         {/* Masonry Grid Section */}
         <section className="py-20 px-6 max-w-[1440px] mx-auto">
