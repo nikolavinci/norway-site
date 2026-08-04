@@ -32,7 +32,6 @@ export default function RootLayout({
     >
       <head>
         <link rel="preconnect" href="https://images.unsplash.com" />
-        <link rel="preconnect" href="https://cdn2.blanxer.com" />
         <Analytics />
         <Script id="google-tag-manager" strategy="afterInteractive">
           {`

@@ -17,10 +17,6 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'cdn2.blanxer.com',
-      },
-      {
-        protocol: 'https',
         hostname: 'ucarecdn.com', // typical for uploadcare
       }
     ],
