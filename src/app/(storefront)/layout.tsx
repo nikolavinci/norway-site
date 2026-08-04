@@ -1,5 +1,6 @@
 import Header from '@/components/Header';
-import CartDrawer from '@/components/CartDrawer';
+import dynamic from 'next/dynamic';
+const CartDrawer = dynamic(() => import('@/components/CartDrawer'), { ssr: false });
 import Footer from '@/components/Footer';
 
 export default function StorefrontLayout({
