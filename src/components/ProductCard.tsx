@@ -46,7 +46,7 @@ export default function ProductCard({ product, isNew, discount }: ProductCardPro
           )}
         </div>
 
-        <button className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#5D4E46]/40 hover:text-[#FF5A5F] transition-all shadow-sm">
+        <button aria-label="Add to wishlist" className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#5D4E46]/40 hover:text-[#FF5A5F] transition-all shadow-sm">
           <Heart size={16} strokeWidth={2.5} />
         </button>
 
@@ -79,7 +79,7 @@ export default function ProductCard({ product, isNew, discount }: ProductCardPro
 
       <Link href={`/shop/${product.id}`} onClick={() => trackSelectItem(product, 'Product Card', 1)} className="flex flex-col flex-1 pt-1">
         <span className="text-[10px] text-[#5D4E46]/50 uppercase tracking-widest font-bold mb-1">Pust Atelier</span>
-        <h3 className="font-bold text-sm text-[#5D4E46] mb-1 group-hover:text-[#A3BCB6] transition-colors line-clamp-1">{product.name}</h3>
+        <h2 className="font-bold text-sm text-[#5D4E46] mb-1 group-hover:text-[#A3BCB6] transition-colors line-clamp-1">{product.name}</h2>
         <p className="text-sm text-[#5D4E46] font-medium">
           {product.price} NOK
           {discount && <span className="text-[#5D4E46]/40 line-through ml-2 text-xs font-normal">{(product.price * 1.15).toFixed(0)} NOK</span>}

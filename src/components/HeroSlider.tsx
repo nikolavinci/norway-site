@@ -55,12 +55,14 @@ export default function HeroSlider() {
 
       {/* Navigation Arrows (visible on hover) */}
       <button 
+        aria-label="Previous slide"
         onClick={prevSlide}
         className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/30 backdrop-blur text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/50"
       >
         <ChevronLeft size={20} />
       </button>
       <button 
+        aria-label="Next slide"
         onClick={nextSlide}
         className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/30 backdrop-blur text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/50"
       >
@@ -68,13 +70,16 @@ export default function HeroSlider() {
       </button>
 
       {/* Progress Dots */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center">
         {slides.map((_, index) => (
           <button 
             key={index}
+            aria-label={`Go to slide ${index + 1}`}
             onClick={() => setCurrentSlide(index)}
-            className={`w-2 h-2 rounded-full transition-all ${index === currentSlide ? 'bg-white w-6' : 'bg-white/50'}`}
-          />
+            className="w-12 h-12 flex items-center justify-center"
+          >
+            <div className={`h-2 rounded-full transition-all ${index === currentSlide ? 'bg-white w-6' : 'bg-white/50 w-2'}`} />
+          </button>
         ))}
       </div>
     </div>

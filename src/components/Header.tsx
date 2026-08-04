@@ -76,14 +76,14 @@ export default function Header() {
           {/* Right Nav & Search */}
           <div className="flex gap-6 items-center flex-1 justify-end text-gray-700">
             {/* Search Trigger */}
-            <button onClick={() => setIsSearchOpen(true)} className="hover:text-black transition-colors">
+            <button aria-label="Open search" onClick={() => setIsSearchOpen(true)} className="hover:text-black transition-colors">
               <Search size={20} />
             </button>
             
             <div className="flex gap-5 items-center">
               {user ? (
                 <div className="relative">
-                  <button onClick={() => setIsUserMenuOpen(!isUserMenuOpen)} className="flex items-center gap-2 hover:text-black transition-colors">
+                  <button aria-label="Toggle user menu" onClick={() => setIsUserMenuOpen(!isUserMenuOpen)} className="flex items-center gap-2 hover:text-black transition-colors">
                     <User size={20} />
                   </button>
                   {isUserMenuOpen && (
@@ -100,11 +100,11 @@ export default function Header() {
                   )}
                 </div>
               ) : (
-                <Link href="/login" className="hover:text-black transition-colors">
+                <Link aria-label="Login" href="/login" className="hover:text-black transition-colors">
                   <User size={20} />
                 </Link>
               )}
-              <button onClick={toggleCart} className="hover:text-black transition-colors relative">
+              <button aria-label="Open cart" onClick={toggleCart} className="hover:text-black transition-colors relative">
                 <ShoppingBag size={20} />
                 {itemCount > 0 && (
                   <span className="absolute -top-2 -right-2 bg-[#C88267] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
@@ -122,6 +122,7 @@ export default function Header() {
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md animate-fade-in flex flex-col pt-24 px-6 overflow-y-auto">
           <div className="max-w-4xl mx-auto w-full relative">
             <button 
+              aria-label="Close search"
               onClick={() => setIsSearchOpen(false)} 
               className="absolute right-0 -top-12 text-white/50 hover:text-white transition-colors"
             >
@@ -146,10 +147,10 @@ export default function Header() {
                   {searchQuery.length > 0 ? `${filteredProducts.length} Results Found` : 'Trending Items'}
                 </h3>
                 <div className="flex items-center gap-2 md:hidden">
-                  <button onClick={() => setSearchLayout('grid')} className={`p-1.5 rounded-md transition-colors ${searchLayout === 'grid' ? 'bg-white/20 text-white' : 'text-white/40 hover:text-white/60'}`}>
+                  <button aria-label="Grid view" onClick={() => setSearchLayout('grid')} className={`p-1.5 rounded-md transition-colors ${searchLayout === 'grid' ? 'bg-white/20 text-white' : 'text-white/40 hover:text-white/60'}`}>
                     <LayoutGrid size={18} />
                   </button>
-                  <button onClick={() => setSearchLayout('list')} className={`p-1.5 rounded-md transition-colors ${searchLayout === 'list' ? 'bg-white/20 text-white' : 'text-white/40 hover:text-white/60'}`}>
+                  <button aria-label="List view" onClick={() => setSearchLayout('list')} className={`p-1.5 rounded-md transition-colors ${searchLayout === 'list' ? 'bg-white/20 text-white' : 'text-white/40 hover:text-white/60'}`}>
                     <List size={18} />
                   </button>
                 </div>

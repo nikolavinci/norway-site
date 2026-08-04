@@ -49,7 +49,7 @@ export default function CartDrawer() {
         
         <div className="px-6 py-4 border-b border-[#5D4E46]/10 flex justify-between items-center bg-white">
           <h2 className="text-2xl font-bold">Cart</h2>
-          <button onClick={toggleCart} className="text-[#5D4E46]/60 hover:text-[#5D4E46] transition-colors p-1">
+          <button aria-label="Close cart" onClick={toggleCart} className="text-[#5D4E46]/60 hover:text-[#5D4E46] transition-colors p-1">
             <X size={20} strokeWidth={1.5} />
           </button>
         </div>
@@ -90,15 +90,15 @@ export default function CartDrawer() {
                     
                     <div className="flex items-center gap-4">
                       <div className="flex items-center border border-[#5D4E46]/10 rounded-md bg-white">
-                        <button onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))} className="p-2 text-[#5D4E46]/60 hover:text-[#5D4E46] transition-colors">
+                        <button aria-label="Decrease quantity" onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))} className="p-2 text-[#5D4E46]/60 hover:text-[#5D4E46] transition-colors">
                           <Minus size={12} />
                         </button>
                         <span className="w-8 text-center text-xs font-bold">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-2 text-[#5D4E46]/60 hover:text-[#5D4E46] transition-colors">
+                        <button aria-label="Increase quantity" onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-2 text-[#5D4E46]/60 hover:text-[#5D4E46] transition-colors">
                           <Plus size={12} />
                         </button>
                       </div>
-                      <button onClick={() => { trackRemoveFromCart(item); removeItem(item.id); }} className="text-[#5D4E46]/40 hover:text-red-500 transition-colors p-2">
+                      <button aria-label="Remove item" onClick={() => { trackRemoveFromCart(item); removeItem(item.id); }} className="text-[#5D4E46]/40 hover:text-red-500 transition-colors p-2">
                         {/* Trash Icon mock using X for simplicity or text */}
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
                       </button>
@@ -115,8 +115,8 @@ export default function CartDrawer() {
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-sm font-bold">You might also like:</h3>
                 <div className="flex gap-2">
-                  <button className="text-[#5D4E46]/50 hover:text-[#5D4E46]"><ChevronLeft size={16}/></button>
-                  <button className="text-[#5D4E46]/50 hover:text-[#5D4E46]"><ChevronRight size={16}/></button>
+                  <button aria-label="Scroll left" className="text-[#5D4E46]/50 hover:text-[#5D4E46]"><ChevronLeft size={16}/></button>
+                  <button aria-label="Scroll right" className="text-[#5D4E46]/50 hover:text-[#5D4E46]"><ChevronRight size={16}/></button>
                 </div>
               </div>
               <div className="flex gap-4 overflow-x-auto pb-2 snap-x hide-scrollbar">
@@ -127,10 +127,10 @@ export default function CartDrawer() {
                       <span className="absolute top-1 right-1 bg-[#7A75A5] text-white text-[8px] font-black uppercase px-1.5 py-0.5 rounded">-15%</span>
                       {/* Hover action buttons */}
                       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center bg-white rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Link href={`/shop/${p.id}`} onClick={toggleCart} className="p-2 border-r border-[#5D4E46]/10 hover:bg-[#f5f5f5] rounded-l-full">
+                        <Link aria-label="View product" href={`/shop/${p.id}`} onClick={toggleCart} className="p-2 border-r border-[#5D4E46]/10 hover:bg-[#f5f5f5] rounded-l-full">
                           <Eye size={12} />
                         </Link>
-                        <button onClick={() => { trackAddToCart(p, 1); addItem(p); }} className="p-2 hover:bg-[#f5f5f5] rounded-r-full">
+                        <button aria-label="Quick add to cart" onClick={() => { trackAddToCart(p, 1); addItem(p); }} className="p-2 hover:bg-[#f5f5f5] rounded-r-full">
                           <Plus size={12} />
                         </button>
                       </div>
