@@ -8,6 +8,7 @@ import { notFound, useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { Minus, Plus, ChevronDown, ChevronRight, ChevronLeft, Star, Heart, Loader2 } from 'lucide-react';
 import { trackViewItem, trackAddToCart } from '@/shared/utils/analytics';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 const WavyDivider = ({ fill, flip = false }: { fill: string, flip?: boolean }) => (
   <div className={`w-full overflow-hidden leading-none ${flip ? 'rotate-180' : ''} bg-[#FDFBF7]`}>
@@ -27,7 +28,6 @@ export default function ProductDetailPage() {
   const addItem = useCartStore((state) => state.addItem);
   const [quantity, setQuantity] = useState(1);
   const [showSticky, setShowSticky] = useState(false);
-  const [openAccordion, setOpenAccordion] = useState<string | null>(null);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -155,73 +155,58 @@ export default function ProductDetailPage() {
 
         {/* Right: Checkout & Support */}
         <div className="lg:col-span-12 xl:col-span-3 flex flex-col gap-6">
-          <div className="space-y-2">
-            <div className="bg-[#F7F0E3] rounded-md overflow-hidden">
-              <div onClick={() => setOpenAccordion(openAccordion === 'shipping' ? null : 'shipping')} className="px-4 py-3 flex justify-between items-center cursor-pointer">
-                <span className="text-xs font-medium flex items-center gap-2"><span className="text-sm">🚚</span> Shipping & Returns</span>
-                <ChevronDown size={14} className={`text-[#5D4E46]/50 transition-transform ${openAccordion === 'shipping' ? 'rotate-180' : ''}`}/>
-              </div>
-              {openAccordion === 'shipping' && (
-                <div className="px-4 pb-3 text-xs text-[#5D4E46]/80 leading-relaxed">
-                  We offer free standard shipping on all orders. Returns are accepted within 30 days of delivery. Custom items are non-refundable.
-                </div>
-              )}
-            </div>
-            
+          <Accordion type="single" collapsible className="space-y-2">
+            <AccordionItem value="shipping" className="bg-[#F7F0E3] rounded-md overflow-hidden border-none px-4">
+              <AccordionTrigger className="text-xs font-medium py-3 hover:no-underline">
+                <span className="flex items-center gap-2"><span className="text-sm">🚚</span> Shipping & Returns</span>
+              </AccordionTrigger>
+              <AccordionContent className="text-xs text-[#5D4E46]/80 leading-relaxed pb-3">
+                We offer free standard shipping on all orders. Returns are accepted within 30 days of delivery. Custom items are non-refundable.
+              </AccordionContent>
+            </AccordionItem>
+
             {product.care_instructions && (
-              <div className="bg-[#F7F0E3] rounded-md overflow-hidden">
-                <div onClick={() => setOpenAccordion(openAccordion === 'care' ? null : 'care')} className="px-4 py-3 flex justify-between items-center cursor-pointer">
-                  <span className="text-xs font-medium flex items-center gap-2"><span className="text-sm">✨</span> Product Care</span>
-                  <ChevronDown size={14} className={`text-[#5D4E46]/50 transition-transform ${openAccordion === 'care' ? 'rotate-180' : ''}`}/>
-                </div>
-                {openAccordion === 'care' && (
-                  <div className="px-4 pb-3 text-xs text-[#5D4E46]/80 leading-relaxed">
-                    {product.care_instructions}
-                  </div>
-                )}
-              </div>
+              <AccordionItem value="care" className="bg-[#F7F0E3] rounded-md overflow-hidden border-none px-4">
+                <AccordionTrigger className="text-xs font-medium py-3 hover:no-underline">
+                  <span className="flex items-center gap-2"><span className="text-sm">✨</span> Product Care</span>
+                </AccordionTrigger>
+                <AccordionContent className="text-xs text-[#5D4E46]/80 leading-relaxed pb-3">
+                  {product.care_instructions}
+                </AccordionContent>
+              </AccordionItem>
             )}
 
             {product.materials && (
-              <div className="bg-[#F7F0E3] rounded-md overflow-hidden">
-                <div onClick={() => setOpenAccordion(openAccordion === 'materials' ? null : 'materials')} className="px-4 py-3 flex justify-between items-center cursor-pointer">
-                  <span className="text-xs font-medium flex items-center gap-2"><span className="text-sm">🌿</span> Materials</span>
-                  <ChevronDown size={14} className={`text-[#5D4E46]/50 transition-transform ${openAccordion === 'materials' ? 'rotate-180' : ''}`}/>
-                </div>
-                {openAccordion === 'materials' && (
-                  <div className="px-4 pb-3 text-xs text-[#5D4E46]/80 leading-relaxed">
-                    {product.materials}
-                  </div>
-                )}
-              </div>
-            )}
-            
-            {product.dimensions && (
-              <div className="bg-[#F7F0E3] rounded-md overflow-hidden">
-                <div onClick={() => setOpenAccordion(openAccordion === 'dimensions' ? null : 'dimensions')} className="px-4 py-3 flex justify-between items-center cursor-pointer">
-                  <span className="text-xs font-medium flex items-center gap-2"><span className="text-sm">📏</span> Dimensions / Size</span>
-                  <ChevronDown size={14} className={`text-[#5D4E46]/50 transition-transform ${openAccordion === 'dimensions' ? 'rotate-180' : ''}`}/>
-                </div>
-                {openAccordion === 'dimensions' && (
-                  <div className="px-4 pb-3 text-xs text-[#5D4E46]/80 leading-relaxed">
-                    {product.dimensions}
-                  </div>
-                )}
-              </div>
+              <AccordionItem value="materials" className="bg-[#F7F0E3] rounded-md overflow-hidden border-none px-4">
+                <AccordionTrigger className="text-xs font-medium py-3 hover:no-underline">
+                  <span className="flex items-center gap-2"><span className="text-sm">🌿</span> Materials</span>
+                </AccordionTrigger>
+                <AccordionContent className="text-xs text-[#5D4E46]/80 leading-relaxed pb-3">
+                  {product.materials}
+                </AccordionContent>
+              </AccordionItem>
             )}
 
-            <div className="bg-[#F7F0E3] rounded-md overflow-hidden">
-              <div onClick={() => setOpenAccordion(openAccordion === 'support' ? null : 'support')} className="px-4 py-3 flex justify-between items-center cursor-pointer">
-                <span className="text-xs font-medium flex items-center gap-2"><span className="text-sm">🎧</span> 24/7 Support</span>
-                <ChevronDown size={14} className={`text-[#5D4E46]/50 transition-transform ${openAccordion === 'support' ? 'rotate-180' : ''}`}/>
-              </div>
-              {openAccordion === 'support' && (
-                <div className="px-4 pb-3 text-xs text-[#5D4E46]/80 leading-relaxed">
-                  Our dedicated support team is available around the clock. Reach out via live chat or email us at support@pustatelier.no for immediate assistance.
-                </div>
-              )}
-            </div>
-          </div>
+            {product.dimensions && (
+              <AccordionItem value="dimensions" className="bg-[#F7F0E3] rounded-md overflow-hidden border-none px-4">
+                <AccordionTrigger className="text-xs font-medium py-3 hover:no-underline">
+                  <span className="flex items-center gap-2"><span className="text-sm">📏</span> Dimensions / Size</span>
+                </AccordionTrigger>
+                <AccordionContent className="text-xs text-[#5D4E46]/80 leading-relaxed pb-3">
+                  {product.dimensions}
+                </AccordionContent>
+              </AccordionItem>
+            )}
+
+            <AccordionItem value="support" className="bg-[#F7F0E3] rounded-md overflow-hidden border-none px-4">
+              <AccordionTrigger className="text-xs font-medium py-3 hover:no-underline">
+                <span className="flex items-center gap-2"><span className="text-sm">🎧</span> 24/7 Support</span>
+              </AccordionTrigger>
+              <AccordionContent className="text-xs text-[#5D4E46]/80 leading-relaxed pb-3">
+                Our dedicated support team is available around the clock. Reach out via live chat or email us at support@pustatelier.no for immediate assistance.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
 
           <div className="bg-[#987C6F] text-white text-[10px] font-bold uppercase tracking-widest text-center py-2.5 rounded-sm shadow-sm flex items-center justify-center gap-2">
             <span>📦</span> Delivery between: {getDeliveryDates()}
