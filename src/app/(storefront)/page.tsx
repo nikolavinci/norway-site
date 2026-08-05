@@ -70,13 +70,13 @@ export default async function Home() {
         </section>
 
         {/* Top Announcement Marquee */}
-        <div className="bg-[#987C6F] text-white text-xs md:text-sm uppercase tracking-widest py-3 overflow-hidden whitespace-nowrap relative flex">
-          <div className="animate-marquee flex whitespace-nowrap font-medium min-w-full">
+        <div className="bg-[#987C6F] text-white text-xs md:text-sm uppercase tracking-widest py-3 overflow-hidden whitespace-nowrap relative flex pause-on-hover">
+          <div className="animate-marquee flex whitespace-nowrap font-medium w-max shrink-0">
             <span className="mx-8">Crafting Timeless Bohemian Handcrafts ✨ Ethically Sourced, Sustainably Made</span>
             <span className="mx-8">Crafting Timeless Bohemian Handcrafts ✨ Ethically Sourced, Sustainably Made</span>
             <span className="mx-8">Crafting Timeless Bohemian Handcrafts ✨ Ethically Sourced, Sustainably Made</span>
           </div>
-          <div className="animate-marquee flex whitespace-nowrap font-medium min-w-full" aria-hidden="true">
+          <div className="animate-marquee flex whitespace-nowrap font-medium w-max shrink-0" aria-hidden="true">
             <span className="mx-8">Crafting Timeless Bohemian Handcrafts ✨ Ethically Sourced, Sustainably Made</span>
             <span className="mx-8">Crafting Timeless Bohemian Handcrafts ✨ Ethically Sourced, Sustainably Made</span>
             <span className="mx-8">Crafting Timeless Bohemian Handcrafts ✨ Ethically Sourced, Sustainably Made</span>
@@ -125,7 +125,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <TornEdgeDivider fill="fill-[#white]" />
+        <TornEdgeDivider fill="fill-white" />
 
         {/* Masonry Grid Section */}
         <section className="py-20 px-6 max-w-[1440px] mx-auto">

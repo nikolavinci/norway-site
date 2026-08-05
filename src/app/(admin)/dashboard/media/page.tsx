@@ -5,6 +5,7 @@ import { supabase } from '@/shared/utils/supabase';
 import { uploadProductImage } from '@/shared/utils/products';
 import { Loader2, Trash2, UploadCloud, ImageIcon, Copy } from 'lucide-react';
 import Image from 'next/image';
+import { getLocalMedia } from './actions';
 
 export default function MediaLibraryPage() {
   const [files, setFiles] = useState<any[]>([]);
@@ -42,6 +43,10 @@ export default function MediaLibraryPage() {
       })];
     }
     
+    // Add local media
+    const localMedia = await getLocalMedia();
+    allFiles = [...allFiles, ...localMedia];
+    
     allFiles.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
     setFiles(allFiles);
     setLoading(false);
@@ -67,6 +72,10 @@ export default function MediaLibraryPage() {
   };
 
   const handleDelete = async (fileName: string, bucket: string = 'media') => {
+    if (bucket === 'local') {
+      alert('Local website media cannot be deleted from the dashboard.');
+      return;
+    }
     if (!confirm('Are you sure you want to delete this image?')) return;
     try {
       await supabase.storage.from(bucket).remove([fileName]);

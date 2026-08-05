@@ -67,10 +67,10 @@ export default function Header() {
 
           {/* Center: Nav */}
           <nav className="hidden md:flex gap-8 text-[13px] font-medium tracking-wide uppercase text-gray-600 justify-center">
-            <Link href="/shop" className="hover:text-black transition-colors py-2">Shop</Link>
-            <Link href="/collections" className="hover:text-black transition-colors py-2">Collections</Link>
             <Link href="/about" className="hover:text-black transition-colors py-2">About Us</Link>
+            <Link href="/collections" className="hover:text-black transition-colors py-2">Collections</Link>
             <Link href="/contact" className="hover:text-black transition-colors py-2">Contact</Link>
+            <Link href="/shop" className="hover:text-black transition-colors py-2">Shop</Link>
           </nav>
           
           {/* Right Nav & Search */}

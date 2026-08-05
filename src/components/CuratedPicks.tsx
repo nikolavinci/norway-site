@@ -12,14 +12,15 @@ export default function CuratedPicks({ products }: { products: Product[] }) {
   const tabs = ['Bags', 'Home & Living', 'Accessories'];
 
   const filteredProducts = products.filter((p) => {
-    if (activeTab === 'Bags') return p.category.toLowerCase().includes('bag');
-    if (activeTab === 'Home & Living') return p.category.toLowerCase().includes('home') || p.category.toLowerCase().includes('textile');
-    if (activeTab === 'Accessories') return !p.category.toLowerCase().includes('bag') && !p.category.toLowerCase().includes('home');
+    const isBag = p.name.toLowerCase().includes('bag') || p.name.toLowerCase().includes('tote') || p.name.toLowerCase().includes('shopper');
+    if (activeTab === 'Bags') return isBag;
+    if (activeTab === 'Home & Living') return p.category.toLowerCase().includes('bedding') || p.category.toLowerCase().includes('living') || p.category.toLowerCase().includes('home');
+    if (activeTab === 'Accessories') return p.category.toLowerCase().includes('accessories') && !isBag;
     return true;
   }).slice(0, 4);
 
-  // Fallback if filtering is too strict
-  const displayProducts = filteredProducts.length > 0 ? filteredProducts : products.slice(0, 4);
+  // Use the filtered products directly so pills actually work instead of silently falling back
+  const displayProducts = filteredProducts;
 
   return (
     <section className="text-center py-20 px-6">
@@ -49,10 +50,18 @@ export default function CuratedPicks({ products }: { products: Product[] }) {
         ))}
       </div>
 
-      <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-4 min-h-[300px]">
-        {displayProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+      <div className="max-w-[1440px] mx-auto min-h-[300px]">
+        {displayProducts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-4">
+            {displayProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-48 text-[#5D4E46]/50">
+            No products found in this category.
+          </div>
+        )}
       </div>
     </section>
   );
