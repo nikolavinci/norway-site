@@ -5,7 +5,7 @@ import { supabase } from '@/shared/utils/supabase';
 import { uploadProductImage } from '@/shared/utils/products';
 import { Loader2, Trash2, UploadCloud, ImageIcon, Copy } from 'lucide-react';
 import Image from 'next/image';
-import { getLocalMedia } from './actions';
+import localMedia from '@/shared/utils/localMedia.json';
 
 export default function MediaLibraryPage() {
   const [files, setFiles] = useState<any[]>([]);
@@ -44,7 +44,6 @@ export default function MediaLibraryPage() {
     }
     
     // Add local media
-    const localMedia = await getLocalMedia();
     allFiles = [...allFiles, ...localMedia];
     
     allFiles.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
