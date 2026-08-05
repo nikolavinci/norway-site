@@ -50,3 +50,16 @@ body {
 .animate-accordion-up {
   animation: accordion-up 0.2s ease-out;
 }
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 25s linear infinite;
+}
