@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Heart, Package, TrendingUp } from 'lucide-react';
 import Image from 'next/image';
+import { supabase } from '@/shared/utils/supabase';
 
 // Mock data for Favorites
 const MOCK_FAVORITES = [
@@ -14,7 +15,21 @@ const MOCK_FAVORITES = [
 ];
 
 export default function FavoritesPage() {
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState<'most_favorited' | 'least_stock'>('most_favorited');
+
+  useEffect(() => {
+    async function fetchProfile() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+        setProfile(data || { role: 'customer' });
+      }
+      setLoading(false);
+    }
+    fetchProfile();
+  }, []);
 
   const sortedFavorites = [...MOCK_FAVORITES].sort((a, b) => {
     if (sort === 'most_favorited') return b.favorited_by - a.favorited_by;
@@ -22,11 +37,14 @@ export default function FavoritesPage() {
     return 0;
   });
 
-  return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-black text-[#5D4E46]">Product Favorites</h2>
-      </div>
+  if (loading) return null;
+
+  if (profile?.role === 'admin') {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-black text-[#5D4E46]">Product Favorites</h2>
+        </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -99,26 +117,40 @@ export default function FavoritesPage() {
                   </div>
                   <span className="font-bold">{item.name}</span>
                 </td>
-                <td className="px-6 py-4">{item.category}</td>
+                <td className="px-6 py-4 text-[#5D4E46]/80">{item.category}</td>
+                <td className="px-6 py-4 font-bold">{item.favorited_by} users</td>
                 <td className="px-6 py-4">
-                  <div className="flex items-center gap-2">
-                    <Heart size={14} className="text-[#FF5A5F] fill-[#FF5A5F]" />
-                    <span className="font-bold text-lg">{item.favorited_by}</span> users
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded text-xs font-bold ${
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${
                     item.stock > 10 ? 'bg-[#AAB084]/20 text-[#6B724D]' : 
                     item.stock > 0 ? 'bg-[#FFD6A5]/40 text-[#D97D27]' : 
                     'bg-red-50 text-red-600'
                   }`}>
-                    {item.stock > 10 ? 'In Stock' : item.stock > 0 ? `Low Stock (${item.stock} left)` : 'Out of stock'}
+                    {item.stock > 0 ? `${item.stock} in stock` : 'Out of stock'}
                   </span>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+    </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-black text-[#5D4E46]">Your Wishlist</h2>
+      </div>
+      <div className="bg-white p-12 rounded-2xl shadow-sm border border-[#5D4E46]/10 text-center">
+        <Heart size={48} className="mx-auto mb-4 text-[#987C6F] opacity-40" />
+        <h3 className="text-xl font-bold text-[#5D4E46] mb-2">No saved items yet</h3>
+        <p className="text-[#5D4E46]/60 max-w-md mx-auto mb-6">
+          When you find something you love, click the heart icon to save it here for later.
+        </p>
+        <a href="/shop" className="inline-flex items-center px-6 py-3 bg-[#5D4E46] text-white rounded-full font-bold hover:bg-[#3A3532] transition-colors">
+          Explore Products
+        </a>
       </div>
     </div>
   );

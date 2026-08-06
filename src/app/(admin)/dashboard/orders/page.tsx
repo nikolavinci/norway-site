@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ShoppingBag, ShoppingCart, AlertCircle, Send, Check } from 'lucide-react';
+import { supabase } from '@/shared/utils/supabase';
 
 // Mock data for Orders and Carts
 const MOCK_ORDERS = [
@@ -13,8 +14,22 @@ const MOCK_ORDERS = [
 ];
 
 export default function OrdersPage() {
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'completed' | 'abandoned' | 'cart'>('all');
   const [recovered, setRecovered] = useState<string[]>([]);
+
+  useEffect(() => {
+    async function fetchProfile() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+        setProfile(data || { role: 'customer' });
+      }
+      setLoading(false);
+    }
+    fetchProfile();
+  }, []);
 
   const filteredOrders = MOCK_ORDERS.filter(o => filter === 'all' || o.status === filter);
 
@@ -24,11 +39,14 @@ export default function OrdersPage() {
     setRecovered([...recovered, id]);
   };
 
-  return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-black text-[#5D4E46]">Orders & Carts</h2>
-      </div>
+  if (loading) return null;
+
+  if (profile?.role === 'admin') {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-black text-[#5D4E46]">Orders & Carts</h2>
+        </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -140,6 +158,26 @@ export default function OrdersPage() {
             )}
           </tbody>
         </table>
+      </div>
+    </div>
+    );
+  }
+
+  // Customer Orders View
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-black text-[#5D4E46]">Your Orders</h2>
+      </div>
+      <div className="bg-white p-12 rounded-2xl shadow-sm border border-[#5D4E46]/10 text-center">
+        <ShoppingBag size={48} className="mx-auto mb-4 text-[#987C6F] opacity-40" />
+        <h3 className="text-xl font-bold text-[#5D4E46] mb-2">You have no orders yet</h3>
+        <p className="text-[#5D4E46]/60 max-w-md mx-auto mb-6">
+          When you place an order, it will appear here for you to track and manage.
+        </p>
+        <a href="/shop" className="inline-flex items-center px-6 py-3 bg-[#5D4E46] text-white rounded-full font-bold hover:bg-[#3A3532] transition-colors">
+          Start Shopping
+        </a>
       </div>
     </div>
   );
