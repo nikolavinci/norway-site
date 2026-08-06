@@ -16,7 +16,7 @@ export default function Checkout() {
   const [user, setUser] = useState<any>(null);
   const [loadingUser, setLoadingUser] = useState(true);
   
-  const [paymentMethod, setPaymentMethod] = useState<'vipps' | 'card'>('vipps');
+  const [paymentMethod, setPaymentMethod] = useState<'vipps' | 'card'>('card');
   const [isProcessingVipps, setIsProcessingVipps] = useState(false);
   
   // Addresses
@@ -27,6 +27,7 @@ export default function Checkout() {
   const [newAddress, setNewAddress] = useState({
     first_name: '',
     last_name: '',
+    email: '',
     address: '',
     city: '',
     postal_code: '',
@@ -42,8 +43,8 @@ export default function Checkout() {
     async function checkUser() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user) {
-        // Force users to create an account or login
-        router.push('/login?redirectTo=/checkout');
+        setUser(null);
+        setLoadingUser(false);
         return;
       }
       setUser(session.user);
@@ -106,8 +107,17 @@ export default function Checkout() {
 
   const handleStripeCheckout = async () => {
     if (totalAmount <= 0) return;
-    if (!user) return;
     
+    if (!user && !newAddress.email) {
+      alert('Please enter your email address.');
+      return;
+    }
+    
+    if (selectedAddressId === 'new' && (!newAddress.first_name || !newAddress.last_name || !newAddress.address || !newAddress.city || !newAddress.postal_code)) {
+      alert('Please fill in all required shipping fields.');
+      return;
+    }
+
     // Ensure an address is processed before moving to stripe
     await processAndGetAddress();
 
@@ -117,7 +127,7 @@ export default function Checkout() {
       const { data, error } = await supabase.functions.invoke('create-checkout-session', {
         body: { 
           items, 
-          email: user.email, 
+          email: user?.email || newAddress.email, 
           isLive: settings?.is_stripe_live,
           origin: window.location.origin
         },
@@ -157,8 +167,13 @@ export default function Checkout() {
             {/* Contact Info (Pre-filled) */}
             <section>
               <h2 className="text-xl font-bold text-[#5D4E46] mb-4">Contact Information</h2>
-              <input type="email" value={user?.email || ''} disabled className={`${inputClasses} bg-gray-100 opacity-80 cursor-not-allowed`} />
-              <p className="text-xs text-gray-500 mt-2 font-medium">Logged in securely via Supabase Auth</p>
+              {user ? (
+                <>
+                  <input type="email" value={user.email || ''} disabled className={`${inputClasses} bg-gray-100 opacity-80 cursor-not-allowed`} />
+                </>
+              ) : (
+                <input type="email" placeholder="Email address" required value={newAddress.email} onChange={e => setNewAddress({...newAddress, email: e.target.value})} className={inputClasses} />
+              )}
             </section>
             
             {/* Shipping Info */}
@@ -195,7 +210,12 @@ export default function Checkout() {
                   <input type="text" placeholder="City" required value={newAddress.city} onChange={e => setNewAddress({...newAddress, city: e.target.value})} className={inputClasses} />
                   <div className="grid grid-cols-2 gap-4">
                     <input type="text" placeholder="Postal Code" required value={newAddress.postal_code} onChange={e => setNewAddress({...newAddress, postal_code: e.target.value})} className={inputClasses} />
-                    <input type="text" placeholder="Norway" disabled className={`${inputClasses} bg-[#F9F6F0] opacity-70`} />
+                    <select value={newAddress.country} onChange={e => setNewAddress({...newAddress, country: e.target.value})} className={inputClasses}>
+                      <option value="Norway">Norway</option>
+                      <option value="Sweden">Sweden</option>
+                      <option value="Denmark">Denmark</option>
+                      <option value="Finland">Finland</option>
+                    </select>
                   </div>
                   
                   <label className="flex items-center gap-3 mt-4 pt-4 border-t border-gray-100 cursor-pointer">
@@ -239,6 +259,14 @@ export default function Checkout() {
                     <p className="text-[#3A3532]/70 text-sm mb-6 max-w-sm mx-auto">You will be redirected to the Vipps app to approve the transaction securely.</p>
                     <button 
                       onClick={async () => {
+                        if (!user && !newAddress.email) {
+                          alert('Please enter your email address.');
+                          return;
+                        }
+                        if (selectedAddressId === 'new' && (!newAddress.first_name || !newAddress.last_name || !newAddress.address || !newAddress.city || !newAddress.postal_code)) {
+                          alert('Please fill in all required shipping fields.');
+                          return;
+                        }
                         await processAndGetAddress();
                         handleVippsCheckout();
                       }} 
@@ -276,9 +304,14 @@ export default function Checkout() {
               ) : items.map((item) => (
                 <div key={item.id} className="flex justify-between items-center text-sm py-4">
                   <div className="flex items-center gap-4">
-                    <span className="w-6 h-6 rounded-full bg-[#5D4E46] text-white flex items-center justify-center text-xs font-bold">
-                      {item.quantity}
-                    </span>
+                    <div className="relative w-12 h-12 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
+                      {item.image && (
+                        <img src={item.image} alt={item.name} className="object-cover w-full h-full" />
+                      )}
+                      <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-[#5D4E46] text-white flex items-center justify-center text-[10px] font-bold">
+                        {item.quantity}
+                      </span>
+                    </div>
                     <span className="font-bold text-[#5D4E46]">{item.name}</span>
                   </div>
                   <span className="font-bold text-[#5D4E46]">{item.price * item.quantity} NOK</span>
