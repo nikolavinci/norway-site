@@ -34,5 +34,23 @@
     "url": "/images/boho_hero_banner.png",
     "bucket": "local",
     "created_at": "2026-07-25T13:46:13.440Z"
+  },
+  {
+    "name": "products/blue_lily_quilt.webp",
+    "url": "/images/products/blue_lily_quilt.webp",
+    "bucket": "local",
+    "created_at": "2026-08-06T21:04:25.075Z"
+  },
+  {
+    "name": "products/green_tree_tablecover.webp",
+    "url": "/images/products/green_tree_tablecover.webp",
+    "bucket": "local",
+    "created_at": "2026-08-06T21:04:25.729Z"
+  },
+  {
+    "name": "products/yellow_lotus_bedding.webp",
+    "url": "/images/products/yellow_lotus_bedding.webp",
+    "bucket": "local",
+    "created_at": "2026-08-06T21:04:25.384Z"
   }
 ]
