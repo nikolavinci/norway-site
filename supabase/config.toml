@@ -9,3 +9,14 @@ entrypoint = "./functions/track-view/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/track-view/*.html" ]
+
+[functions.recover-abandoned-cart]
+enabled = true
+verify_jwt = false
+import_map = "./functions/recover-abandoned-cart/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/recover-abandoned-cart/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/recover-abandoned-cart/*.html" ]
