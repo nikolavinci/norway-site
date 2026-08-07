@@ -128,6 +128,7 @@ export default function Checkout() {
         body: { 
           items, 
           email: user?.email || newAddress.email, 
+          userId: user?.id,
           isLive: settings?.is_stripe_live,
           origin: window.location.origin
         },

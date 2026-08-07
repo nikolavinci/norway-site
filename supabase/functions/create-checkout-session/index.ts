@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { items, email, isLive, origin } = await req.json();
+    const { items, email, userId, isLive, origin } = await req.json();
     const baseUrl = origin || req.headers.get('origin') || 'http://localhost:3000';
 
     // Get the correct secret key from environment variables based on the database flag
@@ -38,6 +38,9 @@ serve(async (req) => {
           product_data: {
             name: item.name,
             images: imageUrl ? [imageUrl] : [],
+            metadata: {
+              product_id: item.id
+            }
           },
           unit_amount: Math.round(item.price * 100), // Stripe expects amounts in cents/øre
         },
@@ -53,6 +56,7 @@ serve(async (req) => {
       success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/cart`,
       customer_email: email,
+      client_reference_id: userId,
     });
 
     return new Response(
