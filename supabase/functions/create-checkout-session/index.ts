@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@12.0.0?target=deno";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -58,6 +59,43 @@ serve(async (req) => {
       customer_email: email,
       client_reference_id: userId,
     });
+
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    // Get real userId from email if not provided (guest linking)
+    let actualUserId = userId || null;
+    if (!actualUserId && email) {
+      const { data } = await supabaseAdmin.rpc('get_user_id_by_email', { email_address: email });
+      if (data) actualUserId = data;
+    }
+
+    const orderTotal = items.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0);
+
+    // Pre-create the order in "pending" status (Abandoned Cart tracking)
+    const { data: order, error } = await supabaseAdmin.from('orders').insert({
+      user_id: actualUserId,
+      email: email,
+      status: 'pending',
+      total: orderTotal,
+      stripe_session_id: session.id,
+      items: items // Store full cart JSON
+    }).select().single();
+
+    if (error) {
+      console.error("Error creating pending order:", error);
+    } else {
+      // Insert order items
+      const orderItems = items.map((item: any) => ({
+        order_id: order.id,
+        product_id: item.id,
+        quantity: item.quantity,
+        price_at_time: item.price
+      }));
+      await supabaseAdmin.from('order_items').insert(orderItems);
+    }
 
     return new Response(
       JSON.stringify({ sessionId: session.id, url: session.url }),

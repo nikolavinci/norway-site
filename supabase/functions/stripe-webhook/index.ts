@@ -50,19 +50,30 @@ serve(async (req) => {
       });
 
       const email = session.customer_details?.email || session.customer_email;
-      const userId = session.client_reference_id || null;
+      let userId = session.client_reference_id || null;
 
-      // Insert order
-      const { data: order, error } = await supabaseAdmin.from('orders').insert({
-        user_id: userId,
-        email: email,
-        status: 'completed',
-        total: session.amount_total ? session.amount_total / 100 : 0,
-        items: orderItems,
-      }).select().single();
+      // Link guest orders to existing user if userId is null but email matches an account
+      if (!userId && email) {
+        try {
+          const { data, error } = await supabaseAdmin.rpc('get_user_id_by_email', { email_address: email });
+          if (!error && data) {
+            userId = data;
+          }
+        } catch (err) {
+          console.error("Error linking guest order to user:", err);
+        }
+      }
+
+      // Update the pending order to completed
+      const { data: order, error } = await supabaseAdmin
+        .from('orders')
+        .update({ status: 'completed' })
+        .eq('stripe_session_id', session.id)
+        .select()
+        .single();
 
       if (error) {
-        console.error('Error inserting order:', error);
+        console.error('Error updating order to completed:', error);
         throw error;
       }
 
@@ -101,7 +112,10 @@ serve(async (req) => {
         });
         
         if (!resResend.ok) {
-          console.error('Failed to send email:', await resResend.text());
+          const errorText = await resResend.text();
+          console.error('Error sending email via Resend:', resResend.status, errorText);
+        } else {
+          console.log('Order confirmation email sent successfully via Resend');
         }
       }
     }
