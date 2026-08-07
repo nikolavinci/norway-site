@@ -58,7 +58,6 @@ serve(async (req) => {
         email: email,
         status: 'completed',
         total: session.amount_total ? session.amount_total / 100 : 0,
-        stripe_session_id: session.id,
         items: orderItems,
       }).select().single();
 
