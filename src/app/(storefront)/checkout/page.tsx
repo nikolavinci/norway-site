@@ -21,6 +21,12 @@ export default function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState<'vipps' | 'card'>('card');
   const [isProcessingVipps, setIsProcessingVipps] = useState(false);
   
+  // Coupon State
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
+  
   // Addresses
   const [addresses, setAddresses] = useState<UserAddress[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | 'new'>('new');
@@ -39,7 +45,39 @@ export default function Checkout() {
   const [saveAddress, setSaveAddress] = useState(true);
 
   const shippingCost = 150;
-  const totalAmount = getCartTotal() > 0 ? getCartTotal() + shippingCost : 0;
+  let baseTotal = getCartTotal() > 0 ? getCartTotal() + shippingCost : 0;
+  
+  let discountAmount = 0;
+  if (appliedCoupon && getCartTotal() > 0) {
+    if (appliedCoupon.discount_type === 'percentage') {
+      discountAmount = Math.round(getCartTotal() * (appliedCoupon.discount_percentage / 100));
+    } else {
+      discountAmount = appliedCoupon.discount_amount;
+    }
+  }
+  
+  const totalAmount = Math.max(0, baseTotal - discountAmount);
+
+  const validateCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setIsValidatingCoupon(true);
+    setCouponError(null);
+    const { data: coupon, error } = await supabase
+      .from('coupons')
+      .select('*')
+      .eq('code', couponCode.toUpperCase())
+      .eq('is_active', true)
+      .maybeSingle();
+      
+    if (error || !coupon) {
+      setCouponError('Invalid or expired coupon code.');
+      setAppliedCoupon(null);
+    } else {
+      setAppliedCoupon(coupon);
+      setCouponError(null);
+    }
+    setIsValidatingCoupon(false);
+  };
 
   useEffect(() => {
     async function checkUser() {
@@ -133,7 +171,8 @@ export default function Checkout() {
           email: user?.email || newAddress.email, 
           userId: user?.id,
           isLive: settings?.is_stripe_live,
-          origin: window.location.origin
+          origin: window.location.origin,
+          couponCode: appliedCoupon?.code
         },
       });
 
@@ -342,7 +381,49 @@ export default function Checkout() {
                 <span>Shipping</span>
                 <span className="font-bold text-[#5D4E46]">{items.length > 0 ? `${shippingCost} NOK` : '0 NOK'}</span>
               </div>
+              
+              {appliedCoupon && (
+                <div className="flex justify-between text-green-600">
+                  <span>Discount ({appliedCoupon.code})</span>
+                  <span className="font-bold">-{discountAmount} NOK</span>
+                </div>
+              )}
             </div>
+
+            <div className="mt-6 mb-6">
+              <label className="block text-xs font-bold text-[#5D4E46]/60 uppercase tracking-wider mb-2">Gift card or discount code</label>
+              <div className="flex gap-2">
+                <input 
+                  type="text" 
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  placeholder="Enter code" 
+                  className={`${inputClasses} flex-1 uppercase`}
+                  disabled={!!appliedCoupon}
+                />
+                {!appliedCoupon ? (
+                  <button 
+                    onClick={validateCoupon}
+                    disabled={isValidatingCoupon || !couponCode.trim()}
+                    className="px-4 py-3 bg-[#5D4E46] text-white rounded-md font-bold hover:bg-[#3A3532] transition-colors disabled:opacity-50"
+                  >
+                    Apply
+                  </button>
+                ) : (
+                  <button 
+                    onClick={() => {
+                      setAppliedCoupon(null);
+                      setCouponCode('');
+                    }}
+                    className="px-4 py-3 bg-red-100 text-red-600 rounded-md font-bold hover:bg-red-200 transition-colors"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+              {couponError && <p className="text-red-500 text-xs mt-2">{couponError}</p>}
+            </div>
+
             <div className="border-t border-[#3A3532]/10 pt-6 mt-6 flex justify-between font-black text-2xl text-[#5D4E46]">
               <span>Total</span>
               <span>{totalAmount} NOK</span>
