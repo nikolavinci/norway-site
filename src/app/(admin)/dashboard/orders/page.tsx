@@ -42,8 +42,7 @@ export default function OrdersPage() {
       }
       setLoading(false);
     }
-      setLoading(false);
-    }
+
     fetchProfileAndOrders();
     fetchCoupons();
   }, []);
