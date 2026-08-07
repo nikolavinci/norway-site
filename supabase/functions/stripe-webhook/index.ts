@@ -48,28 +48,12 @@ serve(async (req) => {
         throw error;
       }
 
-      // 2. Try to fetch line items for the email
+      // 2. Fetch line items for the email
       let orderItems: any[] = [];
-      try {
-        const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
-          expand: ['data.price.product'],
-        });
-
-        orderItems = lineItems.data.map(item => {
-          const product = item.price?.product as Stripe.Product;
-          return {
-            product_id: product?.metadata?.product_id || null,
-            name: product?.name || item.description,
-            quantity: item.quantity,
-            price: item.price?.unit_amount ? item.price.unit_amount / 100 : 0,
-          };
-        });
-      } catch (lineItemsError) {
-        console.error('Error fetching line items from Stripe (could be Test/Live key mismatch):', lineItemsError);
-        // Fallback: use items from the order we just updated if available
-        if (order.items && Array.isArray(order.items)) {
-          orderItems = order.items;
-        }
+      if (order.items && Array.isArray(order.items)) {
+        orderItems = order.items;
+      } else {
+        console.warn('Order items not found in DB, email might be empty.');
       }
 
       const email = session.customer_details?.email || session.customer_email || order.email;
@@ -92,7 +76,10 @@ serve(async (req) => {
       // Send Email via Resend
       if (RESEND_API_KEY && email) {
         const itemsHtml = orderItems.map(item => 
-          `<li>${item.quantity}x ${item.name} - ${item.price} NOK</li>`
+          `<li style="display: flex; align-items: center; margin-bottom: 10px;">
+            ${item.image ? `<img src="${item.image.startsWith('http') ? item.image : (Deno.env.get('SITE_URL') || 'https://pustatelier.no') + item.image}" alt="${item.name}" width="50" style="vertical-align: middle; border-radius: 4px; margin-right: 15px;"/>` : ''}
+            <span>${item.quantity}x ${item.name} - ${item.price} NOK</span>
+           </li>`
         ).join('');
 
         const resResend = await fetch('https://api.resend.com/emails', {
