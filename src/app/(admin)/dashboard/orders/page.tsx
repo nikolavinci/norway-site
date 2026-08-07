@@ -12,6 +12,13 @@ export default function OrdersPage() {
   
   const [adminOrders, setAdminOrders] = useState<any[]>([]);
   const [customerOrders, setCustomerOrders] = useState<any[]>([]);
+  
+  // Recovery Modal State
+  const [activeCoupons, setActiveCoupons] = useState<any[]>([]);
+  const [showRecoveryModal, setShowRecoveryModal] = useState(false);
+  const [selectedOrderToRecover, setSelectedOrderToRecover] = useState<{id: string, email: string} | null>(null);
+  const [selectedCoupon, setSelectedCoupon] = useState<string>('');
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     async function fetchProfileAndOrders() {
@@ -35,8 +42,18 @@ export default function OrdersPage() {
       }
       setLoading(false);
     }
+      setLoading(false);
+    }
     fetchProfileAndOrders();
+    fetchCoupons();
   }, []);
+
+  const fetchCoupons = async () => {
+    const { data } = await supabase.from('coupons').select('*').eq('is_active', true);
+    if (data) {
+      setActiveCoupons(data);
+    }
+  };
 
   const filteredOrders = adminOrders.filter(o => filter === 'all' || o.status === filter);
 
@@ -48,10 +65,42 @@ export default function OrdersPage() {
       alert("No email attached to this cart.");
       return;
     }
-    // Call the edge function or API to send a promo email
-    // For now we simulate it:
-    alert(`Recovery email with a 10% discount coupon has been sent to ${email} for order ${id}!`);
-    setRecovered([...recovered, id]);
+    setSelectedOrderToRecover({ id, email });
+    setSelectedCoupon('');
+    setShowRecoveryModal(true);
+  };
+
+  const confirmRecovery = async () => {
+    if (!selectedOrderToRecover) return;
+    setIsSending(true);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/recover-abandoned-cart`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`
+        },
+        body: JSON.stringify({
+          orderId: selectedOrderToRecover.id,
+          couponCode: selectedCoupon || null
+        })
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to send recovery email');
+      }
+
+      alert(`Recovery email sent to ${selectedOrderToRecover.email}!`);
+      setRecovered([...recovered, selectedOrderToRecover.id]);
+      setShowRecoveryModal(false);
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setIsSending(false);
+    }
   };
 
   if (loading) return null;
@@ -129,12 +178,16 @@ export default function OrdersPage() {
                   <td className="px-6 py-4 text-[#5D4E46] font-bold">
                     {order.total} NOK
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-right">
                     {order.status === 'pending' && (
                       <button 
                         onClick={() => handleRecover(order.id, order.email)}
-                        disabled={recovered.includes(order.id) || !order.email}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-[#987C6F] hover:bg-[#987C6F]/90 text-white rounded-lg text-xs font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={recovered.includes(order.id)}
+                        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+                          recovered.includes(order.id)
+                          ? 'bg-green-50 text-green-600 cursor-not-allowed'
+                          : 'bg-[#987C6F] text-white hover:bg-[#5D4E46]'
+                        }`}
                       >
                         {recovered.includes(order.id) ? (
                           <><Check size={14} /> Sent</>
@@ -157,6 +210,51 @@ export default function OrdersPage() {
           </table>
         </div>
       </div>
+
+      {/* Recovery Modal */}
+      {showRecoveryModal && (
+        <div className="fixed inset-0 bg-[#5D4E46]/20 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-xl animate-fade-in-up relative">
+            <h3 className="text-2xl font-black text-[#5D4E46] mb-2">Send Recovery Email</h3>
+            <p className="text-[#5D4E46]/70 mb-6 text-sm">
+              Send a reminder email to <strong>{selectedOrderToRecover?.email}</strong> with an optional discount code.
+            </p>
+            
+            <div className="mb-6">
+              <label className="block text-xs font-bold text-[#5D4E46]/60 uppercase tracking-wider mb-2">Attach Coupon (Optional)</label>
+              <select 
+                value={selectedCoupon} 
+                onChange={(e) => setSelectedCoupon(e.target.value)}
+                className="w-full p-3 rounded-xl border border-[#5D4E46]/10 focus:outline-none focus:border-[#987C6F] appearance-none bg-[#FDFBF7]"
+              >
+                <option value="">No Coupon</option>
+                {activeCoupons.map(c => (
+                  <option key={c.id} value={c.code}>
+                    {c.code} ({c.discount_type === 'flat' ? `${c.discount_amount} NOK` : `${c.discount_percentage}%`} OFF)
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => setShowRecoveryModal(false)}
+                className="px-6 py-3 rounded-xl font-bold text-[#5D4E46] hover:bg-[#FDFBF7] transition-colors"
+                disabled={isSending}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={confirmRecovery}
+                disabled={isSending}
+                className="bg-[#987C6F] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#5D4E46] transition-colors flex items-center gap-2"
+              >
+                {isSending ? 'Sending...' : <><Send size={18} /> Send Now</>}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
     );
   }
