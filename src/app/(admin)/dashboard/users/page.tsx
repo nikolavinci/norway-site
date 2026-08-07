@@ -1,40 +1,53 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
-import Link from 'next/link';
+'use client';
 
-export const dynamic = 'force-dynamic';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/shared/utils/supabase';
 
-export default async function AdminUsersPage() {
-  const supabase = createServerComponentClient({ cookies });
-  
-  // Verify admin access
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) return <div>Unauthorized</div>;
-  
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
-  if (profile?.role !== 'admin') return <div>Access Denied</div>;
+export default function AdminUsersPage() {
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState<any[]>([]);
 
-  // Fetch users and their orders
-  const { data: users, error } = await supabase
-    .from('profiles')
-    .select(`
-      id,
-      full_name,
-      avatar_url,
-      created_at,
-      role,
-      orders (
-        id,
-        total,
-        status
-      )
-    `)
-    .order('created_at', { ascending: false });
+  useEffect(() => {
+    async function fetchUsers() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      
+      const { data: profileData } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
+      if (profileData?.role !== 'admin') {
+        setLoading(false);
+        return;
+      }
 
-  if (error) {
-    console.error('Error fetching users:', error);
-    return <div>Error loading users</div>;
-  }
+      setProfile(profileData);
+
+      // Fetch users and their orders
+      const { data: usersData, error } = await supabase
+        .from('profiles')
+        .select(`
+          id,
+          full_name,
+          avatar_url,
+          created_at,
+          role,
+          orders (
+            id,
+            total,
+            status
+          )
+        `)
+        .order('created_at', { ascending: false });
+
+      if (!error && usersData) {
+        setUsers(usersData);
+      }
+      setLoading(false);
+    }
+    fetchUsers();
+  }, []);
+
+  if (loading) return null;
+  if (profile?.role !== 'admin') return <div className="p-12 text-center">Access Denied</div>;
 
   return (
     <div className="space-y-6">
