@@ -34,37 +34,8 @@ serve(async (req) => {
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
       
-      // Fetch line items to get the products
-      const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
-        expand: ['data.price.product'],
-      });
-
-      const orderItems = lineItems.data.map(item => {
-        const product = item.price?.product as Stripe.Product;
-        return {
-          product_id: product?.metadata?.product_id || null,
-          name: product?.name || item.description,
-          quantity: item.quantity,
-          price: item.price?.unit_amount ? item.price.unit_amount / 100 : 0,
-        };
-      });
-
-      const email = session.customer_details?.email || session.customer_email;
-      let userId = session.client_reference_id || null;
-
-      // Link guest orders to existing user if userId is null but email matches an account
-      if (!userId && email) {
-        try {
-          const { data, error } = await supabaseAdmin.rpc('get_user_id_by_email', { email_address: email });
-          if (!error && data) {
-            userId = data;
-          }
-        } catch (err) {
-          console.error("Error linking guest order to user:", err);
-        }
-      }
-
-      // Update the pending order to completed
+      // 1. Update the pending order to completed FIRST
+      // This ensures the DB reflects the purchase even if email sending fails.
       const { data: order, error } = await supabaseAdmin
         .from('orders')
         .update({ status: 'completed' })
@@ -72,9 +43,50 @@ serve(async (req) => {
         .select()
         .single();
 
-      if (error) {
+      if (error || !order) {
         console.error('Error updating order to completed:', error);
         throw error;
+      }
+
+      // 2. Try to fetch line items for the email
+      let orderItems: any[] = [];
+      try {
+        const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+          expand: ['data.price.product'],
+        });
+
+        orderItems = lineItems.data.map(item => {
+          const product = item.price?.product as Stripe.Product;
+          return {
+            product_id: product?.metadata?.product_id || null,
+            name: product?.name || item.description,
+            quantity: item.quantity,
+            price: item.price?.unit_amount ? item.price.unit_amount / 100 : 0,
+          };
+        });
+      } catch (lineItemsError) {
+        console.error('Error fetching line items from Stripe (could be Test/Live key mismatch):', lineItemsError);
+        // Fallback: use items from the order we just updated if available
+        if (order.items && Array.isArray(order.items)) {
+          orderItems = order.items;
+        }
+      }
+
+      const email = session.customer_details?.email || session.customer_email || order.email;
+      let userId = session.client_reference_id || order.user_id;
+
+      // Link guest orders to existing user if userId is null but email matches an account
+      if (!userId && email) {
+        try {
+          const { data, error: rpcError } = await supabaseAdmin.rpc('get_user_id_by_email', { email_address: email });
+          if (!rpcError && data) {
+            userId = data;
+            // Update the order with the found user_id
+            await supabaseAdmin.from('orders').update({ user_id: userId }).eq('id', order.id);
+          }
+        } catch (err) {
+          console.error("Error linking guest order to user:", err);
+        }
       }
 
       // Send Email via Resend
