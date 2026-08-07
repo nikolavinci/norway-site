@@ -14,6 +14,8 @@ export default function Checkout() {
   const { items, getCartTotal, clearCart } = useCartStore();
   
   const [user, setUser] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [loadingUser, setLoadingUser] = useState(true);
   
   const [paymentMethod, setPaymentMethod] = useState<'vipps' | 'card'>('card');
@@ -105,7 +107,7 @@ export default function Checkout() {
     return addresses.find(a => a.id === selectedAddressId);
   };
 
-  const handleStripeCheckout = async () => {
+  const handleCheckout = async () => {
     if (totalAmount <= 0) return;
     
     if (!user && !newAddress.email) {
@@ -118,7 +120,8 @@ export default function Checkout() {
       return;
     }
 
-    // Ensure an address is processed before moving to stripe
+    setIsProcessing(true);
+    setError(null);
     await processAndGetAddress();
 
     const { data: settings } = await supabase.from('site_settings').select('*').limit(1).maybeSingle();
@@ -141,9 +144,8 @@ export default function Checkout() {
       }
     } catch (err: any) {
       console.error('Failed to create checkout session:', err);
-      let errorMessage = 'Stripe checkout failed.';
-      if (err.message) errorMessage += `\nError: ${err.message}`;
-      alert(errorMessage);
+      setError(err.message || 'Failed to initiate checkout');
+      setIsProcessing(false);
     }
   };
 
@@ -254,6 +256,7 @@ export default function Checkout() {
 
               {/* Payment Forms */}
               <div className="mt-8">
+                {error && <div className="text-red-500 text-sm mb-4 p-3 bg-red-50 rounded-lg">{error}</div>}
                 {paymentMethod === 'vipps' ? (
                   <div className="bg-[#FF5B24]/10 border border-[#FF5B24]/20 rounded-xl p-8 text-center">
                     <h3 className="font-bold text-[#FF5B24] mb-2 text-lg">Pay easily with Vipps</h3>
@@ -268,6 +271,7 @@ export default function Checkout() {
                           alert('Please fill in all required shipping fields.');
                           return;
                         }
+                        setIsProcessingVipps(true);
                         await processAndGetAddress();
                         handleVippsCheckout();
                       }} 
@@ -281,12 +285,22 @@ export default function Checkout() {
                   <div className="bg-white border border-[#3A3532]/10 rounded-xl p-8 text-center shadow-sm">
                     <h3 className="font-bold text-[#5D4E46] mb-2 text-lg">Pay securely with Stripe</h3>
                     <p className="text-[#3A3532]/70 text-sm mb-6 max-w-sm mx-auto">You will be securely redirected to Stripe to pay via Credit Card, Apple Pay, or Klarna.</p>
-                    <button 
-                      onClick={handleStripeCheckout} 
-                      disabled={items.length === 0}
-                      className="block text-center w-full mt-6 py-4 bg-[#3A3532] text-white rounded-full text-xs uppercase tracking-widest font-bold hover:bg-[#C88267] transition-colors disabled:opacity-70"
+                    <button
+                      onClick={handleCheckout}
+                      disabled={isProcessing || items.length === 0}
+                      className="w-full flex justify-center py-4 px-4 bg-[#3A3532] text-white rounded-full text-xs uppercase tracking-widest font-bold hover:bg-[#C88267] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Proceed to Payment ({totalAmount} NOK)
+                      {isProcessing ? (
+                        <span className="flex items-center">
+                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Processing...
+                        </span>
+                      ) : (
+                        `Proceed to Payment (${totalAmount} NOK)`
+                      )}
                     </button>
                   </div>
                 )}

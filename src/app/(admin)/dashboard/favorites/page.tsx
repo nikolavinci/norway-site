@@ -1,28 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Heart, Package, TrendingUp } from 'lucide-react';
+import { Heart, Package, TrendingUp, Eye, MousePointerClick } from 'lucide-react';
 import Image from 'next/image';
 import { supabase } from '@/shared/utils/supabase';
-
-// Mock data for Favorites
-const MOCK_FAVORITES = [
-  { id: '1', name: 'Handcrafted Upholstery Bag', image: '/images/bags/bag1.png', category: 'Bags', favorited_by: 142, stock: 12 },
-  { id: '2', name: 'Moroccan Kilim Bag', image: '/images/bags/bag2.png', category: 'Bags', favorited_by: 98, stock: 5 },
-  { id: '3', name: 'Quilted Velvet Tote', image: '/images/bags/bag3.png', category: 'Bags', favorited_by: 76, stock: 0 },
-  { id: '4', name: 'Printed Upholstery Bag', image: '/images/bags/bag4.png', category: 'Bags', favorited_by: 45, stock: 24 },
-  { id: '5', name: 'Damask Jacquard Bag', image: '/images/bags/bag5.png', category: 'Bags', favorited_by: 12, stock: 8 },
-];
 
 export default function FavoritesPage() {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [sort, setSort] = useState<'most_favorited' | 'least_stock'>('most_favorited');
+  const [sort, setSort] = useState<'most_favorited' | 'least_stock' | 'most_viewed'>('most_favorited');
 
-  const [favorites, setFavorites] = useState<any[]>([]);
+  const [customerFavorites, setCustomerFavorites] = useState<any[]>([]);
+  const [adminAnalytics, setAdminAnalytics] = useState<any[]>([]);
 
   useEffect(() => {
-    async function fetchProfileAndFavorites() {
+    async function fetchProfileAndData() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         const { data: profileData } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
@@ -32,28 +24,66 @@ export default function FavoritesPage() {
         if (role === 'customer') {
           const { data: favs } = await supabase.from('favorites').select('product_id, products(*)').eq('user_id', session.user.id);
           if (favs) {
-            setFavorites(favs.map(f => f.products));
+            setCustomerFavorites(favs.map(f => f.products));
+          }
+        } else if (role === 'admin') {
+          // Fetch real analytics data using native tables
+          const { data: products } = await supabase.from('products').select(`
+            id, name, images, category, stock,
+            favorites (count),
+            product_views (count),
+            order_items (count)
+          `);
+          
+          if (products) {
+            const analytics = products.map((p: any) => {
+              const views = p.product_views?.[0]?.count || 0;
+              const favoritesCount = p.favorites?.[0]?.count || 0;
+              const ordersCount = p.order_items?.[0]?.count || 0;
+              const ctr = views > 0 ? ((ordersCount / views) * 100).toFixed(1) : '0.0';
+              
+              return {
+                id: p.id,
+                name: p.name,
+                image: p.images?.[0] || '/placeholder.png',
+                category: p.category,
+                stock: p.stock,
+                favorited_by: favoritesCount,
+                views: views,
+                ctr: ctr,
+                sales: ordersCount,
+              };
+            });
+            setAdminAnalytics(analytics);
           }
         }
       }
       setLoading(false);
     }
-    fetchProfileAndFavorites();
+    fetchProfileAndData();
   }, []);
 
-  const sortedFavorites = [...MOCK_FAVORITES].sort((a, b) => {
+  const sortedAnalytics = [...adminAnalytics].sort((a, b) => {
     if (sort === 'most_favorited') return b.favorited_by - a.favorited_by;
     if (sort === 'least_stock') return a.stock - b.stock;
+    if (sort === 'most_viewed') return b.views - a.views;
     return 0;
   });
 
   if (loading) return null;
 
   if (profile?.role === 'admin') {
+    const totalFavorites = adminAnalytics.reduce((sum, item) => sum + item.favorited_by, 0);
+    const mostLoved = [...adminAnalytics].sort((a, b) => b.favorited_by - a.favorited_by)[0];
+    const outOfStockLoved = adminAnalytics.filter(a => a.stock <= 0 && a.favorited_by > 0).length;
+
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-black text-[#5D4E46]">Product Favorites</h2>
+          <div>
+            <h2 className="text-2xl font-black text-[#5D4E46]">Wishlist Analytics</h2>
+            <p className="text-[#5D4E46]/60 text-sm mt-1">Native tracking for product views and wishlist intent.</p>
+          </div>
         </div>
 
       {/* Stats Cards */}
@@ -64,7 +94,7 @@ export default function FavoritesPage() {
           </div>
           <div>
             <p className="text-sm font-bold text-[#5D4E46]/60 uppercase tracking-wider">Total Favorites</p>
-            <h3 className="text-2xl font-black text-[#5D4E46]">373</h3>
+            <h3 className="text-2xl font-black text-[#5D4E46]">{totalFavorites}</h3>
           </div>
         </div>
 
@@ -74,7 +104,7 @@ export default function FavoritesPage() {
           </div>
           <div>
             <p className="text-sm font-bold text-[#5D4E46]/60 uppercase tracking-wider">Most Loved</p>
-            <h3 className="text-2xl font-black text-[#5D4E46] truncate w-32" title="Handcrafted Upholstery Bag">Handcrafted Upholstery Bag</h3>
+            <h3 className="text-xl font-black text-[#5D4E46] truncate w-40" title={mostLoved?.name}>{mostLoved?.name || 'N/A'}</h3>
           </div>
         </div>
 
@@ -83,8 +113,8 @@ export default function FavoritesPage() {
             <Package size={24} />
           </div>
           <div>
-            <p className="text-sm font-bold text-[#5D4E46]/60 uppercase tracking-wider">Out of Stock & Loved</p>
-            <h3 className="text-2xl font-black text-[#5D4E46]">1</h3>
+            <p className="text-sm font-bold text-[#5D4E46]/60 uppercase tracking-wider">OOS & Loved</p>
+            <h3 className="text-2xl font-black text-[#5D4E46]">{outOfStockLoved}</h3>
           </div>
         </div>
       </div>
@@ -99,97 +129,114 @@ export default function FavoritesPage() {
           Most Favorited
         </button>
         <button 
+          onClick={() => setSort('most_viewed')}
+          className={`px-4 py-2 rounded-full text-xs font-bold transition-colors ${
+            sort === 'most_viewed' ? 'bg-[#5D4E46] text-white' : 'bg-white text-[#5D4E46] hover:bg-[#FDFBF7] border border-[#5D4E46]/10'
+          }`}
+        >
+          Most Viewed
+        </button>
+        <button 
           onClick={() => setSort('least_stock')}
           className={`px-4 py-2 rounded-full text-xs font-bold transition-colors ${
             sort === 'least_stock' ? 'bg-[#5D4E46] text-white' : 'bg-white text-[#5D4E46] hover:bg-[#FDFBF7] border border-[#5D4E46]/10'
           }`}
         >
-          Low Stock First
+          Least Stock
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-[#5D4E46]/10 overflow-hidden">
-        <table className="w-full text-left text-sm text-[#5D4E46]">
-          <thead className="bg-[#FDFBF7] text-xs uppercase font-bold text-[#5D4E46]/60 tracking-wider">
-            <tr>
-              <th className="px-6 py-4">Product</th>
-              <th className="px-6 py-4">Category</th>
-              <th className="px-6 py-4">Favorited By</th>
-              <th className="px-6 py-4">Inventory Status</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-[#5D4E46]/5">
-            {sortedFavorites.map((item) => (
-              <tr key={item.id} className="hover:bg-[#FDFBF7]/50 transition-colors">
-                <td className="px-6 py-4 flex items-center gap-4">
-                  <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100">
-                    <Image src={item.image} alt={item.name} fill className="object-cover" />
-                  </div>
-                  <span className="font-bold">{item.name}</span>
-                </td>
-                <td className="px-6 py-4 text-[#5D4E46]/80">{item.category}</td>
-                <td className="px-6 py-4 font-bold">{item.favorited_by} users</td>
-                <td className="px-6 py-4">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                    item.stock > 10 ? 'bg-[#AAB084]/20 text-[#6B724D]' : 
-                    item.stock > 0 ? 'bg-[#FFD6A5]/40 text-[#D97D27]' : 
-                    'bg-red-50 text-red-600'
-                  }`}>
-                    {item.stock > 0 ? `${item.stock} in stock` : 'Out of stock'}
-                  </span>
-                </td>
+      <div className="bg-white rounded-2xl shadow-sm border border-[#5D4E46]/10 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-[#FDFBF7] border-b border-[#5D4E46]/10 text-[#5D4E46]/60">
+              <tr>
+                <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs">Product</th>
+                <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs">Stock</th>
+                <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs"><div className="flex items-center gap-1"><Eye size={14}/> Views</div></th>
+                <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs"><div className="flex items-center gap-1"><Heart size={14}/> Saves</div></th>
+                <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs"><div className="flex items-center gap-1"><MousePointerClick size={14}/> CTR</div></th>
+                <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs">Sales</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-[#5D4E46]/5">
+              {sortedAnalytics.map((item) => (
+                <tr key={item.id} className="hover:bg-[#FDFBF7]/50 transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-lg bg-[#FDFBF7] relative overflow-hidden flex-shrink-0">
+                        <Image src={item.image} alt={item.name} fill className="object-cover" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-[#5D4E46]">{item.name}</div>
+                        <div className="text-xs text-[#5D4E46]/60">{item.category}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    {item.stock > 10 ? (
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
+                        {item.stock} in stock
+                      </span>
+                    ) : item.stock > 0 ? (
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold ${item.favorited_by > 5 ? 'bg-red-100 text-red-700 animate-pulse' : 'bg-yellow-100 text-yellow-700'}`}>
+                        {item.stock} low stock
+                      </span>
+                    ) : (
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold ${item.favorited_by > 5 ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-gray-100 text-gray-700'}`}>
+                        Out of stock
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-[#5D4E46] font-bold">
+                    {item.views}
+                  </td>
+                  <td className="px-6 py-4 text-[#5D4E46] font-bold">
+                    {item.favorited_by}
+                  </td>
+                  <td className="px-6 py-4 text-[#5D4E46] font-bold">
+                    {item.ctr}%
+                  </td>
+                  <td className="px-6 py-4 text-[#5D4E46] font-bold">
+                    {item.sales}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     );
   }
 
+  // CUSTOMER VIEW
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-black text-[#5D4E46]">Your Wishlist</h2>
-      </div>
-      
-      {favorites.length === 0 ? (
-        <div className="bg-white p-12 rounded-2xl shadow-sm border border-[#5D4E46]/10 text-center">
-          <Heart size={48} className="mx-auto mb-4 text-[#987C6F] opacity-40" />
-          <h3 className="text-xl font-bold text-[#5D4E46] mb-2">No saved items yet</h3>
-          <p className="text-[#5D4E46]/60 max-w-md mx-auto mb-6">
-            When you find something you love, click the heart icon to save it here for later.
-          </p>
-          <a href="/shop" className="inline-flex items-center px-6 py-3 bg-[#5D4E46] text-white rounded-full font-bold hover:bg-[#3A3532] transition-colors">
-            Explore Products
-          </a>
+      <h2 className="text-2xl font-black text-[#5D4E46]">Saved Items</h2>
+      {customerFavorites.length === 0 ? (
+        <div className="text-center py-12 bg-white rounded-2xl border border-[#5D4E46]/10">
+          <Heart className="w-12 h-12 mx-auto text-[#5D4E46]/20 mb-4" />
+          <h3 className="text-lg font-bold text-[#5D4E46]">Your wishlist is empty</h3>
+          <p className="text-[#5D4E46]/60 mt-2">Save items you love to keep track of them.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {favorites.map((product) => (
-            product && (
-              <div key={product.id} className="bg-white rounded-xl shadow-sm overflow-hidden border border-[#5D4E46]/10 group">
-                <a href={`/shop/${product.id}`} className="block relative aspect-square bg-[#FDFBF7]">
-                  <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                </a>
-                <div className="p-4">
-                  <h3 className="font-bold text-[#5D4E46] mb-1 truncate">{product.name}</h3>
-                  <p className="text-sm text-[#5D4E46]/70 mb-3">{product.price} NOK</p>
-                  <button 
-                    onClick={async () => {
-                      const { data: { session } } = await supabase.auth.getSession();
-                      if (session) {
-                        await supabase.from('favorites').delete().eq('user_id', session.user.id).eq('product_id', product.id);
-                        setFavorites(favorites.filter(p => p.id !== product.id));
-                      }
-                    }}
-                    className="text-xs font-bold text-[#FF5A5F] hover:text-[#5D4E46] transition-colors flex items-center gap-1"
-                  >
-                    <Heart size={12} className="fill-[#FF5A5F]" /> Remove
-                  </button>
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {customerFavorites.map((product) => (
+            <div key={product.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-[#5D4E46]/10 group">
+              <div className="relative aspect-[4/5] bg-[#FDFBF7]">
+                <Image
+                  src={product.images?.[0] || '/placeholder.png'}
+                  alt={product.name}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
               </div>
-            )
+              <div className="p-4">
+                <h3 className="font-bold text-[#5D4E46] truncate">{product.name}</h3>
+                <p className="text-[#987C6F] font-bold mt-1">{product.price} NOK</p>
+              </div>
+            </div>
           ))}
         </div>
       )}

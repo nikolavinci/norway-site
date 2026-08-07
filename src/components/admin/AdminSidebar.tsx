@@ -53,7 +53,9 @@ export default function AdminSidebar() {
         {isAdmin ? (
           <>
             <NavLink href="/dashboard" icon={BarChart2} label="Analytics" />
+            <NavLink href="/dashboard/orders" icon={ShoppingBag} label="Orders" />
             <NavLink href="/dashboard/products" icon={Package} label="Products" />
+            <NavLink href="/dashboard/favorites" icon={Heart} label="Wishlists" />
             <NavLink href="/dashboard/blog" icon={PenTool} label="Blog" />
             <NavLink href="/dashboard/media" icon={ImageIcon} label="Media" />
             <NavLink href="/dashboard/users" icon={Users} label="Customers" />

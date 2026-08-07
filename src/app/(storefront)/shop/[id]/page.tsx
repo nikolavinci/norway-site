@@ -5,6 +5,7 @@ import { getProductById, getProducts, Product } from '@/shared/utils/products';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound, useParams, useRouter } from 'next/navigation';
+import { supabase } from '@/shared/utils/supabase';
 import { useState, useEffect } from 'react';
 import { Minus, Plus, ChevronDown, ChevronRight, ChevronLeft, Star, Heart, Loader2 } from 'lucide-react';
 import { trackViewItem, trackAddToCart } from '@/shared/utils/analytics';
@@ -37,6 +38,18 @@ export default function ProductDetailPage() {
       if (p) {
         setProduct(p);
         trackViewItem(p);
+        
+        // Native Edge Function Tracking
+        let sessionId = localStorage.getItem('guest_session_id');
+        if (!sessionId) {
+          sessionId = 'session_' + Math.random().toString(36).substr(2, 9);
+          localStorage.setItem('guest_session_id', sessionId);
+        }
+        
+        supabase.functions.invoke('track-view', {
+          body: { productId: p.id, sessionId }
+        }).catch(err => console.error("Error tracking native view:", err));
+
         const all = await getProducts();
         setRelatedProducts(all.filter(x => x.id !== p.id).slice(0, 4));
       }

@@ -4,21 +4,13 @@ import { useState, useEffect } from 'react';
 import { ShoppingBag, ShoppingCart, AlertCircle, Send, Check } from 'lucide-react';
 import { supabase } from '@/shared/utils/supabase';
 
-// Mock data for Orders and Carts
-const MOCK_ORDERS = [
-  { id: 'ORD-2910', user: 'Jane Doe', email: 'jane@example.com', status: 'completed', total: 1540, date: '2026-07-30' },
-  { id: 'ORD-2909', user: 'Erik Larsen', email: 'erik@example.com', status: 'abandoned', total: 890, date: '2026-07-29' },
-  { id: 'ORD-2908', user: 'Anonymous', email: 'guest@example.com', status: 'cart', total: 450, date: '2026-07-31' },
-  { id: 'ORD-2907', user: 'Maria Nilsen', email: 'maria@example.com', status: 'completed', total: 3200, date: '2026-07-28' },
-  { id: 'ORD-2906', user: 'Ole Hansen', email: 'ole@example.com', status: 'abandoned', total: 1120, date: '2026-07-25' },
-];
-
 export default function OrdersPage() {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'completed' | 'abandoned' | 'cart'>('all');
+  const [filter, setFilter] = useState<'all' | 'completed' | 'pending'>('all');
   const [recovered, setRecovered] = useState<string[]>([]);
-
+  
+  const [adminOrders, setAdminOrders] = useState<any[]>([]);
   const [customerOrders, setCustomerOrders] = useState<any[]>([]);
 
   useEffect(() => {
@@ -34,6 +26,11 @@ export default function OrdersPage() {
           if (ordersData) {
             setCustomerOrders(ordersData);
           }
+        } else if (role === 'admin') {
+          const { data: ordersData } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+          if (ordersData) {
+            setAdminOrders(ordersData);
+          }
         }
       }
       setLoading(false);
@@ -41,11 +38,19 @@ export default function OrdersPage() {
     fetchProfileAndOrders();
   }, []);
 
-  const filteredOrders = MOCK_ORDERS.filter(o => filter === 'all' || o.status === filter);
+  const filteredOrders = adminOrders.filter(o => filter === 'all' || o.status === filter);
 
-  const handleRecover = (id: string) => {
-    // In a real app, this would call a Supabase Edge Function to send an email via Resend or SendGrid
-    alert(`Recovery email with a 10% discount coupon has been sent for order ${id}!`);
+  const completedCount = adminOrders.filter(o => o.status === 'completed').length;
+  const pendingCount = adminOrders.filter(o => o.status === 'pending').length;
+
+  const handleRecover = (id: string, email: string) => {
+    if (!email) {
+      alert("No email attached to this cart.");
+      return;
+    }
+    // Call the edge function or API to send a promo email
+    // For now we simulate it:
+    alert(`Recovery email with a 10% discount coupon has been sent to ${email} for order ${id}!`);
     setRecovered([...recovered, id]);
   };
 
@@ -55,44 +60,34 @@ export default function OrdersPage() {
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-black text-[#5D4E46]">Orders & Carts</h2>
+          <h2 className="text-2xl font-black text-[#5D4E46]">Orders & Carts Funnel</h2>
         </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-[#5D4E46]/10 flex items-center gap-4 cursor-pointer hover:border-[#987C6F] transition-colors" onClick={() => setFilter('completed')}>
           <div className="w-12 h-12 rounded-full bg-[#AAB084]/20 flex items-center justify-center text-[#6B724D]">
             <ShoppingBag size={24} />
           </div>
           <div>
-            <p className="text-sm font-bold text-[#5D4E46]/60 uppercase tracking-wider">Completed</p>
-            <h3 className="text-2xl font-black text-[#5D4E46]">245</h3>
+            <p className="text-sm font-bold text-[#5D4E46]/60 uppercase tracking-wider">Completed Sales</p>
+            <h3 className="text-2xl font-black text-[#5D4E46]">{completedCount}</h3>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-[#5D4E46]/10 flex items-center gap-4 cursor-pointer hover:border-[#987C6F] transition-colors" onClick={() => setFilter('abandoned')}>
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-[#5D4E46]/10 flex items-center gap-4 cursor-pointer hover:border-[#987C6F] transition-colors" onClick={() => setFilter('pending')}>
           <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-500">
             <AlertCircle size={24} />
           </div>
           <div>
-            <p className="text-sm font-bold text-[#5D4E46]/60 uppercase tracking-wider">Abandoned Carts</p>
-            <h3 className="text-2xl font-black text-[#5D4E46]">12</h3>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-[#5D4E46]/10 flex items-center gap-4 cursor-pointer hover:border-[#987C6F] transition-colors" onClick={() => setFilter('cart')}>
-          <div className="w-12 h-12 rounded-full bg-[#E4D1FF]/30 flex items-center justify-center text-[#6A3F9C]">
-            <ShoppingCart size={24} />
-          </div>
-          <div>
-            <p className="text-sm font-bold text-[#5D4E46]/60 uppercase tracking-wider">Active Carts</p>
-            <h3 className="text-2xl font-black text-[#5D4E46]">8</h3>
+            <p className="text-sm font-bold text-[#5D4E46]/60 uppercase tracking-wider">Abandoned / Pending Carts</p>
+            <h3 className="text-2xl font-black text-[#5D4E46]">{pendingCount}</h3>
           </div>
         </div>
       </div>
 
       <div className="flex gap-2 mb-4">
-        {['all', 'completed', 'abandoned', 'cart'].map((f) => (
+        {['all', 'completed', 'pending'].map((f) => (
           <button 
             key={f}
             onClick={() => setFilter(f as any)}
@@ -100,124 +95,103 @@ export default function OrdersPage() {
               filter === f ? 'bg-[#5D4E46] text-white' : 'bg-white text-[#5D4E46] hover:bg-[#FDFBF7] border border-[#5D4E46]/10'
             }`}
           >
-            {f}
+            {f === 'pending' ? 'Abandoned Carts' : f}
           </button>
         ))}
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-[#5D4E46]/10 overflow-hidden">
-        <table className="w-full text-left text-sm text-[#5D4E46]">
-          <thead className="bg-[#FDFBF7] text-xs uppercase font-bold text-[#5D4E46]/60 tracking-wider">
-            <tr>
-              <th className="px-6 py-4">Order ID / Cart</th>
-              <th className="px-6 py-4">Customer</th>
-              <th className="px-6 py-4">Date</th>
-              <th className="px-6 py-4">Total</th>
-              <th className="px-6 py-4">Status</th>
-              <th className="px-6 py-4 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-[#5D4E46]/5">
-            {filteredOrders.map((order) => (
-              <tr key={order.id} className="hover:bg-[#FDFBF7]/50 transition-colors">
-                <td className="px-6 py-4 font-bold">{order.id}</td>
-                <td className="px-6 py-4">
-                  <div className="font-bold">{order.user}</div>
-                  <div className="text-xs text-[#5D4E46]/60">{order.email}</div>
-                </td>
-                <td className="px-6 py-4">{order.date}</td>
-                <td className="px-6 py-4 font-medium">{order.total} NOK</td>
-                <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded text-xs font-bold capitalize ${
-                    order.status === 'completed' ? 'bg-[#AAB084]/20 text-[#6B724D]' : 
-                    order.status === 'abandoned' ? 'bg-red-50 text-red-600' : 
-                    'bg-[#E4D1FF]/30 text-[#6A3F9C]'
-                  }`}>
-                    {order.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-right">
-                  {order.status === 'abandoned' && (
-                    <button 
-                      onClick={() => handleRecover(order.id)}
-                      disabled={recovered.includes(order.id)}
-                      className="flex items-center gap-2 justify-end w-full text-xs font-bold text-[#987C6F] hover:text-[#5D4E46] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {recovered.includes(order.id) ? (
-                        <><Check size={14} /> Recovered</>
-                      ) : (
-                        <><Send size={14} /> Send Recovery Email</>
-                      )}
-                    </button>
-                  )}
-                  {order.status === 'completed' && (
-                    <span className="text-xs text-[#5D4E46]/40">No actions needed</span>
-                  )}
-                  {order.status === 'cart' && (
-                    <span className="text-xs text-[#5D4E46]/40">Browsing...</span>
-                  )}
-                </td>
-              </tr>
-            ))}
-            {filteredOrders.length === 0 && (
+      <div className="bg-white rounded-2xl shadow-sm border border-[#5D4E46]/10 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-[#FDFBF7] border-b border-[#5D4E46]/10 text-[#5D4E46]/60">
               <tr>
-                <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
-                  No orders found.
-                </td>
+                <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs">Order / Session</th>
+                <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs">Customer Email</th>
+                <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs">Status</th>
+                <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs">Total</th>
+                <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs">Action</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-[#5D4E46]/5">
+              {filteredOrders.map((order) => (
+                <tr key={order.id} className="hover:bg-[#FDFBF7]/50 transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="font-bold text-[#5D4E46]">{order.id.substring(0, 8).toUpperCase()}</div>
+                    <div className="text-xs text-[#5D4E46]/60">{new Date(order.created_at).toLocaleDateString()}</div>
+                  </td>
+                  <td className="px-6 py-4 text-[#5D4E46]">
+                    {order.email || 'Guest'}
+                  </td>
+                  <td className="px-6 py-4">
+                    {order.status === 'completed' && <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">Completed</span>}
+                    {order.status === 'pending' && <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">Abandoned</span>}
+                  </td>
+                  <td className="px-6 py-4 text-[#5D4E46] font-bold">
+                    {order.total} NOK
+                  </td>
+                  <td className="px-6 py-4">
+                    {order.status === 'pending' && (
+                      <button 
+                        onClick={() => handleRecover(order.id, order.email)}
+                        disabled={recovered.includes(order.id) || !order.email}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-[#987C6F] hover:bg-[#987C6F]/90 text-white rounded-lg text-xs font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {recovered.includes(order.id) ? (
+                          <><Check size={14} /> Sent</>
+                        ) : (
+                          <><Send size={14} /> Send Promo</>
+                        )}
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+              {filteredOrders.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-6 py-12 text-center text-[#5D4E46]/60">
+                    No orders found for this filter.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     );
   }
 
-  // Customer Orders View
+  // CUSTOMER VIEW
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-black text-[#5D4E46]">Your Orders</h2>
-      </div>
+      <h2 className="text-2xl font-black text-[#5D4E46]">My Orders</h2>
       
       {customerOrders.length === 0 ? (
-        <div className="bg-white p-12 rounded-2xl shadow-sm border border-[#5D4E46]/10 text-center">
-          <ShoppingBag size={48} className="mx-auto mb-4 text-[#987C6F] opacity-40" />
-          <h3 className="text-xl font-bold text-[#5D4E46] mb-2">You have no orders yet</h3>
-          <p className="text-[#5D4E46]/60 max-w-md mx-auto mb-6">
-            When you place an order, it will appear here for you to track and manage.
-          </p>
-          <a href="/shop" className="inline-flex items-center px-6 py-3 bg-[#5D4E46] text-white rounded-full font-bold hover:bg-[#3A3532] transition-colors">
-            Start Shopping
-          </a>
+        <div className="text-center py-12 bg-white rounded-2xl border border-[#5D4E46]/10">
+          <ShoppingBag className="w-12 h-12 mx-auto text-[#5D4E46]/20 mb-4" />
+          <h3 className="text-lg font-bold text-[#5D4E46]">No orders yet</h3>
+          <p className="text-[#5D4E46]/60 mt-2">When you purchase items, they will appear here.</p>
         </div>
       ) : (
         <div className="space-y-4">
-          {customerOrders.map(order => (
+          {customerOrders.map((order) => (
             <div key={order.id} className="bg-white p-6 rounded-2xl shadow-sm border border-[#5D4E46]/10">
-              <div className="flex justify-between items-start mb-4 border-b border-[#5D4E46]/10 pb-4">
+              <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="font-bold text-[#5D4E46] mb-1">Order #{order.id.split('-')[0]}</h3>
+                  <h3 className="font-bold text-[#5D4E46]">Order #{order.id.substring(0,8).toUpperCase()}</h3>
                   <p className="text-sm text-[#5D4E46]/60">{new Date(order.created_at).toLocaleDateString()}</p>
                 </div>
-                <div className="text-right">
-                  <p className="font-bold text-[#5D4E46] mb-1">{order.total} NOK</p>
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#AAB084]/20 text-[#6B724D] capitalize">
-                    {order.status}
-                  </span>
-                </div>
+                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold ${
+                  order.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                }`}>
+                  {order.status}
+                </span>
               </div>
               
-              {order.items && order.items.length > 0 && (
-                <div className="space-y-3">
-                  {order.items.map((item: any, idx: number) => (
-                    <div key={idx} className="flex justify-between text-sm text-[#5D4E46]">
-                      <span>{item.quantity}x {item.name}</span>
-                      <span>{item.price} NOK</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <div className="pt-4 border-t border-[#5D4E46]/10 flex justify-between items-center">
+                <span className="font-bold text-[#5D4E46]">Total</span>
+                <span className="font-bold text-[#987C6F]">{order.total} NOK</span>
+              </div>
             </div>
           ))}
         </div>
