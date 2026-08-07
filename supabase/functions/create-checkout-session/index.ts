@@ -14,7 +14,7 @@ serve(async (req) => {
   }
 
   try {
-    const { items, email, userId, isLive, origin } = await req.json();
+    const { items, email, userId, isLive, origin, couponCode } = await req.json();
     const baseUrl = origin || req.headers.get('origin') || 'http://localhost:3000';
 
     // Get the correct secret key from environment variables based on the database flag
@@ -49,21 +49,47 @@ serve(async (req) => {
       };
     });
 
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    let discounts = undefined;
+    if (couponCode) {
+      const { data: coupon } = await supabaseAdmin
+        .from('coupons')
+        .select('*')
+        .eq('code', couponCode)
+        .eq('is_active', true)
+        .single();
+
+      if (coupon) {
+        try {
+          const stripeCoupon = await stripe.coupons.create({
+            duration: 'once',
+            percent_off: coupon.discount_type === 'percentage' ? coupon.discount_percentage : undefined,
+            amount_off: coupon.discount_type === 'flat' ? Math.round(coupon.discount_amount * 100) : undefined,
+            currency: coupon.discount_type === 'flat' ? 'nok' : undefined,
+            name: coupon.code,
+          });
+          discounts = [{ coupon: stripeCoupon.id }];
+        } catch (err) {
+          console.error("Failed to create Stripe coupon:", err);
+        }
+      }
+    }
+
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card', 'klarna'],
       line_items: lineItems,
       mode: 'payment',
+      discounts: discounts,
       success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/cart`,
       customer_email: email,
       client_reference_id: userId,
     });
-
-    const supabaseAdmin = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
 
     // Get real userId from email if not provided (guest linking)
     let actualUserId = userId || null;
