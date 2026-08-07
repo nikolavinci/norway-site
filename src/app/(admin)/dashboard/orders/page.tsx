@@ -19,16 +19,26 @@ export default function OrdersPage() {
   const [filter, setFilter] = useState<'all' | 'completed' | 'abandoned' | 'cart'>('all');
   const [recovered, setRecovered] = useState<string[]>([]);
 
+  const [customerOrders, setCustomerOrders] = useState<any[]>([]);
+
   useEffect(() => {
-    async function fetchProfile() {
+    async function fetchProfileAndOrders() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
-        setProfile(data || { role: 'customer' });
+        const { data: profileData } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+        const role = profileData?.role || 'customer';
+        setProfile({ role });
+
+        if (role === 'customer') {
+          const { data: ordersData } = await supabase.from('orders').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false });
+          if (ordersData) {
+            setCustomerOrders(ordersData);
+          }
+        }
       }
       setLoading(false);
     }
-    fetchProfile();
+    fetchProfileAndOrders();
   }, []);
 
   const filteredOrders = MOCK_ORDERS.filter(o => filter === 'all' || o.status === filter);
@@ -169,16 +179,49 @@ export default function OrdersPage() {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-black text-[#5D4E46]">Your Orders</h2>
       </div>
-      <div className="bg-white p-12 rounded-2xl shadow-sm border border-[#5D4E46]/10 text-center">
-        <ShoppingBag size={48} className="mx-auto mb-4 text-[#987C6F] opacity-40" />
-        <h3 className="text-xl font-bold text-[#5D4E46] mb-2">You have no orders yet</h3>
-        <p className="text-[#5D4E46]/60 max-w-md mx-auto mb-6">
-          When you place an order, it will appear here for you to track and manage.
-        </p>
-        <a href="/shop" className="inline-flex items-center px-6 py-3 bg-[#5D4E46] text-white rounded-full font-bold hover:bg-[#3A3532] transition-colors">
-          Start Shopping
-        </a>
-      </div>
+      
+      {customerOrders.length === 0 ? (
+        <div className="bg-white p-12 rounded-2xl shadow-sm border border-[#5D4E46]/10 text-center">
+          <ShoppingBag size={48} className="mx-auto mb-4 text-[#987C6F] opacity-40" />
+          <h3 className="text-xl font-bold text-[#5D4E46] mb-2">You have no orders yet</h3>
+          <p className="text-[#5D4E46]/60 max-w-md mx-auto mb-6">
+            When you place an order, it will appear here for you to track and manage.
+          </p>
+          <a href="/shop" className="inline-flex items-center px-6 py-3 bg-[#5D4E46] text-white rounded-full font-bold hover:bg-[#3A3532] transition-colors">
+            Start Shopping
+          </a>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {customerOrders.map(order => (
+            <div key={order.id} className="bg-white p-6 rounded-2xl shadow-sm border border-[#5D4E46]/10">
+              <div className="flex justify-between items-start mb-4 border-b border-[#5D4E46]/10 pb-4">
+                <div>
+                  <h3 className="font-bold text-[#5D4E46] mb-1">Order #{order.id.split('-')[0]}</h3>
+                  <p className="text-sm text-[#5D4E46]/60">{new Date(order.created_at).toLocaleDateString()}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-bold text-[#5D4E46] mb-1">{order.total} NOK</p>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#AAB084]/20 text-[#6B724D] capitalize">
+                    {order.status}
+                  </span>
+                </div>
+              </div>
+              
+              {order.items && order.items.length > 0 && (
+                <div className="space-y-3">
+                  {order.items.map((item: any, idx: number) => (
+                    <div key={idx} className="flex justify-between text-sm text-[#5D4E46]">
+                      <span>{item.quantity}x {item.name}</span>
+                      <span>{item.price} NOK</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
