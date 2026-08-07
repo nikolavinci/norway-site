@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, ShoppingBag, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Product } from '../shared/utils/products';
 import { useCartStore } from '../shared/utils/store';
+import { useFavoritesStore } from '../shared/utils/favorites';
 import { trackSelectItem, trackAddToCart } from '../shared/utils/analytics';
 
 interface ProductCardProps {
@@ -17,7 +18,15 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, isNew, discount }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
+  const { favorites, toggleFavorite, fetchFavorites, initialized } = useFavoritesStore();
   const [isAdded, setIsAdded] = useState(false);
+
+  // Fetch favorites once
+  useEffect(() => {
+    if (!initialized) fetchFavorites();
+  }, [initialized, fetchFavorites]);
+
+  const isFavorited = favorites.includes(product.id);
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -53,8 +62,16 @@ export default function ProductCard({ product, isNew, discount }: ProductCardPro
           )}
         </div>
 
-        <button aria-label="Add to wishlist" className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#5D4E46]/40 hover:text-[#FF5A5F] transition-all shadow-sm">
-          <Heart size={16} strokeWidth={2.5} />
+        <button 
+          aria-label={isFavorited ? "Remove from wishlist" : "Add to wishlist"}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleFavorite(product.id);
+          }}
+          className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#5D4E46]/40 hover:text-[#FF5A5F] transition-all shadow-sm"
+        >
+          <Heart size={16} strokeWidth={2.5} className={isFavorited ? "text-[#FF5A5F] fill-[#FF5A5F]" : ""} />
         </button>
 
         <Link href={`/shop/${product.id}`} onClick={() => trackSelectItem(product, 'Product Card', 1)}>

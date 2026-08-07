@@ -19,16 +19,26 @@ export default function FavoritesPage() {
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState<'most_favorited' | 'least_stock'>('most_favorited');
 
+  const [favorites, setFavorites] = useState<any[]>([]);
+
   useEffect(() => {
-    async function fetchProfile() {
+    async function fetchProfileAndFavorites() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
-        setProfile(data || { role: 'customer' });
+        const { data: profileData } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+        const role = profileData?.role || 'customer';
+        setProfile({ role });
+        
+        if (role === 'customer') {
+          const { data: favs } = await supabase.from('favorites').select('product_id, products(*)').eq('user_id', session.user.id);
+          if (favs) {
+            setFavorites(favs.map(f => f.products));
+          }
+        }
       }
       setLoading(false);
     }
-    fetchProfile();
+    fetchProfileAndFavorites();
   }, []);
 
   const sortedFavorites = [...MOCK_FAVORITES].sort((a, b) => {
@@ -142,16 +152,47 @@ export default function FavoritesPage() {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-black text-[#5D4E46]">Your Wishlist</h2>
       </div>
-      <div className="bg-white p-12 rounded-2xl shadow-sm border border-[#5D4E46]/10 text-center">
-        <Heart size={48} className="mx-auto mb-4 text-[#987C6F] opacity-40" />
-        <h3 className="text-xl font-bold text-[#5D4E46] mb-2">No saved items yet</h3>
-        <p className="text-[#5D4E46]/60 max-w-md mx-auto mb-6">
-          When you find something you love, click the heart icon to save it here for later.
-        </p>
-        <a href="/shop" className="inline-flex items-center px-6 py-3 bg-[#5D4E46] text-white rounded-full font-bold hover:bg-[#3A3532] transition-colors">
-          Explore Products
-        </a>
-      </div>
+      
+      {favorites.length === 0 ? (
+        <div className="bg-white p-12 rounded-2xl shadow-sm border border-[#5D4E46]/10 text-center">
+          <Heart size={48} className="mx-auto mb-4 text-[#987C6F] opacity-40" />
+          <h3 className="text-xl font-bold text-[#5D4E46] mb-2">No saved items yet</h3>
+          <p className="text-[#5D4E46]/60 max-w-md mx-auto mb-6">
+            When you find something you love, click the heart icon to save it here for later.
+          </p>
+          <a href="/shop" className="inline-flex items-center px-6 py-3 bg-[#5D4E46] text-white rounded-full font-bold hover:bg-[#3A3532] transition-colors">
+            Explore Products
+          </a>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {favorites.map((product) => (
+            product && (
+              <div key={product.id} className="bg-white rounded-xl shadow-sm overflow-hidden border border-[#5D4E46]/10 group">
+                <a href={`/shop/${product.id}`} className="block relative aspect-square bg-[#FDFBF7]">
+                  <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                </a>
+                <div className="p-4">
+                  <h3 className="font-bold text-[#5D4E46] mb-1 truncate">{product.name}</h3>
+                  <p className="text-sm text-[#5D4E46]/70 mb-3">{product.price} NOK</p>
+                  <button 
+                    onClick={async () => {
+                      const { data: { session } } = await supabase.auth.getSession();
+                      if (session) {
+                        await supabase.from('favorites').delete().eq('user_id', session.user.id).eq('product_id', product.id);
+                        setFavorites(favorites.filter(p => p.id !== product.id));
+                      }
+                    }}
+                    className="text-xs font-bold text-[#FF5A5F] hover:text-[#5D4E46] transition-colors flex items-center gap-1"
+                  >
+                    <Heart size={12} className="fill-[#FF5A5F]" /> Remove
+                  </button>
+                </div>
+              </div>
+            )
+          ))}
+        </div>
+      )}
     </div>
   );
 }
