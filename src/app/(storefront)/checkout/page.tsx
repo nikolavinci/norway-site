@@ -65,7 +65,7 @@ export default function Checkout() {
     const { data: coupon, error } = await supabase
       .from('coupons')
       .select('*')
-      .eq('code', couponCode.toUpperCase())
+      .eq('code', couponCode.trim().toUpperCase())
       .eq('is_active', true)
       .maybeSingle();
       
@@ -403,7 +403,11 @@ export default function Checkout() {
                 />
                 {!appliedCoupon ? (
                   <button 
-                    onClick={validateCoupon}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      validateCoupon();
+                    }}
                     disabled={isValidatingCoupon || !couponCode.trim()}
                     className="px-4 py-3 bg-[#5D4E46] text-white rounded-md font-bold hover:bg-[#3A3532] transition-colors disabled:opacity-50"
                   >
@@ -411,7 +415,9 @@ export default function Checkout() {
                   </button>
                 ) : (
                   <button 
-                    onClick={() => {
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
                       setAppliedCoupon(null);
                       setCouponCode('');
                     }}
