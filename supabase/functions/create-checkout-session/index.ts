@@ -56,6 +56,20 @@ serve(async (req) => {
 
     let discounts = undefined;
     if (couponCode) {
+      // Check if this email has already used this coupon
+      const { data: existingUsage } = await supabaseAdmin
+        .from('orders')
+        .select('id')
+        .eq('email', email)
+        .eq('coupon_code', couponCode)
+        .eq('status', 'completed')
+        .limit(1)
+        .maybeSingle();
+
+      if (existingUsage) {
+        throw new Error("The coupon has already been used.");
+      }
+
       const { data: coupon } = await supabaseAdmin
         .from('coupons')
         .select('*')
@@ -107,6 +121,7 @@ serve(async (req) => {
       status: 'pending',
       total: orderTotal,
       stripe_session_id: session.id,
+      coupon_code: couponCode || null,
       items: items // Store full cart JSON
     }).select().single();
 

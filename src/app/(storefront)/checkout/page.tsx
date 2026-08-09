@@ -183,7 +183,16 @@ export default function Checkout() {
       }
     } catch (err: any) {
       console.error('Failed to create checkout session:', err);
-      setError(err.message || 'Failed to initiate checkout');
+      // Supabase invoke error might be in err.message, but sometimes the actual custom error is nested
+      const customError = err?.context?.error || err.message || 'Failed to initiate checkout';
+      setError(customError);
+      
+      if (customError.toLowerCase().includes('already been used')) {
+        setAppliedCoupon(null);
+        setCouponCode('');
+        setCouponError("This coupon has already been used on a past order.");
+      }
+      
       setIsProcessing(false);
     }
   };
