@@ -99,6 +99,9 @@ serve(async (req) => {
       line_items: lineItems,
       mode: 'payment',
       discounts: discounts,
+      invoice_creation: {
+        enabled: true,
+      },
       success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/cart`,
       customer_email: email,
