@@ -117,6 +117,27 @@ serve(async (req) => {
           console.log('Order confirmation email sent successfully via Resend');
         }
       }
+    } else if (event.type === 'checkout.session.expired') {
+      const session = event.data.object as Stripe.Checkout.Session;
+      await supabaseAdmin.from('orders').update({ status: 'expired' }).eq('stripe_session_id', session.id);
+      console.log(`Order updated to expired for session: ${session.id}`);
+
+    } else if (event.type === 'checkout.session.async_payment_failed') {
+      const session = event.data.object as Stripe.Checkout.Session;
+      await supabaseAdmin.from('orders').update({ status: 'failed' }).eq('stripe_session_id', session.id);
+      console.log(`Order updated to failed for session: ${session.id}`);
+
+    } else if (event.type === 'checkout.session.async_payment_succeeded') {
+      const session = event.data.object as Stripe.Checkout.Session;
+      // Depending on timing, checkout.session.completed might have already fired, but if not:
+      await supabaseAdmin.from('orders').update({ status: 'completed' }).eq('stripe_session_id', session.id);
+      console.log(`Order updated to completed (async payment succeeded) for session: ${session.id}`);
+
+    } else if (event.type === 'payment_intent.payment_failed') {
+      const intent = event.data.object as Stripe.PaymentIntent;
+      // We don't always have stripe_session_id on the intent, but if we have a direct payment intent integration, 
+      // we can try to find an order with this intent id if we saved it (currently we use session id).
+      console.log(`Payment failed for intent: ${intent.id}. Please manually verify if a session was attached.`);
     }
 
     return new Response(JSON.stringify({ received: true }), { status: 200 });
