@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ShoppingBag, ShoppingCart, AlertCircle, Send, Check, Download } from 'lucide-react';
+import { ShoppingBag, ShoppingCart, AlertCircle, Send, Check, Download, ArrowUpDown, Calendar, Clock } from 'lucide-react';
 import { supabase } from '@/shared/utils/supabase';
 
 export default function OrdersPage() {
@@ -12,6 +12,8 @@ export default function OrdersPage() {
   
   const [adminOrders, setAdminOrders] = useState<any[]>([]);
   const [customerOrders, setCustomerOrders] = useState<any[]>([]);
+  const [customerSortBy, setCustomerSortBy] = useState<'date' | 'price' | 'status'>('date');
+  const [customerSortOrder, setCustomerSortOrder] = useState<'asc' | 'desc'>('desc');
   
   // Recovery Modal State
   const [activeCoupons, setActiveCoupons] = useState<any[]>([]);
@@ -259,9 +261,44 @@ export default function OrdersPage() {
   }
 
   // CUSTOMER VIEW
+  const sortedCustomerOrders = [...customerOrders].sort((a, b) => {
+    let comparison = 0;
+    if (customerSortBy === 'date') {
+      comparison = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+    } else if (customerSortBy === 'price') {
+      comparison = a.total - b.total;
+    } else if (customerSortBy === 'status') {
+      comparison = a.status.localeCompare(b.status);
+    }
+    return customerSortOrder === 'asc' ? comparison : -comparison;
+  });
+
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-black text-[#5D4E46]">My Orders</h2>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h2 className="text-2xl font-black text-[#5D4E46]">My Orders</h2>
+        
+        {customerOrders.length > 0 && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-bold text-[#5D4E46]/60">Sort by:</span>
+            <select
+              value={customerSortBy}
+              onChange={(e) => setCustomerSortBy(e.target.value as any)}
+              className="bg-white border border-[#5D4E46]/10 rounded-xl px-3 py-1.5 text-sm font-bold text-[#5D4E46] focus:outline-none focus:border-[#987C6F]"
+            >
+              <option value="date">Date</option>
+              <option value="price">Price</option>
+              <option value="status">Status</option>
+            </select>
+            <button 
+              onClick={() => setCustomerSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
+              className="p-1.5 bg-white border border-[#5D4E46]/10 rounded-xl text-[#5D4E46] hover:bg-[#FDFBF7]"
+            >
+              <ArrowUpDown size={16} />
+            </button>
+          </div>
+        )}
+      </div>
       
       {customerOrders.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-2xl border border-[#5D4E46]/10">
@@ -271,31 +308,61 @@ export default function OrdersPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {customerOrders.map((order) => (
-            <div key={order.id} className="bg-white p-6 rounded-2xl shadow-sm border border-[#5D4E46]/10">
-              <div className="flex justify-between items-start mb-4">
+          {sortedCustomerOrders.map((order) => (
+            <div key={order.id} className="bg-white p-6 rounded-2xl shadow-sm border border-[#5D4E46]/10 overflow-hidden">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-[#5D4E46]/10 gap-4">
                 <div>
-                  <h3 className="font-bold text-[#5D4E46]">Order #{order.id.substring(0,8).toUpperCase()}</h3>
-                  <p className="text-sm text-[#5D4E46]/60">{new Date(order.created_at).toLocaleDateString()}</p>
+                  <h3 className="font-bold text-[#5D4E46] text-lg">Order #{order.id.substring(0,8).toUpperCase()}</h3>
+                  <div className="flex items-center gap-4 mt-1 text-sm text-[#5D4E46]/60">
+                    <span className="flex items-center gap-1"><Calendar size={14} /> {new Date(order.created_at).toLocaleDateString()}</span>
+                    <span className="flex items-center gap-1"><Clock size={14} /> {new Date(order.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                  </div>
                 </div>
-                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold ${
-                  order.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                }`}>
-                  {order.status}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                    order.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                  }`}>
+                    {order.status}
+                  </span>
+                  {order.invoice_url && (
+                    <a href={order.invoice_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#FDFBF7] text-[#5D4E46] border border-[#5D4E46]/10 rounded-xl text-xs font-bold hover:bg-[#5D4E46] hover:text-white transition-colors">
+                      <Download size={14} /> Invoice
+                    </a>
+                  )}
+                </div>
               </div>
               
-              <div className="pt-4 border-t border-[#5D4E46]/10 flex justify-between items-center">
-                <span className="font-bold text-[#5D4E46]">Total</span>
-                <span className="font-bold text-[#987C6F]">{order.total} NOK</span>
+              <div className="space-y-4">
+                {order.items && Array.isArray(order.items) ? (
+                  order.items.map((item: any, idx: number) => (
+                    <div key={idx} className="flex items-center gap-4 p-3 bg-[#FDFBF7]/50 rounded-xl border border-[#5D4E46]/5">
+                      {item.image ? (
+                        <div className="w-16 h-16 bg-[#5D4E46]/5 rounded-lg overflow-hidden flex-shrink-0">
+                          <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                        </div>
+                      ) : (
+                        <div className="w-16 h-16 bg-[#5D4E46]/10 rounded-lg flex items-center justify-center flex-shrink-0 text-[#5D4E46]/30">
+                          <ShoppingBag size={24} />
+                        </div>
+                      )}
+                      <div className="flex-grow">
+                        <h4 className="font-bold text-[#5D4E46] text-sm">{item.name}</h4>
+                        <p className="text-xs text-[#5D4E46]/60 mt-0.5">Qty: {item.quantity || 1}</p>
+                      </div>
+                      <div className="text-right font-bold text-[#987C6F] text-sm">
+                        {item.price * (item.quantity || 1)} NOK
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-sm text-[#5D4E46]/60 italic py-2">Items details unavailable for this order.</div>
+                )}
               </div>
-              {order.invoice_url && (
-                <div className="mt-4 pt-4 border-t border-[#5D4E46]/10">
-                  <a href={order.invoice_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-[#FDFBF7] text-[#5D4E46] border border-[#5D4E46]/10 rounded-xl text-sm font-bold hover:bg-[#5D4E46] hover:text-white transition-colors">
-                    <Download size={16} /> Download Invoice
-                  </a>
-                </div>
-              )}
+              
+              <div className="mt-6 pt-4 border-t border-[#5D4E46]/10 flex justify-between items-center bg-[#FDFBF7] -mx-6 -mb-6 px-6 py-4">
+                <span className="font-bold text-[#5D4E46]">Order Total</span>
+                <span className="font-black text-xl text-[#987C6F]">{order.total} NOK</span>
+              </div>
             </div>
           ))}
         </div>
