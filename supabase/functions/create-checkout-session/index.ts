@@ -55,9 +55,19 @@ serve(async (req) => {
     );
 
     let discounts = undefined;
+    let actualUserId = userId || null;
+
+    // Fire off DB promises concurrently
+    let userLookupPromise = Promise.resolve(null);
+    if (!actualUserId && email) {
+      userLookupPromise = supabaseAdmin.rpc('get_user_id_by_email', { email_address: email });
+    }
+
+    let couponUsagePromise = Promise.resolve(null);
+    let couponDetailsPromise = Promise.resolve(null);
+
     if (couponCode) {
-      // Check if this email has already used this coupon
-      const { data: existingUsage } = await supabaseAdmin
+      couponUsagePromise = supabaseAdmin
         .from('orders')
         .select('id')
         .eq('email', email)
@@ -66,30 +76,36 @@ serve(async (req) => {
         .limit(1)
         .maybeSingle();
 
-      if (existingUsage) {
-        throw new Error("The coupon has already been used.");
-      }
-
-      const { data: coupon } = await supabaseAdmin
+      couponDetailsPromise = supabaseAdmin
         .from('coupons')
         .select('*')
         .eq('code', couponCode)
         .eq('is_active', true)
         .single();
+    }
 
-      if (coupon) {
-        try {
-          const stripeCoupon = await stripe.coupons.create({
-            duration: 'once',
-            percent_off: coupon.discount_type === 'percentage' ? coupon.discount_percentage : undefined,
-            amount_off: coupon.discount_type === 'flat' ? Math.round(coupon.discount_amount * 100) : undefined,
-            currency: coupon.discount_type === 'flat' ? 'nok' : undefined,
-            name: coupon.code,
-          });
-          discounts = [{ coupon: stripeCoupon.id }];
-        } catch (err) {
-          console.error("Failed to create Stripe coupon:", err);
-        }
+    // Wait for all DB lookups at once
+    const [userRes, existingUsageRes, couponRes] = await Promise.all([
+      userLookupPromise,
+      couponUsagePromise,
+      couponDetailsPromise
+    ]);
+
+    if (userRes && (userRes as any).data) {
+      actualUserId = (userRes as any).data;
+    }
+
+    if (couponCode) {
+      if ((existingUsageRes as any)?.data) {
+        throw new Error("The coupon has already been used.");
+      }
+
+      const coupon = (couponRes as any)?.data;
+      if (coupon && coupon.stripe_coupon_id) {
+        discounts = [{ coupon: coupon.stripe_coupon_id }];
+      } else if (coupon) {
+        // Fallback for older coupons
+        console.warn("Coupon found but missing stripe_coupon_id. Please recreate the coupon in dashboard.");
       }
     }
 
@@ -107,13 +123,6 @@ serve(async (req) => {
       customer_email: email,
       client_reference_id: userId,
     });
-
-    // Get real userId from email if not provided (guest linking)
-    let actualUserId = userId || null;
-    if (!actualUserId && email) {
-      const { data } = await supabaseAdmin.rpc('get_user_id_by_email', { email_address: email });
-      if (data) actualUserId = data;
-    }
 
     const orderTotal = items.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0);
 
