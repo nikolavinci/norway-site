@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ShoppingBag, ShoppingCart, AlertCircle, Send, Check } from 'lucide-react';
+import { ShoppingBag, ShoppingCart, AlertCircle, Send, Check, Download } from 'lucide-react';
 import { supabase } from '@/shared/utils/supabase';
 
 export default function OrdersPage() {
@@ -29,7 +29,7 @@ export default function OrdersPage() {
         setProfile({ role });
 
         if (role === 'customer') {
-          const { data: ordersData } = await supabase.from('orders').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false });
+          const { data: ordersData } = await supabase.from('orders').select('*').or(`user_id.eq.${session.user.id},email.eq.${session.user.email}`).order('created_at', { ascending: false });
           if (ordersData) {
             setCustomerOrders(ordersData);
           }
@@ -289,6 +289,13 @@ export default function OrdersPage() {
                 <span className="font-bold text-[#5D4E46]">Total</span>
                 <span className="font-bold text-[#987C6F]">{order.total} NOK</span>
               </div>
+              {order.invoice_url && (
+                <div className="mt-4 pt-4 border-t border-[#5D4E46]/10">
+                  <a href={order.invoice_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-[#FDFBF7] text-[#5D4E46] border border-[#5D4E46]/10 rounded-xl text-sm font-bold hover:bg-[#5D4E46] hover:text-white transition-colors">
+                    <Download size={16} /> Download Invoice
+                  </a>
+                </div>
+              )}
             </div>
           ))}
         </div>
