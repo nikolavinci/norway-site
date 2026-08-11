@@ -43,22 +43,41 @@ export default function CouponsPage() {
     e.preventDefault();
     if (!newCode.trim()) return;
 
+    setLoading(true);
+
     const payload = {
       code: newCode.toUpperCase(),
       discount_type: newType,
       discount_percentage: newType === 'percentage' ? newAmount : 0,
       discount_amount: newType === 'flat' ? newAmount : 0,
-      is_active: true
+      free_shipping_threshold: null,
     };
 
-    const { error } = await supabase.from('coupons').insert([payload]);
-    if (error) {
-      alert("Error creating coupon: " + error.message);
-    } else {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const { data: siteSettings } = await supabase.from('site_settings').select('is_stripe_live').limit(1).maybeSingle();
+      const isLive = siteSettings?.is_stripe_live || false;
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/admin-manage-coupons`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token}`
+        },
+        body: JSON.stringify({ action: 'create', coupon: payload, isLive })
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Failed to create coupon');
+
       setIsAdding(false);
       setNewCode('');
       setNewAmount(10);
       fetchCoupons();
+    } catch (err: any) {
+      alert("Error creating coupon: " + err.message);
+      setLoading(false);
     }
   };
 
