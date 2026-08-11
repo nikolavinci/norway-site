@@ -37,18 +37,16 @@ serve(async (req) => {
       let invoiceUrl = null;
       let invoicePdf = null;
       
-      if (session.payment_intent) {
+      if (session.id) {
         // Stripe generates invoices asynchronously. Loop up to 4 times (10 seconds)
         for (let i = 0; i < 4; i++) {
           try {
             await new Promise(r => setTimeout(r, 2500));
-            const invoices = await stripe.invoices.list({ 
-              payment_intent: session.payment_intent as string, 
-              limit: 1 
-            });
-            if (invoices.data.length > 0) {
-              invoiceUrl = invoices.data[0].hosted_invoice_url;
-              invoicePdf = invoices.data[0].invoice_pdf;
+            const updatedSession = await stripe.checkout.sessions.retrieve(session.id);
+            if (updatedSession.invoice) {
+              const invoice = await stripe.invoices.retrieve(updatedSession.invoice as string);
+              invoiceUrl = invoice.hosted_invoice_url;
+              invoicePdf = invoice.invoice_pdf;
               break;
             }
           } catch (err) {
@@ -99,6 +97,28 @@ serve(async (req) => {
           }
         } catch (err) {
           console.error("Error linking guest order to user:", err);
+        }
+      }
+
+      // Save shipping address to user_addresses if we have a userId
+      if (userId && shippingAddress) {
+        try {
+          const nameParts = (session.customer_details?.name || session.shipping_details?.name || '').split(' ');
+          const firstName = nameParts[0] || '';
+          const lastName = nameParts.slice(1).join(' ') || '';
+          
+          await supabaseAdmin.from('user_addresses').insert({
+            user_id: userId,
+            first_name: firstName,
+            last_name: lastName,
+            address: shippingAddress.line1 + (shippingAddress.line2 ? ', ' + shippingAddress.line2 : ''),
+            city: shippingAddress.city || '',
+            postal_code: shippingAddress.postal_code || '',
+            country: shippingAddress.country || '',
+            is_default: true
+          });
+        } catch (err) {
+          console.error("Failed to save user address:", err);
         }
       }
 
