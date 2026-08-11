@@ -34,11 +34,34 @@ serve(async (req) => {
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
       
+      let invoiceUrl = null;
+      let invoicePdf = null;
+      
+      if (session.payment_intent) {
+        try {
+          // Stripe generates invoices asynchronously. We wait 3 seconds to ensure it exists.
+          await new Promise(r => setTimeout(r, 3000));
+          const invoices = await stripe.invoices.list({ 
+            payment_intent: session.payment_intent as string, 
+            limit: 1 
+          });
+          if (invoices.data.length > 0) {
+            invoiceUrl = invoices.data[0].hosted_invoice_url;
+            invoicePdf = invoices.data[0].invoice_pdf;
+          }
+        } catch (err) {
+          console.error("Error retrieving invoice from Stripe:", err);
+        }
+      }
+
       // 1. Update the pending order to completed FIRST
       // This ensures the DB reflects the purchase even if email sending fails.
       const { data: order, error } = await supabaseAdmin
         .from('orders')
-        .update({ status: 'completed' })
+        .update({ 
+          status: 'completed',
+          invoice_url: invoicePdf || invoiceUrl
+        })
         .eq('stripe_session_id', session.id)
         .select()
         .single();
@@ -82,6 +105,8 @@ serve(async (req) => {
            </li>`
         ).join('');
 
+        const invoiceHtml = invoicePdf ? `<p style="margin-top: 20px;"><a href="${invoicePdf}" style="display: inline-block; padding: 10px 20px; background-color: #5D4E46; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;">Download PDF Invoice</a></p>` : '';
+
         const resResend = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
@@ -91,7 +116,7 @@ serve(async (req) => {
           body: JSON.stringify({
             from: 'Pust Atelier <orders@pustatelier.no>',
             to: [email],
-            subject: 'Order Confirmation - Pust Atelier',
+            subject: 'Order Confirmation & Invoice - Pust Atelier',
             html: `
               <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #3A3532;">
                 <h1 style="color: #5D4E46; border-bottom: 1px solid #eee; padding-bottom: 10px;">Thank you for your order!</h1>
@@ -102,6 +127,7 @@ serve(async (req) => {
                   ${itemsHtml}
                 </ul>
                 <p><strong>Total:</strong> ${session.amount_total ? session.amount_total / 100 : 0} NOK</p>
+                ${invoiceHtml}
                 <br/>
                 <p>You can view your order status at any time in your <a href="${Deno.env.get('SITE_URL') || 'https://pustatelier.no'}/dashboard/orders" style="color: #987C6F; font-weight: bold;">dashboard</a>.</p>
                 <p>Best regards,<br/>The Pust Atelier Team</p>
