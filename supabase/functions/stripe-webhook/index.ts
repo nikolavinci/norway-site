@@ -38,21 +38,26 @@ serve(async (req) => {
       let invoicePdf = null;
       
       if (session.payment_intent) {
-        try {
-          // Stripe generates invoices asynchronously. We wait 3 seconds to ensure it exists.
-          await new Promise(r => setTimeout(r, 3000));
-          const invoices = await stripe.invoices.list({ 
-            payment_intent: session.payment_intent as string, 
-            limit: 1 
-          });
-          if (invoices.data.length > 0) {
-            invoiceUrl = invoices.data[0].hosted_invoice_url;
-            invoicePdf = invoices.data[0].invoice_pdf;
+        // Stripe generates invoices asynchronously. Loop up to 4 times (10 seconds)
+        for (let i = 0; i < 4; i++) {
+          try {
+            await new Promise(r => setTimeout(r, 2500));
+            const invoices = await stripe.invoices.list({ 
+              payment_intent: session.payment_intent as string, 
+              limit: 1 
+            });
+            if (invoices.data.length > 0) {
+              invoiceUrl = invoices.data[0].hosted_invoice_url;
+              invoicePdf = invoices.data[0].invoice_pdf;
+              break;
+            }
+          } catch (err) {
+            console.error("Error retrieving invoice from Stripe on try", i, err);
           }
-        } catch (err) {
-          console.error("Error retrieving invoice from Stripe:", err);
         }
       }
+
+      const shippingAddress = session.shipping_details?.address || session.customer_details?.address || null;
 
       // 1. Update the pending order to completed FIRST
       // This ensures the DB reflects the purchase even if email sending fails.
@@ -60,7 +65,8 @@ serve(async (req) => {
         .from('orders')
         .update({ 
           status: 'completed',
-          invoice_url: invoicePdf || invoiceUrl
+          invoice_url: invoicePdf || invoiceUrl,
+          shipping_address: shippingAddress
         })
         .eq('stripe_session_id', session.id)
         .select()
