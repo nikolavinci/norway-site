@@ -19,7 +19,7 @@ const slides = [
   }
 ];
 
-export default function HeroSlider() {
+export default function HeroSlider({ className = '' }: { className?: string }) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function HeroSlider() {
   };
 
   return (
-    <div className="relative h-[400px] md:h-[500px] w-full rounded-3xl overflow-hidden shadow-2xl group mt-8 md:mt-0">
+    <div className={`relative h-[52vh] sm:h-[58vh] md:h-[62vh] lg:h-[66vh] max-h-[calc(100dvh-185px)] min-h-[300px] w-full rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl group ${className}`}>
       {slides.map((slide, index) => (
         <div 
           key={index} 
