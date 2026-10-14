@@ -31,12 +31,14 @@ export default function ProductDetailPage() {
   const [showSticky, setShowSticky] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadData() {
       const p = await getProductById(id as string);
       if (p) {
         setProduct(p);
+        setSelectedImage(p.image);
         trackViewItem(p);
         
         // Native Edge Function Tracking
@@ -97,27 +99,71 @@ export default function ProductDetailPage() {
       <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 px-6 mb-24">
         
         {/* Left: Images */}
-        <div className="lg:col-span-6 xl:col-span-5 flex gap-4">
-          <div className="hidden md:flex flex-col gap-4 w-20 flex-shrink-0">
-            {product.gallery && product.gallery.length > 0 ? product.gallery.map((imgUrl, i) => (
-              <div key={i} className="relative aspect-square bg-white rounded-xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-[#987C6F] transition-colors shadow-sm">
-                <Image src={imgUrl} alt={`${product.name} gallery ${i}`} fill className="object-cover" />
-              </div>
-            )) : [1, 2, 3, 4].map((i) => (
-              <div key={i} className="relative aspect-square bg-white rounded-xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-[#987C6F] transition-colors shadow-sm opacity-50">
-                <Image src={product.image} alt={`${product.name} view ${i}`} fill className="object-cover" />
-              </div>
-            ))}
-          </div>
-          <div className="relative flex-1 bg-[#FDFBF7] rounded-xl overflow-hidden shadow-sm aspect-square">
-            <Image src={product.image} alt={product.name} fill className="object-cover" priority />
+        <div className="lg:col-span-7 xl:col-span-6 flex flex-col gap-4">
+          {/* Main Featured Image - No stretching, maximum space */}
+          <div className="relative w-full aspect-[4/5] sm:aspect-square md:aspect-[4/5] max-h-[640px] bg-[#F7F4EE] rounded-2xl overflow-hidden shadow-sm flex items-center justify-center p-4">
+            <Image 
+              src={selectedImage || product.image} 
+              alt={product.name} 
+              fill 
+              className="object-contain p-2" 
+              priority 
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
+            />
             <button 
               onClick={() => setIsFavorite(!isFavorite)}
-              className="absolute top-4 right-4 z-10 w-12 h-12 flex items-center justify-center bg-white/80 backdrop-blur rounded-full text-[#5D4E46] hover:text-[#FF5A5F] hover:bg-white transition-all shadow-md"
+              className="absolute top-4 right-4 z-10 w-11 h-11 flex items-center justify-center bg-white/90 backdrop-blur rounded-full text-[#5D4E46] hover:text-[#FF5A5F] hover:bg-white transition-all shadow-md"
               title="Add to Favorites"
             >
               <Heart size={20} strokeWidth={2.5} fill={isFavorite ? "#FF5A5F" : "none"} className={isFavorite ? "text-[#FF5A5F]" : ""} />
             </button>
+          </div>
+
+          {/* Alternate / Gallery Thumbnails below the featured image */}
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
+            {/* Primary Image Thumbnail */}
+            <button 
+              type="button"
+              onClick={() => setSelectedImage(product.image)}
+              className={`relative w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-xl overflow-hidden flex-shrink-0 cursor-pointer border-2 transition-all shadow-sm ${
+                (selectedImage === product.image || !selectedImage) 
+                  ? 'border-[#987C6F] ring-2 ring-[#987C6F]/20' 
+                  : 'border-transparent hover:border-[#987C6F]/50 opacity-80'
+              }`}
+            >
+              <Image src={product.image} alt={`${product.name} main thumbnail`} fill className="object-contain p-1" />
+            </button>
+
+            {/* Gallery Images */}
+            {product.gallery && product.gallery.length > 0 ? (
+              product.gallery.map((imgUrl, i) => (
+                <button 
+                  key={i} 
+                  type="button"
+                  onClick={() => setSelectedImage(imgUrl)}
+                  className={`relative w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-xl overflow-hidden flex-shrink-0 cursor-pointer border-2 transition-all shadow-sm ${
+                    selectedImage === imgUrl 
+                      ? 'border-[#987C6F] ring-2 ring-[#987C6F]/20' 
+                      : 'border-transparent hover:border-[#987C6F]/50 opacity-80'
+                  }`}
+                >
+                  <Image src={imgUrl} alt={`${product.name} gallery ${i + 1}`} fill className="object-contain p-1" />
+                </button>
+              ))
+            ) : (
+              [1, 2, 3].map((i) => (
+                <button 
+                  key={i} 
+                  type="button"
+                  onClick={() => setSelectedImage(product.image)}
+                  className={`relative w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-xl overflow-hidden flex-shrink-0 cursor-pointer border-2 transition-all shadow-sm opacity-60 hover:opacity-100 ${
+                    selectedImage === product.image ? 'border-gray-200' : 'border-transparent'
+                  }`}
+                >
+                  <Image src={product.image} alt={`${product.name} angle ${i}`} fill className="object-contain p-1" />
+                </button>
+              ))
+            )}
           </div>
         </div>
 
