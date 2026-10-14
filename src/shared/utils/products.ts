@@ -16,32 +16,121 @@ export interface Product {
   dimensions?: string;
 }
 
-export async function getProducts(): Promise<Product[]> {
-  const { data, error } = await supabase.from('products').select('*');
-  if (error) {
-    console.error('Error fetching products from Supabase:', error);
-    return [];
+export const FALLBACK_PRODUCTS: Product[] = [
+  {
+    id: 'prod-1',
+    name: 'Printed Upholstery Shopper Bag',
+    price: 1850,
+    category: 'Bag',
+    image: '/images/bags/bag1.png',
+    description: 'Handmade printed upholstery shopper bag featuring warm boho patterns and durable straps.',
+    stock: 200
+  },
+  {
+    id: 'prod-2',
+    name: 'Handcrafted Vintage Upholstery Tote',
+    price: 2100,
+    category: 'Bag',
+    image: '/images/bags/bag2.png',
+    description: 'Beautiful tote bag made of vintage upholstery fabric in rich earthy tones.',
+    stock: 150
+  },
+  {
+    id: 'prod-3',
+    name: 'Damask Jacquard Fabric Bag',
+    price: 2450,
+    category: 'Bag',
+    image: '/images/bags/bag3.png',
+    description: 'Elegant damask jacquard fabric bag finished with premium leather handles.',
+    stock: 75
+  },
+  {
+    id: 'prod-4',
+    name: 'Moroccan Leather Kilim Bag',
+    price: 3200,
+    category: 'Bag',
+    image: '/images/bags/bag4.png',
+    description: 'Handcrafted Moroccan leather kilim bag with striking terracotta patterns.',
+    stock: 45
+  },
+  {
+    id: 'prod-5',
+    name: 'Green Bird Quilted Velvet Tote',
+    price: 2750,
+    category: 'Bag',
+    image: '/images/bags/bag5.png',
+    description: 'Opulent quilted velvet tote bag featuring a subtle green bird print.',
+    stock: 60
+  },
+  {
+    id: 'prod-6',
+    name: 'Artisan Textured Linen Cushion',
+    price: 950,
+    category: 'Cushion',
+    image: '/images/products/green_tree_tablecover.webp',
+    description: 'Textured artisan cushion cover woven from natural unbleached fibers to bring warmth to your living space.',
+    stock: 80
+  },
+  {
+    id: 'prod-7',
+    name: 'Yellow Lotus Handcrafted Cushion',
+    price: 890,
+    category: 'Cushion',
+    image: '/images/products/yellow_lotus_bedding.webp',
+    description: 'Vibrant yellow lotus pattern cushion cover made with 100% organic cotton and hand-embroidered seams.',
+    stock: 100
+  },
+  {
+    id: 'prod-8',
+    name: 'Blue Lily Cotton Artisan Shawl',
+    price: 1450,
+    category: 'Shawl',
+    image: '/images/products/blue_lily_quilt.webp',
+    description: 'Cozy, breathable artisan shawl featuring delicate botanical patterns and fringed hem.',
+    stock: 40
+  },
+  {
+    id: 'prod-9',
+    name: 'Bohemian Handwoven Wool Shawl',
+    price: 1890,
+    category: 'Shawl',
+    image: '/images/boho_feature_showcase.jpg',
+    description: 'Warm, lightweight draped bohemian shawl handcrafted with natural hand-spun yarns.',
+    stock: 35
   }
-  
-  return data.map((p: any) => ({
-    ...p,
-    image: p.image
-  })) as Product[];
+];
+
+export async function getProducts(): Promise<Product[]> {
+  try {
+    const { data, error } = await supabase.from('products').select('*');
+    if (error || !data || data.length === 0) {
+      return FALLBACK_PRODUCTS;
+    }
+    
+    return data.map((p: any) => ({
+      ...p,
+      image: p.image || '/images/boho_hero_banner.png'
+    })) as Product[];
+  } catch {
+    return FALLBACK_PRODUCTS;
+  }
 }
 
 export async function getProductById(id: string): Promise<Product | null> {
-  const { data, error } = await supabase.from('products').select('*').eq('id', id).single();
-  if (error) {
-    console.error(`Error fetching product ${id}:`, error);
-    return null;
+  try {
+    const { data, error } = await supabase.from('products').select('*').eq('id', id).single();
+    if (error || !data) {
+      return FALLBACK_PRODUCTS.find(p => p.id === id) || null;
+    }
+    
+    const p = data as any;
+    return {
+      ...p,
+      image: p.image || '/images/boho_hero_banner.png'
+    } as Product;
+  } catch {
+    return FALLBACK_PRODUCTS.find(p => p.id === id) || null;
   }
-  
-  const p = data as any;
-
-  return {
-    ...p,
-    image: p.image
-  } as Product;
 }
 
 export async function createProduct(product: Omit<Product, 'id'>) {
