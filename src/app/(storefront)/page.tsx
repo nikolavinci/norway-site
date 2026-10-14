@@ -1,12 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { getProducts } from '@/shared/utils/products';
+import { getPopularProducts, getProductsByCategory } from '@/shared/utils/products';
 import { ChevronRight } from 'lucide-react';
 import HeroSlider from '@/components/HeroSlider';
 import FeaturedCarousel from '@/components/FeaturedCarousel';
 
 export default async function Home() {
-  const allProducts = await getProducts();
+  const popularProducts = await getPopularProducts(8);
+  const bagProducts = await getProductsByCategory('Bag', 8);
+  const cushionProducts = await getProductsByCategory('Cushion', 8);
   
   return (
     <div className="flex flex-col min-h-screen text-[#5D4E46] font-sans antialiased bg-[#FDFBF7]">
@@ -34,8 +36,8 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Featured Products Carousel */}
-        <section className="max-w-[1440px] mx-auto px-6 relative z-20 pt-8 pb-14 md:pt-10 md:pb-16">
+        {/* Featured Selection: Trending Handcrafts (Most Viewed / Popular Products) */}
+        <section className="max-w-[1440px] mx-auto px-6 relative z-20 pt-8 pb-12 md:pt-10 md:pb-14">
           <div className="flex justify-between items-end mb-6">
             <div>
               <span className="text-[10px] uppercase tracking-widest font-bold text-[#7A75A5] block mb-1">
@@ -52,7 +54,49 @@ export default async function Home() {
               Shop All <ChevronRight size={14} className="ml-1" />
             </Link>
           </div>
-          <FeaturedCarousel products={allProducts.slice(0, 8)} />
+          <FeaturedCarousel products={popularProducts} />
+        </section>
+
+        {/* Bags Product Section */}
+        <section className="max-w-[1440px] mx-auto px-6 relative z-20 py-10 md:py-12 border-t border-[#5D4E46]/5">
+          <div className="flex justify-between items-end mb-6">
+            <div>
+              <span className="text-[10px] uppercase tracking-widest font-bold text-[#987C6F] block mb-1">
+                Artisan Collection
+              </span>
+              <h2 className="text-2xl md:text-3xl font-black text-[#5D4E46]">
+                Handcrafted Bags
+              </h2>
+            </div>
+            <Link 
+              href="/shop?category=Bag" 
+              className="text-xs font-bold text-[#5D4E46]/70 hover:text-[#7A75A5] uppercase tracking-wider flex items-center transition-colors"
+            >
+              Explore Bags <ChevronRight size={14} className="ml-1" />
+            </Link>
+          </div>
+          <FeaturedCarousel products={bagProducts} />
+        </section>
+
+        {/* Cushions Product Section */}
+        <section className="max-w-[1440px] mx-auto px-6 relative z-20 py-10 md:py-12 border-t border-[#5D4E46]/5">
+          <div className="flex justify-between items-end mb-6">
+            <div>
+              <span className="text-[10px] uppercase tracking-widest font-bold text-[#987C6F] block mb-1">
+                Home & Living
+              </span>
+              <h2 className="text-2xl md:text-3xl font-black text-[#5D4E46]">
+                Artisan Cushions
+              </h2>
+            </div>
+            <Link 
+              href="/shop?category=Cushion" 
+              className="text-xs font-bold text-[#5D4E46]/70 hover:text-[#7A75A5] uppercase tracking-wider flex items-center transition-colors"
+            >
+              Explore Cushions <ChevronRight size={14} className="ml-1" />
+            </Link>
+          </div>
+          <FeaturedCarousel products={cushionProducts} />
         </section>
 
         {/* Full-width Feature Banner Section */}

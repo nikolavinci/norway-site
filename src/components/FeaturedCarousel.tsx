@@ -25,7 +25,7 @@ export default function FeaturedCarousel({ products }: { products: Product[] }) 
             <div key={product.id} className="pl-4 flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_25%] min-w-0">
               <ProductCard 
                 product={product} 
-                isNew={true} 
+                isNew={index === 0} 
                 discount={index === 1 ? '-15%' : undefined} 
               />
             </div>
