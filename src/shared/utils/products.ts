@@ -8,6 +8,8 @@ export interface Product {
   image: string;
   description: string;
   stock: number;
+  views?: number;
+  is_popular?: boolean;
   meta_title?: string;
   meta_description?: string;
   gallery?: string[];
@@ -24,7 +26,9 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: 'Bag',
     image: '/images/bags/bag1.png',
     description: 'Handmade printed upholstery shopper bag featuring warm boho patterns and durable straps.',
-    stock: 200
+    stock: 200,
+    views: 4520,
+    is_popular: true
   },
   {
     id: 'prod-2',
@@ -33,7 +37,9 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: 'Bag',
     image: '/images/bags/bag2.png',
     description: 'Beautiful tote bag made of vintage upholstery fabric in rich earthy tones.',
-    stock: 150
+    stock: 150,
+    views: 3840,
+    is_popular: true
   },
   {
     id: 'prod-3',
@@ -42,7 +48,9 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: 'Bag',
     image: '/images/bags/bag3.png',
     description: 'Elegant damask jacquard fabric bag finished with premium leather handles.',
-    stock: 75
+    stock: 75,
+    views: 2980,
+    is_popular: false
   },
   {
     id: 'prod-4',
@@ -51,7 +59,9 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: 'Bag',
     image: '/images/bags/bag4.png',
     description: 'Handcrafted Moroccan leather kilim bag with striking terracotta patterns.',
-    stock: 45
+    stock: 45,
+    views: 4120,
+    is_popular: true
   },
   {
     id: 'prod-5',
@@ -60,7 +70,9 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: 'Bag',
     image: '/images/bags/bag5.png',
     description: 'Opulent quilted velvet tote bag featuring a subtle green bird print.',
-    stock: 60
+    stock: 60,
+    views: 2430,
+    is_popular: false
   },
   {
     id: 'prod-6',
@@ -69,7 +81,9 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: 'Cushion',
     image: '/images/products/green_tree_tablecover.webp',
     description: 'Textured artisan cushion cover woven from natural unbleached fibers to bring warmth to your living space.',
-    stock: 80
+    stock: 80,
+    views: 5210,
+    is_popular: true
   },
   {
     id: 'prod-7',
@@ -78,7 +92,9 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: 'Cushion',
     image: '/images/products/yellow_lotus_bedding.webp',
     description: 'Vibrant yellow lotus pattern cushion cover made with 100% organic cotton and hand-embroidered seams.',
-    stock: 100
+    stock: 100,
+    views: 3450,
+    is_popular: true
   },
   {
     id: 'prod-8',
@@ -87,7 +103,9 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: 'Shawl',
     image: '/images/products/blue_lily_quilt.webp',
     description: 'Cozy, breathable artisan shawl featuring delicate botanical patterns and fringed hem.',
-    stock: 40
+    stock: 40,
+    views: 4790,
+    is_popular: true
   },
   {
     id: 'prod-9',
@@ -96,7 +114,31 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: 'Shawl',
     image: '/images/boho_feature_showcase.jpg',
     description: 'Warm, lightweight draped bohemian shawl handcrafted with natural hand-spun yarns.',
-    stock: 35
+    stock: 35,
+    views: 3120,
+    is_popular: false
+  },
+  {
+    id: 'prod-10',
+    name: 'Terracotta Kilim Cushion Cover',
+    price: 990,
+    category: 'Cushion',
+    image: '/images/bags/bag4.png',
+    description: 'Geometric kilim pattern cushion cover woven from sustainable wool and cotton yarn.',
+    stock: 65,
+    views: 4100,
+    is_popular: true
+  },
+  {
+    id: 'prod-11',
+    name: 'Forest Green Quilted Velvet Cushion',
+    price: 1150,
+    category: 'Cushion',
+    image: '/images/bags/bag5.png',
+    description: 'Plush quilted velvet cushion cover in rich forest green, finished with neat piping.',
+    stock: 50,
+    views: 2890,
+    is_popular: false
   }
 ];
 
@@ -114,6 +156,19 @@ export async function getProducts(): Promise<Product[]> {
   } catch {
     return FALLBACK_PRODUCTS;
   }
+}
+
+export async function getPopularProducts(limit: number = 4): Promise<Product[]> {
+  const products = await getProducts();
+  return [...products]
+    .sort((a, b) => (b.views || 0) - (a.views || 0))
+    .slice(0, limit);
+}
+
+export async function getProductsByCategory(category: string, limit?: number): Promise<Product[]> {
+  const products = await getProducts();
+  const filtered = products.filter(p => p.category.toLowerCase() === category.toLowerCase());
+  return limit ? filtered.slice(0, limit) : filtered;
 }
 
 export async function getProductById(id: string): Promise<Product | null> {
