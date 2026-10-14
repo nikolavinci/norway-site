@@ -42,19 +42,21 @@ export default function Footer() {
             <p className="text-xs text-[#5D4E46] font-medium flex items-center gap-1">📍 See Our Stores</p>
             <p className="text-xs text-[#5D4E46] font-medium flex items-center gap-1">✉ info@pustatelier.com</p>
             <div className="border-t border-[#5D4E46]/10 my-1 w-8"></div>
-            <Link href="#" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Privacy policy</Link>
-            <Link href="#" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Refund policy</Link>
-            <Link href="#" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Terms & Conditions</Link>
+            <Link href="/legal" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Legal Notice</Link>
+            <Link href="/legal#privacy" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Privacy policy</Link>
+            <Link href="/refund-policy" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Refund policy</Link>
+            <Link href="/legal#terms" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Terms & Conditions</Link>
           </div>
 
           {/* Quick links */}
           <div className="col-span-1 md:col-span-1 flex flex-col gap-4">
             <h4 className="font-bold text-[#5D4E46] text-sm tracking-wide">Quick links</h4>
-            <Link href="#" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">About</Link>
-            <Link href="#" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">FAQ</Link>
-            <Link href="#" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Events</Link>
-            <Link href="#" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Journal</Link>
-            <Link href="#" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Search</Link>
+            <Link href="/about" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">About</Link>
+            <Link href="/faq" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">FAQ</Link>
+            <Link href="/shipping" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Shipping</Link>
+            <Link href="/refund-policy" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Returns & Refunds</Link>
+            <Link href="/legal" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Legal</Link>
+            <Link href="/shop" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Shop</Link>
           </div>
 
           {/* Promotional Image Block */}
@@ -72,26 +74,85 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-[#5D4E46]/10 pt-6 mt-6 flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="text-xs text-[#5D4E46]/60">© 2026, Pust Atelier. Brewed by nikolavinci</p>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-[#5D4E46]/60">
+            <p>© 2026, Pust Atelier. Brewed by nikolavinci</p>
+            <span>•</span>
+            <Link href="/legal" className="hover:text-[#5D4E46] underline underline-offset-2">
+              Legal Notice
+            </Link>
+            <span>•</span>
+            <Link href="/legal#terms" className="hover:text-[#5D4E46] underline underline-offset-2">
+              Terms
+            </Link>
+            <span>•</span>
+            <Link href="/refund-policy" className="hover:text-[#5D4E46] underline underline-offset-2">
+              Refund Policy
+            </Link>
+            <span>•</span>
+            <Link href="/legal#privacy" className="hover:text-[#5D4E46] underline underline-offset-2">
+              Privacy
+            </Link>
+          </div>
           {/* Payment Methods */}
-          <div className="flex flex-wrap gap-1.5 items-center mt-4">
-            <div className="h-5 px-2 bg-[#1A1F71] rounded-sm text-white flex items-center justify-center text-[10px] font-black italic shadow-[0_0_0_1px_rgba(0,0,0,0.05)]">VISA</div>
-            <div className="h-5 px-1.5 bg-[#252525] rounded-sm flex items-center justify-center gap-0.5 shadow-[0_0_0_1px_rgba(0,0,0,0.05)]">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#EB001B] mix-blend-screen opacity-90 relative z-10" />
-              <div className="w-2.5 h-2.5 rounded-full bg-[#F79E1B] mix-blend-screen opacity-90 relative -ml-1 z-0" />
+          <div className="flex flex-wrap gap-2 items-center mt-4">
+            {/* Vipps */}
+            <div 
+              title="Vipps" 
+              className="h-6 px-2.5 bg-[#FF5B24] rounded text-white flex items-center justify-center font-black tracking-tight text-[11px] shadow-sm select-none"
+            >
+              vipps
             </div>
-            <div className="h-5 px-2 bg-[#006FCF] rounded-sm text-white flex flex-col items-center justify-center text-[5px] leading-[5px] font-black shadow-[0_0_0_1px_rgba(0,0,0,0.05)]">
+
+            {/* Klarna */}
+            <div 
+              title="Klarna" 
+              className="h-6 px-2.5 bg-[#FFB3C7] rounded text-black flex items-center justify-center font-black text-[10px] tracking-tight shadow-sm select-none"
+            >
+              Klarna.
+            </div>
+
+            {/* BankAxept */}
+            <div 
+              title="BankAxept" 
+              className="h-6 px-2 bg-[#002855] rounded text-white flex items-center justify-center font-bold text-[9px] tracking-tight shadow-sm select-none"
+            >
+              Bank<span className="font-light">Axept</span>
+            </div>
+
+            {/* Visa */}
+            <div 
+              title="Visa" 
+              className="h-6 px-2.5 bg-[#1A1F71] rounded text-white flex items-center justify-center text-[10px] font-black italic shadow-sm select-none"
+            >
+              VISA
+            </div>
+
+            {/* Mastercard */}
+            <div 
+              title="Mastercard" 
+              className="h-6 px-2 bg-[#252525] rounded flex items-center justify-center gap-0.5 shadow-sm select-none"
+            >
+              <div className="w-3 h-3 rounded-full bg-[#EB001B] mix-blend-screen opacity-90 relative z-10" />
+              <div className="w-3 h-3 rounded-full bg-[#F79E1B] mix-blend-screen opacity-90 relative -ml-1.5 z-0" />
+            </div>
+
+            {/* Apple Pay */}
+            <div 
+              title="Apple Pay" 
+              className="h-6 px-2 bg-black rounded text-white flex items-center justify-center text-[10px] font-bold shadow-sm select-none gap-0.5"
+            >
+              <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 170 170">
+                <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.59-7.71-11.66-14.01-6.19-9.5-11.14-20.25-14.86-32.25-3.72-12-5.58-23.49-5.58-34.48 0-14.48 3.69-26.4 11.07-35.76 7.38-9.36 16.5-14.16 27.35-14.4 5.35 0 11.27 1.5 17.77 4.5 6.5 3.01 10.6 4.59 12.3 4.74 2.12-.27 6.43-1.89 12.92-4.86 6.5-2.97 12.06-4.35 16.69-4.14 12.63.75 22.84 5.24 30.63 13.48-11.08 6.74-16.51 16.14-16.3 28.2.22 9.5 3.82 17.47 10.8 23.9 6.98 6.43 15.42 10.23 25.32 11.41-2.13 6.52-4.74 13.25-7.85 20.19zM119.22 31.84c0-7.39 2.67-14.41 8.01-21.06 5.34-6.65 11.96-10.78 19.86-12.38.22 1.09.33 2.18.33 3.27 0 7.39-2.77 14.45-8.31 21.18-5.54 6.73-12.28 10.86-20.22 12.39-.22-1.09-.33-2.18-.33-3.27z"/>
+              </svg>
+              <span>Pay</span>
+            </div>
+
+            {/* American Express */}
+            <div 
+              title="American Express" 
+              className="h-6 px-2 bg-[#006FCF] rounded text-white flex flex-col items-center justify-center text-[5px] leading-[5px] font-black shadow-sm select-none"
+            >
               <span>AM</span><span>EX</span>
-            </div>
-            <div className="h-5 px-2 bg-white rounded-sm text-[#003087] flex items-center justify-center text-[10px] font-black italic shadow-[0_0_0_1px_rgba(0,0,0,0.1)]">P</div>
-            <div className="h-5 px-1 bg-white rounded-sm flex items-center justify-center shadow-[0_0_0_1px_rgba(0,0,0,0.1)]">
-              <div className="flex text-[#0079C1]">
-                <div className="w-1.5 h-3 border-l-2 border-current rounded-l-full" />
-                <div className="w-1.5 h-3 border-r-2 border-current rounded-r-full -ml-0.5" />
-              </div>
-            </div>
-            <div className="h-5 px-1.5 bg-white rounded-sm flex items-center justify-center gap-0.5 shadow-[0_0_0_1px_rgba(0,0,0,0.1)]">
-              <span className="text-[6px] font-black text-[#5D4E46]">DISCOVER</span>
             </div>
           </div>
         </div>
