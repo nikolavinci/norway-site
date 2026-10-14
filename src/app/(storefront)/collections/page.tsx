@@ -7,22 +7,22 @@ export default async function Collections() {
   
   const categories = [
     {
-      title: 'Bags & Totes',
-      slug: 'bags',
-      description: 'Handcrafted bags woven with traditional techniques.',
-      image: products.find(p => p.category.toLowerCase().includes('bag'))?.image || 'https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&q=80&w=600',
+      title: 'Bag',
+      slug: 'Bag',
+      description: 'Handcrafted bohemian totes, shopper bags, and vintage upholstery carriers.',
+      image: '/images/bags/bag1.png',
     },
     {
-      title: 'Home & Living',
-      slug: 'home-living',
-      description: 'Warm, textural pieces for your modern sanctuary.',
-      image: products.find(p => p.category.toLowerCase().includes('cushion') || p.category.toLowerCase().includes('home'))?.image || 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=80&w=600',
+      title: 'Cushion',
+      slug: 'Cushion',
+      description: 'Warm, textural artisan cushion covers designed to elevate your living sanctuary.',
+      image: '/images/products/green_tree_tablecover.webp',
     },
     {
-      title: 'Accessories',
-      slug: 'accessories',
-      description: 'The little things that make a big difference.',
-      image: products.find(p => p.category.toLowerCase().includes('accessory'))?.image || '/images/boho_hero_banner.png',
+      title: 'Shawl',
+      slug: 'Shawl',
+      description: 'Elegantly draped, sustainably woven shawls with timeless bohemian soul.',
+      image: '/images/products/blue_lily_quilt.webp',
     }
   ];
 
