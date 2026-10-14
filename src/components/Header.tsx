@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCartStore } from '../shared/utils/store';
-import { Search, ShoppingBag, User, X, LayoutGrid, List } from 'lucide-react';
+import { Search, ShoppingBag, User, X, LayoutGrid, List, Menu, ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../shared/utils/supabase';
 import { Product, getProducts } from '../shared/utils/products';
@@ -17,6 +17,7 @@ export default function Header() {
 
   const [user, setUser] = useState<any>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [products, setProducts] = useState<Product[]>([]);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -39,13 +40,13 @@ export default function Header() {
       getProducts().then(setProducts);
     }
     
-    // Prevent scrolling when search is open
-    if (isSearchOpen) {
+    // Prevent scrolling when search or navigation menu is open
+    if (isSearchOpen || isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
     }
-  }, [isSearchOpen, products.length]);
+  }, [isSearchOpen, isMobileMenuOpen, products.length]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -60,17 +61,25 @@ export default function Header() {
     <>
       <header className="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-40 border-b border-gray-100 font-sans">
         <div className="w-full max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
-          {/* Left: Logo */}
-          <div className="text-2xl font-serif tracking-widest text-black flex-shrink-0 flex-1">
-            <Link href="/">Pust Atelier</Link>
+          {/* Left: Hamburger & Logo */}
+          <div className="flex items-center gap-3 md:gap-4 flex-1">
+            <button 
+              aria-label="Open menu" 
+              onClick={() => setIsMobileMenuOpen(true)} 
+              className="p-2 -ml-2 text-gray-700 hover:text-black hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center cursor-pointer"
+            >
+              <Menu size={22} />
+            </button>
+            <div className="text-2xl font-serif tracking-widest text-black flex-shrink-0">
+              <Link href="/">Pust Atelier</Link>
+            </div>
           </div>
 
-          {/* Center: Nav */}
-          <nav className="hidden md:flex gap-8 text-[13px] font-medium tracking-wide uppercase text-gray-600 justify-center">
-            <Link href="/about" className="hover:text-black transition-colors py-2">About Us</Link>
-            <Link href="/collections" className="hover:text-black transition-colors py-2">Collections</Link>
-            <Link href="/contact" className="hover:text-black transition-colors py-2">Contact</Link>
-            <Link href="/shop" className="hover:text-black transition-colors py-2">Shop</Link>
+          {/* Center: Categories */}
+          <nav className="hidden md:flex gap-8 text-[13px] font-semibold tracking-wider uppercase text-gray-700 justify-center">
+            <Link href="/shop?category=Bag" className="hover:text-black transition-colors py-2">Bags</Link>
+            <Link href="/shop?category=Cushion" className="hover:text-black transition-colors py-2">Cushions</Link>
+            <Link href="/shop?category=Shawl" className="hover:text-black transition-colors py-2">Shawls</Link>
           </nav>
           
           {/* Right Nav & Search */}
@@ -116,6 +125,127 @@ export default function Header() {
           </div>
         </div>
       </header>
+
+      {/* Slide-out Navigation Drawer from Left */}
+      {isMobileMenuOpen && (
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 transition-opacity"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+
+          {/* Drawer Panel */}
+          <div className="fixed inset-y-0 left-0 max-w-sm w-full bg-[#FDFBF7] shadow-2xl z-50 flex flex-col font-sans text-[#5D4E46] transition-transform">
+            {/* Drawer Top Header */}
+            <div className="px-6 py-5 border-b border-[#5D4E46]/10 flex justify-between items-center bg-white">
+              <Link 
+                href="/" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-2xl font-serif tracking-widest text-black"
+              >
+                Pust Atelier
+              </Link>
+              <button 
+                aria-label="Close menu" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-[#5D4E46]/60 hover:text-[#5D4E46] p-1.5 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+              >
+                <X size={22} />
+              </button>
+            </div>
+
+            {/* Links List */}
+            <div className="flex-1 overflow-y-auto px-6 py-6 flex flex-col">
+              <span className="text-[10px] uppercase tracking-widest font-bold text-[#987C6F] mb-3">
+                Categories
+              </span>
+              <nav className="flex flex-col space-y-1 mb-6">
+                {[
+                  { label: 'Bags', href: '/shop?category=Bag' },
+                  { label: 'Cushions', href: '/shop?category=Cushion' },
+                  { label: 'Shawls', href: '/shop?category=Shawl' },
+                ].map((item) => (
+                  <Link 
+                    key={item.href}
+                    href={item.href} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-base font-bold text-[#5D4E46] hover:text-[#7A75A5] hover:bg-white/60 px-3 py-2 rounded-xl transition-all flex items-center justify-between group"
+                  >
+                    <span>{item.label}</span>
+                    <ChevronRight size={16} className="text-[#5D4E46]/30 group-hover:text-[#7A75A5] transition-colors" />
+                  </Link>
+                ))}
+              </nav>
+
+              <span className="text-[10px] uppercase tracking-widest font-bold text-[#987C6F] mb-3">
+                Information & Pages
+              </span>
+              <nav className="flex flex-col space-y-1">
+                {[
+                  { label: 'All Collections', href: '/collections' },
+                  { label: 'Shop All Products', href: '/shop' },
+                  { label: 'About Us', href: '/about' },
+                  { label: 'Contact', href: '/contact' },
+                  { label: 'FAQ', href: '/faq' },
+                  { label: 'Shipping & Returns', href: '/shipping' },
+                  { label: 'Refund Policy', href: '/refund-policy' },
+                  { label: 'Legal Notice', href: '/legal' },
+                ].map((item) => (
+                  <Link 
+                    key={item.href}
+                    href={item.href} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-sm font-medium text-[#5D4E46]/80 hover:text-[#5D4E46] hover:bg-white/60 px-3 py-1.5 rounded-lg transition-all flex items-center justify-between group"
+                  >
+                    <span>{item.label}</span>
+                    <ChevronRight size={14} className="text-[#5D4E46]/20 group-hover:text-[#5D4E46]/60 transition-colors" />
+                  </Link>
+                ))}
+              </nav>
+
+              {/* Promo Banner in Drawer */}
+              <div className="mt-8 p-4 rounded-2xl bg-[#F7F0E3] border border-[#E2DEBB]/60 text-center">
+                <p className="text-xs font-bold text-[#5D4E46] uppercase tracking-wider mb-1">Welcome Offer</p>
+                <p className="text-xs text-[#5D4E46]/80">Use code <span className="font-black text-[#5D4E46]">WELCOME</span> for 15% off your first purchase.</p>
+              </div>
+            </div>
+
+            {/* Drawer Bottom Bar: Account & Logout */}
+            <div className="p-6 border-t border-[#5D4E46]/10 bg-white">
+              {user ? (
+                <div className="flex flex-col gap-2">
+                  <p className="text-xs text-gray-500">Signed in as</p>
+                  <p className="text-xs font-bold text-[#5D4E46] truncate">{user.email}</p>
+                  <div className="flex gap-4 pt-2">
+                    <Link 
+                      href="/dashboard" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="text-xs font-bold text-[#5D4E46] hover:text-[#7A75A5] transition-colors"
+                    >
+                      Dashboard
+                    </Link>
+                    <button 
+                      onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}
+                      className="text-xs font-bold text-red-600 hover:text-red-700 transition-colors cursor-pointer"
+                    >
+                      Log out
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <Link 
+                  href="/login" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full inline-flex items-center justify-center bg-[#5D4E46] text-white py-3 rounded-full font-bold text-sm hover:bg-[#3A3532] transition-colors shadow-sm"
+                >
+                  Sign In / Register
+                </Link>
+              )}
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Cinematic Dark Search Overlay */}
       {isSearchOpen && (
