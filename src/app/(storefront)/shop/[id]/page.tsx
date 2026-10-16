@@ -95,24 +95,24 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-[#5D4E46] font-sans pt-32 pb-0">
-      <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 px-6 mb-24">
+    <div className="min-h-screen bg-[#FDFBF7] text-[#5D4E46] font-sans pt-22 sm:pt-28 md:pt-32 pb-16 lg:pb-0">
+      <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 px-4 sm:px-6 mb-16 lg:mb-24">
         
         {/* Left Column: Image Showcase & Thumbnails */}
-        <div className="lg:col-span-6 flex flex-col gap-3">
-          {/* Main Featured Image */}
-          <div className="relative w-full aspect-[4/3] sm:aspect-square lg:aspect-[4/3] max-h-[460px] bg-[#F7F4EE] rounded-2xl overflow-hidden shadow-sm flex items-center justify-center p-3">
+        <div className="lg:col-span-6 flex flex-col gap-2.5 sm:gap-3">
+          {/* Main Featured Image - responsive aspect ratio tailored for mobile */}
+          <div className="relative w-full aspect-[4/3] sm:aspect-square lg:aspect-[4/3] max-h-[340px] sm:max-h-[440px] lg:max-h-[460px] bg-[#F7F4EE] rounded-xl sm:rounded-2xl overflow-hidden shadow-xs flex items-center justify-center p-2 sm:p-3">
             <Image 
               src={selectedImage || product.image} 
               alt={product.name} 
               fill 
-              className="object-contain p-2" 
+              className="object-contain p-1.5 sm:p-2" 
               priority 
-              sizes="(max-width: 1024px) 100vw, 50vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 50vw"
             />
             <button 
               onClick={() => setIsFavorite(!isFavorite)}
-              className="absolute top-3 right-3 z-10 w-10 h-10 flex items-center justify-center bg-white/90 backdrop-blur rounded-full text-[#5D4E46] hover:text-[#FF5A5F] hover:bg-white transition-all shadow-md"
+              className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 z-10 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-white/90 backdrop-blur rounded-full text-[#5D4E46] hover:text-[#FF5A5F] hover:bg-white transition-all shadow-md touch-manipulation"
               title="Add to Favorites"
             >
               <Heart size={18} strokeWidth={2.5} fill={isFavorite ? "#FF5A5F" : "none"} className={isFavorite ? "text-[#FF5A5F]" : ""} />
@@ -120,12 +120,12 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Alternate / Gallery Thumbnails below the featured image */}
-          <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-none">
+          <div className="flex gap-2 sm:gap-2.5 overflow-x-auto pb-1 scrollbar-none touch-pan-x">
             {/* Primary Image Thumbnail */}
             <button 
               type="button"
               onClick={() => setSelectedImage(product.image)}
-              className={`relative w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-xl overflow-hidden flex-shrink-0 cursor-pointer border-2 transition-all shadow-sm ${
+              className={`relative w-14 h-14 sm:w-18 sm:h-18 lg:w-20 lg:h-20 bg-white rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0 cursor-pointer border-2 transition-all shadow-xs touch-manipulation ${
                 (selectedImage === product.image || !selectedImage) 
                   ? 'border-[#987C6F] ring-2 ring-[#987C6F]/20' 
                   : 'border-transparent hover:border-[#987C6F]/50 opacity-80'
@@ -141,7 +141,7 @@ export default function ProductDetailPage() {
                   key={i} 
                   type="button"
                   onClick={() => setSelectedImage(imgUrl)}
-                  className={`relative w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-xl overflow-hidden flex-shrink-0 cursor-pointer border-2 transition-all shadow-sm ${
+                  className={`relative w-14 h-14 sm:w-18 sm:h-18 lg:w-20 lg:h-20 bg-white rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0 cursor-pointer border-2 transition-all shadow-xs touch-manipulation ${
                     selectedImage === imgUrl 
                       ? 'border-[#987C6F] ring-2 ring-[#987C6F]/20' 
                       : 'border-transparent hover:border-[#987C6F]/50 opacity-80'
@@ -156,7 +156,7 @@ export default function ProductDetailPage() {
                   key={i} 
                   type="button"
                   onClick={() => setSelectedImage(product.image)}
-                  className={`relative w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-xl overflow-hidden flex-shrink-0 cursor-pointer border-2 transition-all shadow-sm opacity-60 hover:opacity-100 ${
+                  className={`relative w-14 h-14 sm:w-18 sm:h-18 lg:w-20 lg:h-20 bg-white rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0 cursor-pointer border-2 transition-all shadow-xs opacity-60 hover:opacity-100 touch-manipulation ${
                     selectedImage === product.image ? 'border-gray-200' : 'border-transparent'
                   }`}
                 >
@@ -185,46 +185,48 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          {/* Quick Buy Card - Placed firmly above the fold */}
-          <div className="bg-white p-5 rounded-2xl border border-[#5D4E46]/10 shadow-sm mb-6">
-            <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center mb-3">
+          {/* Quick Buy Card - Placed firmly above the fold on mobile and desktop */}
+          <div className="bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-[#5D4E46]/10 shadow-xs sm:shadow-sm mb-5 sm:mb-6">
+            <div className="flex flex-row items-center justify-between gap-2.5 sm:gap-4 mb-3">
               {/* Quantity */}
               <div className="flex items-center">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#5D4E46]/70 mr-3">Qty:</span>
-                <div className="flex items-center border border-[#5D4E46]/20 rounded-xl bg-[#FDFBF7] h-11 w-32">
+                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#5D4E46]/70 mr-2 sm:mr-3">Antall:</span>
+                <div className="flex items-center border border-[#5D4E46]/20 rounded-lg sm:rounded-xl bg-[#FDFBF7] h-9 sm:h-11 w-28 sm:w-32">
                   <button 
                     onClick={() => setQuantity(Math.max(1, quantity - 1))} 
-                    className="w-10 h-full flex items-center justify-center text-[#5D4E46]/70 hover:text-[#5D4E46] hover:bg-[#5D4E46]/5 rounded-l-xl transition-colors"
+                    className="w-8 sm:w-10 h-full flex items-center justify-center text-[#5D4E46]/70 hover:text-[#5D4E46] hover:bg-[#5D4E46]/5 rounded-l-lg sm:rounded-l-xl transition-colors touch-manipulation"
+                    aria-label="Decrease quantity"
                   >
-                    <Minus size={14} />
+                    <Minus size={13} />
                   </button>
-                  <span className="flex-1 text-center text-sm font-bold">{quantity}</span>
+                  <span className="flex-1 text-center text-xs sm:text-sm font-bold">{quantity}</span>
                   <button 
                     onClick={() => setQuantity(quantity + 1)} 
-                    className="w-10 h-full flex items-center justify-center text-[#5D4E46]/70 hover:text-[#5D4E46] hover:bg-[#5D4E46]/5 rounded-r-xl transition-colors"
+                    className="w-8 sm:w-10 h-full flex items-center justify-center text-[#5D4E46]/70 hover:text-[#5D4E46] hover:bg-[#5D4E46]/5 rounded-r-lg sm:rounded-r-xl transition-colors touch-manipulation"
+                    aria-label="Increase quantity"
                   >
-                    <Plus size={14} />
+                    <Plus size={13} />
                   </button>
                 </div>
               </div>
 
               {/* Delivery notice */}
-              <div className="flex-1 text-[11px] text-[#5D4E46]/80 bg-[#FDFBF7] px-3 py-2.5 rounded-xl border border-[#5D4E46]/5 flex items-center gap-2">
-                <span>🚚</span>
-                <span>Levering: <strong className="text-[#5D4E46]">{getDeliveryDates()}</strong></span>
+              <div className="flex-1 text-[10px] sm:text-[11px] text-[#5D4E46]/80 bg-[#FDFBF7] px-2.5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl border border-[#5D4E46]/5 flex items-center gap-1.5 sm:gap-2 truncate">
+                <span className="shrink-0">🚚</span>
+                <span className="truncate">Levering: <strong className="text-[#5D4E46]">{getDeliveryDates()}</strong></span>
               </div>
             </div>
 
             {/* Main Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-2.5 mb-4">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-2.5 mb-3 sm:mb-4">
               <button 
                 onClick={() => {
                   for(let i=0; i<quantity; i++) addItem(product);
                   trackAddToCart(product, quantity);
                 }}
-                className="flex-1 py-3.5 border-2 border-[#5D4E46] rounded-xl text-xs sm:text-sm font-bold text-[#5D4E46] hover:bg-[#5D4E46] hover:text-white transition-all text-center shadow-sm"
+                className="flex-1 py-3 sm:py-3.5 border-2 border-[#5D4E46] rounded-xl text-xs sm:text-sm font-bold text-[#5D4E46] hover:bg-[#5D4E46] hover:text-white transition-all text-center shadow-xs touch-manipulation active:scale-[0.98]"
               >
-                Legg i handlekurv (Add to Cart)
+                Legg i handlekurv
               </button>
               <button 
                 onClick={() => {
@@ -232,39 +234,39 @@ export default function ProductDetailPage() {
                   trackAddToCart(product, quantity);
                   router.push('/checkout');
                 }}
-                className="flex-1 py-3.5 bg-[#5D4E46] text-white rounded-xl text-xs sm:text-sm font-bold hover:bg-[#3A3532] transition-all shadow-md text-center hover:scale-[1.01] active:scale-[0.99]"
+                className="flex-1 py-3 sm:py-3.5 bg-[#5D4E46] text-white rounded-xl text-xs sm:text-sm font-bold hover:bg-[#3A3532] transition-all shadow-md text-center touch-manipulation active:scale-[0.98]"
               >
                 Kjøp nå (Buy it Now)
               </button>
             </div>
 
             {/* Norwegian Payment Options */}
-            <div className="pt-3 border-t border-[#5D4E46]/10 flex flex-wrap items-center justify-between gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#5D4E46]/60">Sikker betaling:</span>
-              <div className="flex flex-wrap gap-1.5 items-center">
+            <div className="pt-2.5 sm:pt-3 border-t border-[#5D4E46]/10 flex flex-wrap items-center justify-between gap-1.5 sm:gap-2">
+              <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#5D4E46]/60">Sikker betaling:</span>
+              <div className="flex flex-wrap gap-1 sm:gap-1.5 items-center">
                 {/* Vipps */}
-                <div title="Vipps" className="h-5 px-2 bg-[#FF5B24] rounded text-white flex items-center justify-center font-black tracking-tight text-[10px] select-none shadow-xs">
+                <div title="Vipps" className="h-4.5 sm:h-5 px-1.5 sm:px-2 bg-[#FF5B24] rounded text-white flex items-center justify-center font-black tracking-tight text-[9px] sm:text-[10px] select-none shadow-xs">
                   vipps
                 </div>
                 {/* Klarna */}
-                <div title="Klarna" className="h-5 px-2 bg-[#FFB3C7] rounded text-black flex items-center justify-center font-black text-[9px] tracking-tight select-none shadow-xs">
+                <div title="Klarna" className="h-4.5 sm:h-5 px-1.5 sm:px-2 bg-[#FFB3C7] rounded text-black flex items-center justify-center font-black text-[8px] sm:text-[9px] tracking-tight select-none shadow-xs">
                   Klarna.
                 </div>
                 {/* BankAxept */}
-                <div title="BankAxept" className="h-5 px-1.5 bg-[#002855] rounded text-white flex items-center justify-center font-bold text-[8px] tracking-tight select-none shadow-xs">
+                <div title="BankAxept" className="h-4.5 sm:h-5 px-1.5 bg-[#002855] rounded text-white flex items-center justify-center font-bold text-[7.5px] sm:text-[8px] tracking-tight select-none shadow-xs">
                   Bank<span className="font-light">Axept</span>
                 </div>
                 {/* Visa */}
-                <div title="Visa" className="h-5 px-2 bg-[#1A1F71] rounded text-white flex items-center justify-center text-[9px] font-black italic select-none shadow-xs">
+                <div title="Visa" className="h-4.5 sm:h-5 px-1.5 sm:px-2 bg-[#1A1F71] rounded text-white flex items-center justify-center text-[8.5px] sm:text-[9px] font-black italic select-none shadow-xs">
                   VISA
                 </div>
                 {/* Mastercard */}
-                <div title="Mastercard" className="h-5 px-1.5 bg-[#252525] rounded flex items-center justify-center gap-0.5 select-none shadow-xs">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#EB001B] mix-blend-screen opacity-90 relative z-10" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#F79E1B] mix-blend-screen opacity-90 relative -ml-1 z-0" />
+                <div title="Mastercard" className="h-4.5 sm:h-5 px-1 sm:px-1.5 bg-[#252525] rounded flex items-center justify-center gap-0.5 select-none shadow-xs">
+                  <div className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-[#EB001B] mix-blend-screen opacity-90 relative z-10" />
+                  <div className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-[#F79E1B] mix-blend-screen opacity-90 relative -ml-1 z-0" />
                 </div>
                 {/* Apple Pay */}
-                <div title="Apple Pay" className="h-5 px-1.5 bg-black rounded text-white flex items-center justify-center text-[9px] font-bold select-none gap-0.5 shadow-xs">
+                <div title="Apple Pay" className="h-4.5 sm:h-5 px-1 sm:px-1.5 bg-black rounded text-white flex items-center justify-center text-[8px] sm:text-[9px] font-bold select-none gap-0.5 shadow-xs">
                   <span>Pay</span>
                 </div>
               </div>
@@ -460,33 +462,46 @@ export default function ProductDetailPage() {
         </div>
       </section>
 
-      {/* Sticky Bottom Bar */}
+      {/* Sticky Bottom Bar for Mobile & Desktop */}
       {showSticky && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#5D4E46]/10 p-3 sm:p-4 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] animate-fade-in-up">
-          <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-3 sm:gap-4">
-            <div className="flex items-center gap-3 sm:gap-4 flex-1">
-              <div className="w-12 h-12 relative bg-[#FDFBF7] rounded-md overflow-hidden shrink-0 shadow-sm border border-[#5D4E46]/10">
-                <Image src={product.image} alt={product.name} fill className="object-cover" />
+        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-[#5D4E46]/10 p-2.5 sm:p-3.5 z-50 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] pb-[max(0.625rem,env(safe-area-inset-bottom))] animate-fade-in-up">
+          <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-2.5 sm:gap-4">
+            <div className="flex items-center gap-2.5 sm:gap-4 flex-1 min-w-0">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 relative bg-[#F7F4EE] rounded-lg overflow-hidden shrink-0 shadow-xs border border-[#5D4E46]/10 p-0.5">
+                <Image src={product.image} alt={product.name} fill className="object-contain" />
               </div>
               <div className="block flex-1 min-w-0">
                 <h4 className="font-bold text-xs sm:text-sm text-[#5D4E46] truncate">{product.name}</h4>
-                <p className="text-[10px] sm:text-xs font-bold text-[#5D4E46]/70">{product.price} NOK</p>
+                <p className="text-[11px] sm:text-xs font-black text-[#5D4E46]">{product.price.toLocaleString('no-NO')} NOK</p>
               </div>
             </div>
             
-            <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-              <div className="flex items-center border border-[#5D4E46]/10 rounded-md bg-[#FDFBF7] w-20 sm:w-24">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-2 sm:p-2 text-[#5D4E46]/60 hover:bg-[#5D4E46]/5"><Minus size={14} /></button>
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              <div className="hidden xs:flex items-center border border-[#5D4E46]/15 rounded-lg bg-[#FDFBF7] h-9 sm:h-10 w-22 sm:w-26">
+                <button 
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))} 
+                  className="w-7 sm:w-8 h-full flex items-center justify-center text-[#5D4E46]/70 hover:bg-[#5D4E46]/5 rounded-l-lg touch-manipulation"
+                  aria-label="Decrease quantity"
+                >
+                  <Minus size={12} />
+                </button>
                 <span className="flex-1 text-center text-xs font-bold">{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)} className="p-2 sm:p-2 text-[#5D4E46]/60 hover:bg-[#5D4E46]/5"><Plus size={14} /></button>
+                <button 
+                  onClick={() => setQuantity(quantity + 1)} 
+                  className="w-7 sm:w-8 h-full flex items-center justify-center text-[#5D4E46]/70 hover:bg-[#5D4E46]/5 rounded-r-lg touch-manipulation"
+                  aria-label="Increase quantity"
+                >
+                  <Plus size={12} />
+                </button>
               </div>
               <button 
                 onClick={() => {
                   for(let i=0; i<quantity; i++) addItem(product);
+                  trackAddToCart(product, quantity);
                 }}
-                className="px-4 sm:px-8 py-3 bg-[#7A75A5] text-white rounded-md sm:rounded-full text-xs sm:text-sm font-bold hover:bg-[#635f8d] transition-colors whitespace-nowrap shadow-md"
+                className="px-4 sm:px-6 py-2.5 sm:py-3 bg-[#5D4E46] text-white rounded-xl text-xs sm:text-sm font-bold hover:bg-[#3A3532] transition-colors whitespace-nowrap shadow-sm touch-manipulation active:scale-[0.98]"
               >
-                Add to cart
+                Legg i handlekurv
               </button>
             </div>
           </div>
