@@ -464,44 +464,61 @@ export default function ProductDetailPage() {
 
       {/* Sticky Bottom Bar for Mobile & Desktop */}
       {showSticky && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-[#5D4E46]/10 p-2.5 sm:p-3.5 z-50 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] pb-[max(0.625rem,env(safe-area-inset-bottom))] animate-fade-in-up">
-          <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-2.5 sm:gap-4">
-            <div className="flex items-center gap-2.5 sm:gap-4 flex-1 min-w-0">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 relative bg-[#F7F4EE] rounded-lg overflow-hidden shrink-0 shadow-xs border border-[#5D4E46]/10 p-0.5">
+        <div className="fixed bottom-0 left-0 right-0 bg-white/98 backdrop-blur-md border-t border-[#5D4E46]/15 px-3 py-3 sm:px-6 sm:py-3.5 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.12)] pb-[max(0.75rem,env(safe-area-inset-bottom))] animate-fade-in-up">
+          <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-3 sm:gap-6">
+            {/* Product Thumbnail & Details (compact on small screens, expands on tablet+) */}
+            <div className="flex items-center gap-2.5 sm:gap-4 shrink min-w-0">
+              <div className="w-11 h-11 sm:w-13 sm:h-13 relative bg-[#F7F4EE] rounded-xl overflow-hidden shrink-0 shadow-xs border border-[#5D4E46]/10 p-0.5">
                 <Image src={product.image} alt={product.name} fill className="object-contain" />
               </div>
-              <div className="block flex-1 min-w-0">
-                <h4 className="font-bold text-xs sm:text-sm text-[#5D4E46] truncate">{product.name}</h4>
-                <p className="text-[11px] sm:text-xs font-black text-[#5D4E46]">{product.price.toLocaleString('no-NO')} NOK</p>
+              <div className="block min-w-0">
+                <h4 className="font-bold text-xs sm:text-sm text-[#5D4E46] truncate max-w-[110px] xs:max-w-[160px] sm:max-w-none">{product.name}</h4>
+                <p className="text-xs sm:text-sm font-black text-[#5D4E46]">{product.price.toLocaleString('no-NO')} NOK</p>
               </div>
             </div>
             
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              <div className="hidden xs:flex items-center border border-[#5D4E46]/15 rounded-lg bg-[#FDFBF7] h-9 sm:h-10 w-22 sm:w-26">
+            {/* Action Buttons: Large, prominent and thumb-friendly */}
+            <div className="flex items-center gap-2 sm:gap-3 flex-1 sm:flex-initial justify-end">
+              {/* Quantity selector */}
+              <div className="hidden sm:flex items-center border border-[#5D4E46]/20 rounded-xl bg-[#FDFBF7] h-11 w-28">
                 <button 
                   onClick={() => setQuantity(Math.max(1, quantity - 1))} 
-                  className="w-7 sm:w-8 h-full flex items-center justify-center text-[#5D4E46]/70 hover:bg-[#5D4E46]/5 rounded-l-lg touch-manipulation"
+                  className="w-9 h-full flex items-center justify-center text-[#5D4E46]/70 hover:bg-[#5D4E46]/5 rounded-l-xl touch-manipulation"
                   aria-label="Decrease quantity"
                 >
-                  <Minus size={12} />
+                  <Minus size={13} />
                 </button>
                 <span className="flex-1 text-center text-xs font-bold">{quantity}</span>
                 <button 
                   onClick={() => setQuantity(quantity + 1)} 
-                  className="w-7 sm:w-8 h-full flex items-center justify-center text-[#5D4E46]/70 hover:bg-[#5D4E46]/5 rounded-r-lg touch-manipulation"
+                  className="w-9 h-full flex items-center justify-center text-[#5D4E46]/70 hover:bg-[#5D4E46]/5 rounded-r-xl touch-manipulation"
                   aria-label="Increase quantity"
                 >
-                  <Plus size={12} />
+                  <Plus size={13} />
                 </button>
               </div>
+
+              {/* Add to Cart - Large, high-visibility touch target */}
               <button 
                 onClick={() => {
                   for(let i=0; i<quantity; i++) addItem(product);
                   trackAddToCart(product, quantity);
                 }}
-                className="px-4 sm:px-6 py-2.5 sm:py-3 bg-[#5D4E46] text-white rounded-xl text-xs sm:text-sm font-bold hover:bg-[#3A3532] transition-colors whitespace-nowrap shadow-sm touch-manipulation active:scale-[0.98]"
+                className="flex-1 sm:flex-initial px-4 sm:px-6 h-12 sm:h-12 border-2 border-[#5D4E46] rounded-xl text-xs sm:text-sm font-bold text-[#5D4E46] hover:bg-[#5D4E46] hover:text-white transition-all text-center flex items-center justify-center touch-manipulation active:scale-[0.98]"
               >
                 Legg i handlekurv
+              </button>
+
+              {/* Instant Buy / Checkout Button */}
+              <button 
+                onClick={() => {
+                  for(let i=0; i<quantity; i++) addItem(product);
+                  trackAddToCart(product, quantity);
+                  router.push('/checkout');
+                }}
+                className="flex-1 sm:flex-initial px-4 sm:px-7 h-12 sm:h-12 bg-[#5D4E46] text-white rounded-xl text-xs sm:text-sm font-bold hover:bg-[#3A3532] transition-all whitespace-nowrap shadow-md flex items-center justify-center touch-manipulation active:scale-[0.98]"
+              >
+                Kjøp nå (Buy Now)
               </button>
             </div>
           </div>
