@@ -74,15 +74,15 @@ export default function LegalPage() {
                 <strong>Company Name:</strong> Pust Atelier AS
               </p>
               <p>
-                <strong>Organization Number (Org. nr.):</strong> 987 654 321 MVA (Foretaksregisteret, Norway)
+                <strong>Organization Number (Org. nr.):</strong> 938 220 530 MVA (Foretaksregisteret, Norway)
               </p>
               <p>
                 <strong>Registered Business Address:</strong> Karl Johans gate 12, 0154 Oslo, Norway
               </p>
               <p>
                 <strong>Customer Service Email:</strong>{' '}
-                <a href="mailto:info@pustatelier.com" className="text-[#7A75A5] underline font-medium">
-                  info@pustatelier.com
+                <a href="mailto:pustatelier@gmail.com" className="text-[#7A75A5] underline font-medium">
+                  pustatelier@gmail.com
                 </a>
               </p>
               <p>
@@ -162,7 +162,7 @@ export default function LegalPage() {
               <h3 className="font-bold text-base text-[#5D4E46] pt-2">Your Rights</h3>
               <p>
                 You have the right to request access to the personal data we hold about you, request corrections, or ask for deletion of your data at any time by contacting{' '}
-                <a href="mailto:info@pustatelier.com" className="text-[#7A75A5] underline font-medium">info@pustatelier.com</a>.
+                <a href="mailto:pustatelier@gmail.com" className="text-[#7A75A5] underline font-medium">pustatelier@gmail.com</a>.
               </p>
             </div>
           </section>

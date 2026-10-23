@@ -38,9 +38,9 @@ export default function Footer() {
           {/* Our Shop */}
           <div className="col-span-1 md:col-span-1 flex flex-col gap-4">
             <h4 className="font-bold text-[#5D4E46] text-sm tracking-wide">Our Shop</h4>
-            <p className="text-xs text-[#5D4E46]/70">Find a location nearest you.</p>
-            <p className="text-xs text-[#5D4E46] font-medium flex items-center gap-1">📍 See Our Stores</p>
-            <p className="text-xs text-[#5D4E46] font-medium flex items-center gap-1">✉ info@pustatelier.com</p>
+            <p className="text-xs text-[#5D4E46]/70">Org. no. 938 220 530</p>
+            <p className="text-xs text-[#5D4E46] font-medium flex items-center gap-1">📍 Pust Atelier Oslo</p>
+            <p className="text-xs text-[#5D4E46] font-medium flex items-center gap-1">✉ pustatelier@gmail.com</p>
             <div className="border-t border-[#5D4E46]/10 my-1 w-8"></div>
             <Link href="/legal" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Legal Notice</Link>
             <Link href="/legal#privacy" className="text-xs text-[#5D4E46]/70 hover:text-[#5D4E46]">Privacy policy</Link>
