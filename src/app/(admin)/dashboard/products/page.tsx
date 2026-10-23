@@ -72,7 +72,7 @@ export default function ProductsPage() {
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <Link href={`/dashboard/products/edit/${product.id}`} className="text-[#987C6F] hover:text-[#5D4E46] p-2 transition-colors inline-block">
+                  <Link href={`/dashboard/products/edit?id=${product.id}`} className="text-[#987C6F] hover:text-[#5D4E46] p-2 transition-colors inline-block">
                     <Edit2 size={16} />
                   </Link>
                   <button onClick={() => handleDelete(product.id)} className="text-red-400 hover:text-red-600 p-2 transition-colors ml-2">
