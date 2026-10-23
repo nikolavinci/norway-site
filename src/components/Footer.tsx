@@ -1,7 +1,43 @@
+'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
+import { Check, Copy } from 'lucide-react';
 
 export default function Footer() {
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanEmail = email.trim();
+    if (!cleanEmail || !cleanEmail.includes('@')) return;
+
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('pust_newsletter_subscribers');
+        const subscribers: string[] = stored ? JSON.parse(stored) : [];
+        if (!subscribers.includes(cleanEmail)) {
+          subscribers.push(cleanEmail);
+          localStorage.setItem('pust_newsletter_subscribers', JSON.stringify(subscribers));
+        }
+      } catch {
+        // Safe fallback
+      }
+    }
+    setSubscribed(true);
+    setEmail('');
+  };
+
+  const copyDiscount = () => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText('WELCOME20');
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
     <footer className="bg-[#FDFBF7] pt-20 pb-8 px-6 mt-auto">
       <div className="max-w-[1440px] mx-auto flex flex-col gap-12">
@@ -12,10 +48,43 @@ export default function Footer() {
             <p className="text-sm text-[#5D4E46]/70 leading-relaxed">
               Don't miss out — sign up now and make sure you have everything you need to look and feel your best!
             </p>
-            <div className="mt-2 flex border border-[#5D4E46]/20 rounded-md overflow-hidden bg-white max-w-sm">
-              <input type="email" placeholder="Email" className="flex-1 px-4 py-2 text-sm outline-none bg-transparent" />
-              <button className="px-4 text-[#5D4E46]/50 hover:text-[#5D4E46]">›</button>
-            </div>
+
+            {subscribed ? (
+              <div className="mt-2 p-3.5 bg-emerald-50 border border-emerald-200 rounded-lg text-[#5D4E46] text-xs flex flex-col gap-2">
+                <div className="flex items-center gap-1.5 font-medium text-emerald-800">
+                  <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>Thank you for subscribing!</span>
+                </div>
+                <p className="text-[11px] text-[#5D4E46]/80 leading-snug">
+                  We'll send updates to your inbox. Use discount code below for 20% off:
+                </p>
+                <div className="flex items-center justify-between bg-white px-2.5 py-1.5 rounded border border-emerald-300 font-mono text-xs">
+                  <span className="font-bold text-[#5D4E46] tracking-wider">WELCOME20</span>
+                  <button 
+                    onClick={copyDiscount}
+                    type="button"
+                    className="flex items-center gap-1 text-[11px] font-sans text-emerald-700 hover:text-emerald-900 font-medium ml-2 cursor-pointer"
+                  >
+                    {copied ? 'Copied!' : <><Copy className="w-3 h-3" /> Copy</>}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleSubscribe} className="mt-2 flex border border-[#5D4E46]/20 rounded-md overflow-hidden bg-white max-w-sm focus-within:border-[#5D4E46] transition-colors">
+                <input 
+                  type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email" 
+                  required
+                  className="flex-1 px-4 py-2 text-sm outline-none bg-transparent text-[#5D4E46]" 
+                />
+                <button type="submit" aria-label="Subscribe" className="px-4 text-[#5D4E46]/70 hover:text-[#5D4E46] font-medium transition-colors cursor-pointer">
+                  ›
+                </button>
+              </form>
+            )}
+
             <div className="flex gap-3 mt-4 text-[#5D4E46]/70">
               <a href="#" aria-label="Facebook" className="w-7 h-7 flex items-center justify-center border border-current rounded-full hover:bg-[#5D4E46] hover:text-white transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
