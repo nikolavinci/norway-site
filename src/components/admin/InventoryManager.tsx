@@ -185,7 +185,30 @@ export default function InventoryManager() {
 
                 <div className="col-span-2">
                   <label className="block text-xs font-bold uppercase tracking-wider text-[#5D4E46]/70 mb-2">Category</label>
-                  <input required type="text" value={formData.category} onChange={(e) => setFormData({...formData, category: e.target.value})} className="w-full p-3 bg-[#FDFBF7] border border-[#5D4E46]/20 rounded-xl outline-none focus:border-[#987C6F]" placeholder="e.g., Bags, Home Decor" />
+                  <select
+                    value={['Cushion covers', 'Blankets', 'Shawls', 'Quilt bags', 'Others'].includes(formData.category) ? formData.category : (formData.category ? '__custom__' : '')}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === '__custom__') {
+                        const custom = prompt('Enter custom category:');
+                        if (custom) setFormData({...formData, category: custom});
+                      } else {
+                        setFormData({...formData, category: val});
+                      }
+                    }}
+                    className="w-full p-3 bg-[#FDFBF7] border border-[#5D4E46]/20 rounded-xl outline-none focus:border-[#987C6F]"
+                  >
+                    <option value="">Select a category</option>
+                    <option value="Cushion covers">Cushion covers</option>
+                    <option value="Blankets">Blankets</option>
+                    <option value="Shawls">Shawls</option>
+                    <option value="Quilt bags">Quilt bags</option>
+                    <option value="Others">Others</option>
+                    {formData.category && !['Cushion covers', 'Blankets', 'Shawls', 'Quilt bags', 'Others'].includes(formData.category) && (
+                      <option value="__custom__">{formData.category} (Custom)</option>
+                    )}
+                    <option value="__custom__">+ Add Custom Category...</option>
+                  </select>
                 </div>
 
                 <div className="col-span-2">
