@@ -3,54 +3,60 @@
     "name": "bags/bag1.png",
     "url": "/images/bags/bag1.png",
     "bucket": "local",
-    "created_at": "2026-07-25T13:46:13.406Z"
+    "created_at": "2026-10-14T19:14:43.734Z"
   },
   {
     "name": "bags/bag2.png",
     "url": "/images/bags/bag2.png",
     "bucket": "local",
-    "created_at": "2026-07-25T13:46:13.413Z"
+    "created_at": "2026-10-14T19:14:43.740Z"
   },
   {
     "name": "bags/bag3.png",
     "url": "/images/bags/bag3.png",
     "bucket": "local",
-    "created_at": "2026-07-25T13:46:13.420Z"
+    "created_at": "2026-10-14T19:14:43.754Z"
   },
   {
     "name": "bags/bag4.png",
     "url": "/images/bags/bag4.png",
     "bucket": "local",
-    "created_at": "2026-07-25T13:46:13.426Z"
+    "created_at": "2026-10-14T19:14:43.765Z"
   },
   {
     "name": "bags/bag5.png",
     "url": "/images/bags/bag5.png",
     "bucket": "local",
-    "created_at": "2026-07-25T13:46:13.433Z"
+    "created_at": "2026-10-14T19:14:43.774Z"
+  },
+  {
+    "name": "boho_feature_showcase.jpg",
+    "url": "/images/boho_feature_showcase.jpg",
+    "bucket": "local",
+    "created_at": "2026-10-14T20:43:48.318Z"
   },
   {
     "name": "boho_hero_banner.png",
     "url": "/images/boho_hero_banner.png",
     "bucket": "local",
-    "created_at": "2026-07-25T13:46:13.440Z"
+    "created_at": "2026-10-14T19:14:43.784Z"
   },
   {
     "name": "products/blue_lily_quilt.webp",
     "url": "/images/products/blue_lily_quilt.webp",
     "bucket": "local",
-    "created_at": "2026-08-06T21:04:25.075Z"
+    "created_at": "2026-10-14T19:14:43.784Z"
   },
   {
     "name": "products/green_tree_tablecover.webp",
     "url": "/images/products/green_tree_tablecover.webp",
     "bucket": "local",
-    "created_at": "2026-08-06T21:04:25.729Z"
+    "created_at": "2026-10-14T19:14:43.791Z"
   },
   {
     "name": "products/yellow_lotus_bedding.webp",
     "url": "/images/products/yellow_lotus_bedding.webp",
     "bucket": "local",
-    "created_at": "2026-08-06T21:04:25.384Z"
+    "created_at": "2026-10-14T19:14:43.791Z"
   }
 ]
