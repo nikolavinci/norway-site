@@ -1,14 +1,27 @@
 import Link from 'next/link';
-import { RefreshCw, ArrowLeft, Clock, CheckCircle2, AlertCircle, CreditCard, PackageCheck, Mail } from 'lucide-react';
+import { 
+  RotateCcw, 
+  ArrowLeft, 
+  Clock, 
+  CheckCircle2, 
+  AlertCircle, 
+  CreditCard, 
+  PackageCheck, 
+  Mail,
+  Sparkles,
+  ShieldCheck,
+  Building2,
+  Phone
+} from 'lucide-react';
 
 export const metadata = {
-  title: 'Refund & Return Policy | Pust Atelier',
-  description: 'Learn about our 14-day return policy, statutory right of withdrawal (angrerett), and refund process at Pust Atelier.',
+  title: 'Returns & Refunds | Pust Atelier',
+  description: '14-day statutory right of withdrawal (angrerett), condition of items, return shipping, and refund process for Pust Atelier Oslo.',
 };
 
 export default function RefundPolicyPage() {
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-[#5D4E46] font-sans antialiased pt-28 pb-24 px-6">
+    <div className="min-h-screen bg-[#FDFBF7] text-[#5D4E46] font-sans antialiased pt-28 sm:pt-32 pb-24 px-6">
       <div className="max-w-4xl mx-auto">
         
         {/* Back Link */}
@@ -27,194 +40,208 @@ export default function RefundPolicyPage() {
             Customer Care & Guarantees
           </span>
           <h1 className="text-4xl md:text-5xl font-serif font-black tracking-tight mb-4">
-            Refund & Return Policy
+            Returns & Refunds
           </h1>
           <p className="text-sm md:text-base text-[#5D4E46]/80 leading-relaxed max-w-2xl">
-            At Pust Atelier, we want you to love your bohemian handcrafts. If an item isn't quite right for your space or style, we provide a transparent, hassle-free return and refund policy in accordance with Norwegian consumer law (<em>Angrerettloven</em>).
+            We want you to love your handmade Himalayan items. If something isn't right, you have a straightforward, 14-day right of withdrawal in accordance with Norwegian consumer law (<em>Angrerettloven</em>).
           </p>
-          <p className="text-xs text-[#5D4E46]/50 mt-4">
-            Last updated: October 2026 • Valid for all online purchases in Norway and international orders
-          </p>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#5D4E46]/60 mt-4">
+            <span>Pust Atelier Oslo</span>
+            <span>•</span>
+            <span>Org. no. 938 220 530</span>
+            <span>•</span>
+            <span>pustatelier@gmail.com</span>
+          </div>
         </header>
 
         {/* Policy Highlights / Key Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-14">
           <div className="p-6 rounded-2xl bg-white border border-[#5D4E46]/10 shadow-sm flex flex-col items-center text-center">
-            <span className="w-12 h-12 rounded-full bg-[#F7F0E3] flex items-center justify-center text-[#7A75A5] mb-3">
+            <span className="w-12 h-12 rounded-full bg-[#F7F0E3] flex items-center justify-center text-[#987C6F] mb-3">
               <Clock size={22} />
             </span>
-            <h3 className="font-bold text-base text-[#5D4E46] mb-1">14-Day Angrerett</h3>
-            <p className="text-xs text-[#5D4E46]/70">Full right of withdrawal within 14 calendar days of delivery.</p>
+            <h3 className="font-bold text-base text-[#5D4E46] mb-1">14-Day Right of Withdrawal</h3>
+            <p className="text-xs text-[#5D4E46]/70 leading-relaxed">
+              Return any item within 14 days of receiving it, without giving any reason.
+            </p>
           </div>
 
           <div className="p-6 rounded-2xl bg-white border border-[#5D4E46]/10 shadow-sm flex flex-col items-center text-center">
-            <span className="w-12 h-12 rounded-full bg-[#F7F0E3] flex items-center justify-center text-[#7A75A5] mb-3">
+            <span className="w-12 h-12 rounded-full bg-[#F7F0E3] flex items-center justify-center text-[#987C6F] mb-3">
               <CreditCard size={22} />
             </span>
-            <h3 className="font-bold text-base text-[#5D4E46] mb-1">Fast Processing</h3>
-            <p className="text-xs text-[#5D4E46]/70">Refunds processed to your original payment method in 5–10 business days.</p>
+            <h3 className="font-bold text-base text-[#5D4E46] mb-1">Full Refund</h3>
+            <p className="text-xs text-[#5D4E46]/70 leading-relaxed">
+              We refund the full price, including standard delivery, within 14 days of notice.
+            </p>
           </div>
 
           <div className="p-6 rounded-2xl bg-white border border-[#5D4E46]/10 shadow-sm flex flex-col items-center text-center">
-            <span className="w-12 h-12 rounded-full bg-[#F7F0E3] flex items-center justify-center text-[#7A75A5] mb-3">
+            <span className="w-12 h-12 rounded-full bg-[#F7F0E3] flex items-center justify-center text-[#987C6F] mb-3">
               <PackageCheck size={22} />
             </span>
-            <h3 className="font-bold text-base text-[#5D4E46] mb-1">2-Year Reklamasjon</h3>
-            <p className="text-xs text-[#5D4E46]/70">Free replacement or full refund on any artisan or material defects.</p>
+            <h3 className="font-bold text-base text-[#5D4E46] mb-1">Fault Protection</h3>
+            <p className="text-xs text-[#5D4E46]/70 leading-relaxed">
+              Statutory complaint right: 2 years (5 years for long-life textiles).
+            </p>
           </div>
         </div>
 
         {/* Detailed Policy Sections */}
-        <div className="space-y-10">
+        <div className="space-y-8">
           
-          {/* Section 1: 14-Day Right of Withdrawal */}
-          <section className="bg-white p-8 md:p-10 rounded-3xl border border-[#5D4E46]/10 shadow-sm">
-            <div className="flex items-center gap-3 mb-5">
-              <span className="w-9 h-9 rounded-xl bg-[#F7F0E3] flex items-center justify-center text-[#7A75A5]">
-                <RefreshCw size={18} />
+          {/* Section 1: Right of withdrawal (14 days) */}
+          <section className="bg-white p-7 sm:p-9 rounded-3xl border border-[#5D4E46]/10 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="w-9 h-9 rounded-xl bg-[#F7F0E3] flex items-center justify-center text-[#987C6F]">
+                <RotateCcw size={18} />
               </span>
-              <h2 className="text-2xl font-bold text-[#5D4E46]">1. Right of Withdrawal (Angrerett)</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-[#5D4E46]">Right of withdrawal (14 days)</h2>
             </div>
             <div className="space-y-3 text-sm text-[#5D4E46]/85 leading-relaxed">
               <p>
-                In compliance with the Norwegian Cancellation Act (<em>Lov om opplysningsplikt og angrerett ved fjernsalg mv.</em>), you are entitled to cancel your purchase within <strong>14 days</strong> of receiving your package without giving any reason.
+                You can return any item within <strong>14 days</strong> of receiving it, without giving a reason.
               </p>
               <p>
-                To exercise your right of withdrawal, you must notify us before the 14-day withdrawal period has expired. You may use our cancellation standard form or simply email our support team at <a href="mailto:info@pustatelier.com" className="text-[#7A75A5] underline font-medium">info@pustatelier.com</a> with your order number.
+                To initiate a return, email us at{' '}
+                <a href="mailto:pustatelier@gmail.com" className="text-[#987C6F] font-bold underline">
+                  pustatelier@gmail.com
+                </a>{' '}
+                with your order number to notify us that you are returning the item. Then send the item back within <strong>14 days</strong> of that notice.
               </p>
             </div>
           </section>
 
-          {/* Section 2: Eligibility & Return Conditions */}
-          <section className="bg-white p-8 md:p-10 rounded-3xl border border-[#5D4E46]/10 shadow-sm">
-            <div className="flex items-center gap-3 mb-5">
-              <span className="w-9 h-9 rounded-xl bg-[#F7F0E3] flex items-center justify-center text-[#7A75A5]">
+          {/* Section 2: Condition of items */}
+          <section className="bg-white p-7 sm:p-9 rounded-3xl border border-[#5D4E46]/10 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="w-9 h-9 rounded-xl bg-[#F7F0E3] flex items-center justify-center text-[#987C6F]">
                 <CheckCircle2 size={18} />
               </span>
-              <h2 className="text-2xl font-bold text-[#5D4E46]">2. Return Conditions</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-[#5D4E46]">Condition of items</h2>
             </div>
-            <div className="space-y-4 text-sm text-[#5D4E46]/85 leading-relaxed">
+            <div className="space-y-3 text-sm text-[#5D4E46]/85 leading-relaxed">
               <p>
-                To be eligible for a full refund, your returned merchandise must satisfy the following conditions:
+                You may open and inspect items as you would in a physical shop. Please return them <strong>unused, unwashed, and in their original packaging</strong> where possible.
               </p>
-              <ul className="space-y-2 pl-2">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 size={16} className="text-[#7A75A5] shrink-0 mt-0.5" />
-                  <span>Items must be in new, unused, and unwashed condition with all original tags attached.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 size={16} className="text-[#7A75A5] shrink-0 mt-0.5" />
-                  <span>Artisan textiles, quilts, and handwoven bags must be packaged securely in their original protective dust bag/box to prevent snagging during transport.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 size={16} className="text-[#7A75A5] shrink-0 mt-0.5" />
-                  <span>The package must include the return packing slip or order number clearly indicated.</span>
-                </li>
-              </ul>
-              <div className="mt-4 p-4 rounded-xl bg-[#FDFBF7] border border-[#5D4E46]/10 text-xs">
-                <strong>Non-Returnable Items:</strong> Customized or personalized products tailored to bespoke customer dimensions, and gift cards cannot be returned unless defective.
-              </div>
+              <p>
+                We may deduct for any loss of value caused by handling beyond what is necessary to establish the nature, characteristics, and functioning of the goods. <strong>Any item that, upon inspection, is found to have been used will not qualify for a refund.</strong>
+              </p>
             </div>
           </section>
 
-          {/* Section 3: Step-by-Step Return Process */}
-          <section className="bg-white p-8 md:p-10 rounded-3xl border border-[#5D4E46]/10 shadow-sm">
-            <div className="flex items-center gap-3 mb-5">
-              <span className="w-9 h-9 rounded-xl bg-[#F7F0E3] flex items-center justify-center text-[#7A75A5]">
-                <PackageCheck size={18} />
-              </span>
-              <h2 className="text-2xl font-bold text-[#5D4E46]">3. How to Initiate a Return</h2>
-            </div>
-            <div className="space-y-4 text-sm text-[#5D4E46]/85 leading-relaxed">
-              <ol className="list-decimal list-inside space-y-3 pl-2">
-                <li>
-                  <strong>Contact Customer Support:</strong> Send an email to{' '}
-                  <a href="mailto:info@pustatelier.com" className="text-[#7A75A5] underline font-medium">info@pustatelier.com</a>{' '}
-                  with the subject <em>"Return Request - [Your Order Number]"</em> and list the item(s) you wish to return.
-                </li>
-                <li>
-                  <strong>Receive Return Authorization:</strong> Our team will reply within 24 hours with return instructions and our return warehouse address in Oslo, Norway.
-                </li>
-                <li>
-                  <strong>Pack & Ship:</strong> Securely wrap the items and drop off the package at your local Posten/Bring or courier service. We recommend using a trackable shipping service.
-                </li>
-              </ol>
-            </div>
-          </section>
-
-          {/* Section 4: Return Shipping & Costs */}
-          <section className="bg-white p-8 md:p-10 rounded-3xl border border-[#5D4E46]/10 shadow-sm">
-            <div className="flex items-center gap-3 mb-5">
-              <span className="w-9 h-9 rounded-xl bg-[#F7F0E3] flex items-center justify-center text-[#7A75A5]">
+          {/* Section 3: Exceptions */}
+          <section className="bg-white p-7 sm:p-9 rounded-3xl border border-[#5D4E46]/10 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="w-9 h-9 rounded-xl bg-[#F7F0E3] flex items-center justify-center text-[#987C6F]">
                 <AlertCircle size={18} />
               </span>
-              <h2 className="text-2xl font-bold text-[#5D4E46]">4. Return Shipping Fees</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-[#5D4E46]">Exceptions</h2>
             </div>
             <div className="space-y-3 text-sm text-[#5D4E46]/85 leading-relaxed">
               <p>
-                In accordance with Norwegian law, customers cover the return shipping postage when exercising their standard right of withdrawal (*angrerett*).
-              </p>
-              <p>
-                <strong>Free Return Shipping on Defects:</strong> If you are returning an item due to a defect, transit damage, or if you received an incorrect item, Pust Atelier covers 100% of return shipping expenses and will provide a pre-paid shipping label.
+                Custom-made or personalised items tailored to unique customer specifications cannot be returned.
               </p>
             </div>
           </section>
 
-          {/* Section 5: Refunds & Timelines */}
-          <section className="bg-white p-8 md:p-10 rounded-3xl border border-[#5D4E46]/10 shadow-sm">
-            <div className="flex items-center gap-3 mb-5">
-              <span className="w-9 h-9 rounded-xl bg-[#F7F0E3] flex items-center justify-center text-[#7A75A5]">
+          {/* Section 4: Return shipping */}
+          <section className="bg-white p-7 sm:p-9 rounded-3xl border border-[#5D4E46]/10 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="w-9 h-9 rounded-xl bg-[#F7F0E3] flex items-center justify-center text-[#987C6F]">
+                <PackageCheck size={18} />
+              </span>
+              <h2 className="text-xl sm:text-2xl font-bold text-[#5D4E46]">Return shipping</h2>
+            </div>
+            <div className="space-y-3 text-sm text-[#5D4E46]/85 leading-relaxed">
+              <p>
+                You pay the cost of returning the item, unless it is faulty or we sent the wrong item.
+              </p>
+              <p>
+                We recommend choosing a tracked shipping method with Posten/Bring or your local parcel carrier so you can follow the package until it safely arrives back with us.
+              </p>
+            </div>
+          </section>
+
+          {/* Section 5: Refunds */}
+          <section className="bg-white p-7 sm:p-9 rounded-3xl border border-[#5D4E46]/10 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="w-9 h-9 rounded-xl bg-[#F7F0E3] flex items-center justify-center text-[#987C6F]">
                 <CreditCard size={18} />
               </span>
-              <h2 className="text-2xl font-bold text-[#5D4E46]">5. Refunds & Payment Method</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-[#5D4E46]">Refunds</h2>
             </div>
             <div className="space-y-3 text-sm text-[#5D4E46]/85 leading-relaxed">
               <p>
-                Once your return is delivered to our atelier and inspected, we will send an email confirmation of your refund status.
+                We refund the full price, including standard delivery costs, within <strong>14 days</strong> of receiving your withdrawal notice.
               </p>
               <p>
-                Approved refunds are processed back to your original payment method (e.g. Visa, Mastercard, AMEX via Stripe) within <strong>5–10 business days</strong>. Depending on your bank or card issuer, the funds may take an additional 2–3 business days to post to your statement.
+                We may withhold the refund until we have received the returned goods back, or until you have supplied evidence of having sent them back. The refund will always be issued to your <strong>original payment method</strong> (Vipps, Klarna, card, etc.).
               </p>
             </div>
           </section>
 
-          {/* Section 6: Reklamasjon (Warranty & Defective Goods) */}
-          <section className="bg-white p-8 md:p-10 rounded-3xl border border-[#5D4E46]/10 shadow-sm">
-            <div className="flex items-center gap-3 mb-5">
-              <span className="w-9 h-9 rounded-xl bg-[#F7F0E3] flex items-center justify-center text-[#7A75A5]">
-                <CheckCircle2 size={18} />
+          {/* Section 6: Faulty items */}
+          <section className="bg-white p-7 sm:p-9 rounded-3xl border border-[#5D4E46]/10 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="w-9 h-9 rounded-xl bg-[#F7F0E3] flex items-center justify-center text-[#987C6F]">
+                <ShieldCheck size={18} />
               </span>
-              <h2 className="text-2xl font-bold text-[#5D4E46]">6. Claims & Warranty (Reklamasjon)</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-[#5D4E46]">Faulty items</h2>
             </div>
             <div className="space-y-3 text-sm text-[#5D4E46]/85 leading-relaxed">
               <p>
-                Under the Norwegian Consumer Purchases Act (<em>Forbrukerkjøpsloven</em>), consumers have a statutory <strong>2-year claim period</strong> (or 5 years for goods intended to last significantly longer) against manufacturing and material flaws.
+                If an item is damaged or faulty upon arrival, please contact us within a reasonable time after discovering the fault, including photos and your order number.
               </p>
               <p>
-                If your handcrafted product exhibits a flaw or failure during normal use, please email photos and description to <a href="mailto:info@pustatelier.com" className="text-[#7A75A5] underline font-medium">info@pustatelier.com</a>. We will gladly repair, replace, or issue a full refund including shipping costs.
+                Under the Norwegian Consumer Purchases Act (*Forbrukerkjøpsloven*), you have a <strong>2-year complaint right</strong> (5 years for items meant to last much longer, such as quilts and bedding). We will repair, replace, or issue a full refund, and we cover all return shipping costs in these cases.
+              </p>
+            </div>
+          </section>
+
+          {/* Section 7: Handmade products notice */}
+          <section className="bg-white p-7 sm:p-9 rounded-3xl border border-[#5D4E46]/10 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="w-9 h-9 rounded-xl bg-[#F7F0E3] flex items-center justify-center text-[#987C6F]">
+                <Sparkles size={18} />
+              </span>
+              <h2 className="text-xl sm:text-2xl font-bold text-[#5D4E46]">Handmade products</h2>
+            </div>
+            <div className="space-y-3 text-sm text-[#5D4E46]/85 leading-relaxed">
+              <p>
+                Since our products are crafted by hand from natural fibres and materials, slight variations in colour, pattern, and size are normal, authentic, and are <strong>not defects</strong>.
               </p>
             </div>
           </section>
 
         </div>
 
-        {/* Support Callout */}
-        <div className="mt-14 p-8 rounded-3xl bg-[#F7F0E3] border border-[#E2DEBB] flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
-          <div className="flex items-center gap-4">
-            <span className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-[#5D4E46] shrink-0 shadow-sm">
-              <Mail size={22} />
-            </span>
-            <div>
-              <h3 className="font-bold text-[#5D4E46] text-base mb-0.5">Need help with a return or exchange?</h3>
-              <p className="text-xs text-[#5D4E46]/80">Our Oslo customer care team is here to assist you Monday through Friday.</p>
+        {/* Company & Contact Card */}
+        <div className="mt-12 p-8 sm:p-10 rounded-3xl bg-[#F7F0E3] border border-[#E2DEBB] shadow-sm">
+          <h3 className="font-serif text-2xl font-black text-[#5D4E46] mb-3">Contact Information</h3>
+          <p className="text-sm text-[#5D4E46]/80 mb-6 leading-relaxed">
+            Need to notify us of a return, report an issue, or ask a question? Get in touch with our team:
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs font-medium text-[#5D4E46]">
+            <div className="p-4 rounded-2xl bg-white border border-[#5D4E46]/10">
+              <span className="text-[10px] uppercase font-bold text-[#987C6F] block mb-1">Company</span>
+              <p className="font-bold">Pust Atelier Oslo</p>
+            </div>
+            <div className="p-4 rounded-2xl bg-white border border-[#5D4E46]/10">
+              <span className="text-[10px] uppercase font-bold text-[#987C6F] block mb-1">Org. No.</span>
+              <p className="font-bold">938 220 530</p>
+            </div>
+            <div className="p-4 rounded-2xl bg-white border border-[#5D4E46]/10">
+              <span className="text-[10px] uppercase font-bold text-[#987C6F] block mb-1">Phone</span>
+              <a href="tel:+4746425715" className="font-bold hover:text-[#987C6F]">+47 464 25 715</a>
+            </div>
+            <div className="p-4 rounded-2xl bg-white border border-[#5D4E46]/10">
+              <span className="text-[10px] uppercase font-bold text-[#987C6F] block mb-1">Email</span>
+              <a href="mailto:pustatelier@gmail.com" className="font-bold underline hover:text-[#987C6F] truncate block">
+                pustatelier@gmail.com
+              </a>
             </div>
           </div>
-          <Link 
-            href="/contact" 
-            className="px-6 py-3 bg-[#5D4E46] text-white rounded-full font-bold text-xs hover:bg-[#3A3532] transition-colors shrink-0 shadow-sm"
-          >
-            Contact Customer Support
-          </Link>
         </div>
 
       </div>
