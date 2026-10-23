@@ -292,15 +292,44 @@ export async function getProductById(id: string): Promise<Product | null> {
   }
 }
 
+// Whitelist fields that exist in Supabase 'products' table to avoid schema cache PGRST204 errors
+function sanitizeProductPayload(payload: Record<string, any>) {
+  const allowed = new Set([
+    'name',
+    'price',
+    'category',
+    'description',
+    'stock',
+    'image',
+    'meta_title',
+    'meta_description',
+    'materials',
+    'care_instructions',
+    'dimensions',
+    'gallery',
+    'name_en',
+    'description_en'
+  ]);
+  const clean: Record<string, any> = {};
+  for (const [k, v] of Object.entries(payload)) {
+    if (allowed.has(k)) {
+      clean[k] = v;
+    }
+  }
+  return clean;
+}
+
 export async function createProduct(product: Omit<Product, 'id'>) {
-  const { data, error } = await supabase.from('products').insert(product).select().single();
+  const cleanProduct = sanitizeProductPayload(product);
+  const { data, error } = await supabase.from('products').insert(cleanProduct).select().single();
   if (error) throw error;
   return data;
 }
 
 export async function updateProduct(id: string, updates: Partial<Product>) {
+  const cleanUpdates = sanitizeProductPayload(updates);
   try {
-    const { data, error } = await supabase.from('products').update(updates).eq('id', id).select().single();
+    const { data, error } = await supabase.from('products').update(cleanUpdates).eq('id', id).select().single();
     if (error) throw error;
     return data;
   } catch {
