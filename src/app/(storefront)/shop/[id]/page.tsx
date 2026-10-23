@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { notFound, useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/shared/utils/supabase';
 import { useState, useEffect } from 'react';
-import { Minus, Plus, ChevronDown, ChevronRight, ChevronLeft, Star, Heart, Loader2 } from 'lucide-react';
+import { Minus, Plus, ChevronLeft, ChevronRight, Star, Heart, Loader2, Sparkles, ShieldCheck } from 'lucide-react';
 import { trackViewItem, trackAddToCart } from '@/shared/utils/analytics';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
@@ -63,16 +63,16 @@ export default function ProductDetailPage() {
   // Dynamic Date calculation
   const getDeliveryDates = () => {
     const start = new Date();
-    start.setDate(start.getDate() + 14);
+    start.setDate(start.getDate() + 3);
     const end = new Date();
-    end.setDate(end.getDate() + 18);
+    end.setDate(end.getDate() + 5);
     const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' };
-    return `${start.toLocaleDateString('en-GB', options).toUpperCase()} - ${end.toLocaleDateString('en-GB', options).toUpperCase()}`;
+    return `${start.toLocaleDateString('no-NO', options)} - ${end.toLocaleDateString('no-NO', options)}`;
   };
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 600) {
+      if (window.scrollY > 500) {
         setShowSticky(true);
       } else {
         setShowSticky(false);
@@ -100,8 +100,8 @@ export default function ProductDetailPage() {
         
         {/* Left Column: Image Showcase & Thumbnails */}
         <div className="lg:col-span-6 flex flex-col gap-2.5 sm:gap-3">
-          {/* Main Featured Image - responsive aspect ratio tailored for mobile */}
-          <div className="relative w-full aspect-[4/3] sm:aspect-square lg:aspect-[4/3] max-h-[340px] sm:max-h-[440px] lg:max-h-[460px] bg-[#F7F4EE] rounded-xl sm:rounded-2xl overflow-hidden shadow-xs flex items-center justify-center p-2 sm:p-3">
+          {/* Main Featured Image */}
+          <div className="relative w-full aspect-[4/3] sm:aspect-square lg:aspect-[4/3] max-h-[360px] sm:max-h-[440px] lg:max-h-[460px] bg-[#F7F4EE] rounded-xl sm:rounded-2xl overflow-hidden shadow-xs flex items-center justify-center p-2 sm:p-3">
             <Image 
               src={selectedImage || product.image} 
               alt={product.name} 
@@ -167,14 +167,11 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* Right Column: Key Details, Purchase Actions & Accordions */}
+        {/* Right Column: Key Details, Purchase Actions & Product Description */}
         <div className="lg:col-span-6 flex flex-col justify-start">
           {/* Header & Price Info */}
           <div className="mb-4">
-            <div className="inline-block px-2.5 py-0.5 bg-[#F7F0E3] text-[#5D4E46]/80 text-[10px] tracking-widest uppercase rounded font-bold mb-2">
-              Organic • Home-Made • Ethical
-            </div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#5D4E46] leading-tight mb-2">{product.name}</h1>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#5D4E46] leading-tight mb-2 font-serif">{product.name}</h1>
             <div className="flex items-baseline gap-3">
               <span className="text-2xl sm:text-3xl font-black text-[#5D4E46]">{product.price.toLocaleString('no-NO')} NOK</span>
               <span className="text-xs text-[#5D4E46]/60 uppercase tracking-wider font-medium">Inkl. MVA</span>
@@ -213,7 +210,7 @@ export default function ProductDetailPage() {
               {/* Delivery notice */}
               <div className="flex-1 text-[10px] sm:text-[11px] text-[#5D4E46]/80 bg-[#FDFBF7] px-2.5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl border border-[#5D4E46]/5 flex items-center gap-1.5 sm:gap-2 truncate">
                 <span className="shrink-0">🚚</span>
-                <span className="truncate">Levering: <strong className="text-[#5D4E46]">{getDeliveryDates()}</strong></span>
+                <span className="truncate">Levering i Norge: <strong className="text-[#5D4E46]">{getDeliveryDates()}</strong></span>
               </div>
             </div>
 
@@ -244,28 +241,22 @@ export default function ProductDetailPage() {
             <div className="pt-2.5 sm:pt-3 border-t border-[#5D4E46]/10 flex flex-wrap items-center justify-between gap-1.5 sm:gap-2">
               <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#5D4E46]/60">Sikker betaling:</span>
               <div className="flex flex-wrap gap-1 sm:gap-1.5 items-center">
-                {/* Vipps */}
                 <div title="Vipps" className="h-4.5 sm:h-5 px-1.5 sm:px-2 bg-[#FF5B24] rounded text-white flex items-center justify-center font-black tracking-tight text-[9px] sm:text-[10px] select-none shadow-xs">
                   vipps
                 </div>
-                {/* Klarna */}
                 <div title="Klarna" className="h-4.5 sm:h-5 px-1.5 sm:px-2 bg-[#FFB3C7] rounded text-black flex items-center justify-center font-black text-[8px] sm:text-[9px] tracking-tight select-none shadow-xs">
                   Klarna.
                 </div>
-                {/* BankAxept */}
                 <div title="BankAxept" className="h-4.5 sm:h-5 px-1.5 bg-[#002855] rounded text-white flex items-center justify-center font-bold text-[7.5px] sm:text-[8px] tracking-tight select-none shadow-xs">
                   Bank<span className="font-light">Axept</span>
                 </div>
-                {/* Visa */}
                 <div title="Visa" className="h-4.5 sm:h-5 px-1.5 sm:px-2 bg-[#1A1F71] rounded text-white flex items-center justify-center text-[8.5px] sm:text-[9px] font-black italic select-none shadow-xs">
                   VISA
                 </div>
-                {/* Mastercard */}
                 <div title="Mastercard" className="h-4.5 sm:h-5 px-1 sm:px-1.5 bg-[#252525] rounded flex items-center justify-center gap-0.5 select-none shadow-xs">
                   <div className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-[#EB001B] mix-blend-screen opacity-90 relative z-10" />
                   <div className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-[#F79E1B] mix-blend-screen opacity-90 relative -ml-1 z-0" />
                 </div>
-                {/* Apple Pay */}
                 <div title="Apple Pay" className="h-4.5 sm:h-5 px-1 sm:px-1.5 bg-black rounded text-white flex items-center justify-center text-[8px] sm:text-[9px] font-bold select-none gap-0.5 shadow-xs">
                   <span>Pay</span>
                 </div>
@@ -273,20 +264,55 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          {/* Description & Accordions */}
-          <div className="mb-4">
-            <p className="text-[#5D4E46]/80 leading-relaxed text-sm mb-4">
+          {/* Item Description Section */}
+          <div className="mb-6 bg-white p-5 rounded-2xl border border-[#5D4E46]/10 shadow-xs">
+            <h3 className="text-xs uppercase font-bold tracking-widest text-[#987C6F] mb-2">Item Description</h3>
+            <p className="text-[#5D4E46]/85 leading-relaxed text-sm sm:text-base">
               {product.description}
             </p>
           </div>
 
+          {/* Item Specification Section */}
+          <div className="mb-6 bg-white p-5 rounded-2xl border border-[#5D4E46]/10 shadow-xs">
+            <h3 className="text-xs uppercase font-bold tracking-widest text-[#987C6F] mb-3">Item Specifications</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-[#5D4E46]">
+              {product.specification && (
+                <div className="p-3 bg-[#FDFBF7] rounded-xl border border-[#5D4E46]/5 col-span-1 sm:col-span-2">
+                  <span className="font-bold text-[#5D4E46]/70 block mb-0.5">Overview</span>
+                  <p className="font-medium">{product.specification}</p>
+                </div>
+              )}
+              {product.materials && (
+                <div className="p-3 bg-[#FDFBF7] rounded-xl border border-[#5D4E46]/5">
+                  <span className="font-bold text-[#5D4E46]/70 block mb-0.5">Materials</span>
+                  <p className="font-medium">{product.materials}</p>
+                </div>
+              )}
+              {product.dimensions && (
+                <div className="p-3 bg-[#FDFBF7] rounded-xl border border-[#5D4E46]/5">
+                  <span className="font-bold text-[#5D4E46]/70 block mb-0.5">Dimensions</span>
+                  <p className="font-medium">{product.dimensions}</p>
+                </div>
+              )}
+              <div className="p-3 bg-[#FDFBF7] rounded-xl border border-[#5D4E46]/5">
+                <span className="font-bold text-[#5D4E46]/70 block mb-0.5">Origin</span>
+                <p className="font-medium">{product.origin || 'Handmade in Nepal'}</p>
+              </div>
+              <div className="p-3 bg-[#FDFBF7] rounded-xl border border-[#5D4E46]/5">
+                <span className="font-bold text-[#5D4E46]/70 block mb-0.5">Craft</span>
+                <p className="font-medium">{product.craftsmanship || 'Handcrafted individually by artisans'}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Collapsible Info: Shipping, Returns & Care */}
           <Accordion type="single" collapsible className="space-y-2 mb-6">
             <AccordionItem value="shipping" className="bg-[#F7F0E3] rounded-xl overflow-hidden border-none px-4">
               <AccordionTrigger className="text-xs font-semibold py-3 hover:no-underline">
-                <span className="flex items-center gap-2"><span className="text-sm">🚚</span> Frakt & Angrerett (Shipping & Returns)</span>
+                <span className="flex items-center gap-2"><span className="text-sm">🚚</span> Frakt & 14 dagers angrerett (Shipping & Returns)</span>
               </AccordionTrigger>
               <AccordionContent className="text-xs text-[#5D4E46]/80 leading-relaxed pb-3">
-                Gratis standardfrakt i hele Norge. 14 dagers ubetinget angrerett i henhold til Angrerettloven.
+                Vi sender til hele Norge (3–5 virkedager). Du har 14 dagers ubetinget angrerett i henhold til Angrerettloven.
               </AccordionContent>
             </AccordionItem>
 
@@ -300,58 +326,8 @@ export default function ProductDetailPage() {
                 </AccordionContent>
               </AccordionItem>
             )}
-
-            {product.materials && (
-              <AccordionItem value="materials" className="bg-[#F7F0E3] rounded-xl overflow-hidden border-none px-4">
-                <AccordionTrigger className="text-xs font-semibold py-3 hover:no-underline">
-                  <span className="flex items-center gap-2"><span className="text-sm">🌿</span> Materialer (Materials)</span>
-                </AccordionTrigger>
-                <AccordionContent className="text-xs text-[#5D4E46]/80 leading-relaxed pb-3">
-                  {product.materials}
-                </AccordionContent>
-              </AccordionItem>
-            )}
-
-            {product.dimensions && (
-              <AccordionItem value="dimensions" className="bg-[#F7F0E3] rounded-xl overflow-hidden border-none px-4">
-                <AccordionTrigger className="text-xs font-semibold py-3 hover:no-underline">
-                  <span className="flex items-center gap-2"><span className="text-sm">📏</span> Mål / Størrelse (Dimensions)</span>
-                </AccordionTrigger>
-                <AccordionContent className="text-xs text-[#5D4E46]/80 leading-relaxed pb-3">
-                  {product.dimensions}
-                </AccordionContent>
-              </AccordionItem>
-            )}
-
-            <AccordionItem value="support" className="bg-[#F7F0E3] rounded-xl overflow-hidden border-none px-4">
-              <AccordionTrigger className="text-xs font-semibold py-3 hover:no-underline">
-                <span className="flex items-center gap-2"><span className="text-sm">🎧</span> Kundeservice & Støtte</span>
-              </AccordionTrigger>
-              <AccordionContent className="text-xs text-[#5D4E46]/80 leading-relaxed pb-3">
-                Spørsmål om bestillingen din? Kontakt oss på support@pustatelier.no for rask bistand.
-              </AccordionContent>
-            </AccordionItem>
           </Accordion>
 
-          {/* Goes well with recommendation */}
-          <div className="bg-[#F7F0E3] p-4 rounded-xl flex gap-4 items-center">
-            <div className="relative w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-white shadow-xs">
-              <Image src={relatedProducts.length > 0 ? relatedProducts[0].image : '/placeholder.png'} alt="Related" fill className="object-contain p-1" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <span className="text-[10px] uppercase font-bold text-[#987C6F] block">Passer godt sammen med</span>
-              <h4 className="font-bold text-xs text-[#5D4E46] truncate">{relatedProducts.length > 0 ? relatedProducts[0].name : 'Handmade Tote Bag'}</h4>
-              <p className="text-[11px] font-bold text-[#5D4E46]/70">{relatedProducts.length > 0 ? `${relatedProducts[0].price} NOK` : '990 NOK'}</p>
-            </div>
-            {relatedProducts.length > 0 && (
-              <Link 
-                href={`/shop/${relatedProducts[0].id}`} 
-                className="text-xs font-bold text-[#5D4E46] hover:text-[#987C6F] flex items-center"
-              >
-                Se produkt <ChevronRight size={14} className="ml-0.5" />
-              </Link>
-            )}
-          </div>
         </div>
       </div>
 
@@ -361,7 +337,7 @@ export default function ProductDetailPage() {
       <section className="bg-white py-16 pb-24">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="flex justify-between items-center mb-10">
-            <h2 className="text-3xl font-black text-[#5D4E46]">Testimonials</h2>
+            <h2 className="text-3xl font-black text-[#5D4E46] font-serif">Customer Experiences</h2>
             <div className="flex gap-2">
               <button className="p-2 border border-[#5D4E46]/20 rounded-full hover:bg-[#5D4E46]/5"><ChevronLeft size={16}/></button>
               <button className="p-2 border border-[#5D4E46]/20 rounded-full hover:bg-[#5D4E46]/5"><ChevronRight size={16}/></button>
@@ -373,91 +349,23 @@ export default function ProductDetailPage() {
               <div className="flex text-[#7A75A5] mb-4">
                 {[1,2,3,4,5].map(s => <Star key={s} size={12} fill="currentColor" />)}
               </div>
-              <p className="text-sm font-medium text-[#5D4E46]/80 mb-6">"The quality of the boho bags is outstanding! Soft, comfy, and perfect for my daily use. Will definitely buy again!"</p>
+              <p className="text-sm font-medium text-[#5D4E46]/80 mb-6">"The quality of the boho bags and blankets is outstanding! Soft, comfy, and perfect for my daily use. Will definitely buy again!"</p>
               <span className="text-[10px] uppercase font-bold tracking-wider">Emma Harrison</span>
-            </div>
-            <div className="bg-[#FDFBF7] p-8 rounded-xl flex flex-col relative text-center items-center shadow-sm">
-              <div className="flex text-[#7A75A5] mb-4">
-                {[1,2,3,4].map(s => <Star key={s} size={12} fill="currentColor" />)}<Star size={12} className="text-[#5D4E46]/20" />
-              </div>
-              <p className="text-sm font-medium text-[#5D4E46]/80 mb-6">"These textiles are just adorable! My daughter loves them and takes them everywhere."</p>
-              <span className="text-[10px] uppercase font-bold tracking-wider">Oliver Smith</span>
             </div>
             <div className="bg-[#FDFBF7] p-8 rounded-xl flex flex-col relative text-center items-center shadow-sm">
               <div className="flex text-[#7A75A5] mb-4">
                 {[1,2,3,4,5].map(s => <Star key={s} size={12} fill="currentColor" />)}
               </div>
-              <p className="text-sm font-medium text-[#5D4E46]/80 mb-6">"Great selection of stylish pieces for home. The fabrics are breathable and perfect for the living room."</p>
-              <span className="text-[10px] uppercase font-bold tracking-wider">Isabella Turner</span>
+              <p className="text-sm font-medium text-[#5D4E46]/80 mb-6">"These textiles are just adorable! You can immediately feel the quality of handmade craftsmanship."</p>
+              <span className="text-[10px] uppercase font-bold tracking-wider">Sophia Johnson</span>
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 h-[400px] rounded-xl overflow-hidden shadow-sm">
-             <div className="relative h-full bg-[#E4D1FF]">
-               <Image src="/images/boho_hero_banner.png" alt="Lifestyle Bags" fill className="object-cover" />
-               <span className="absolute bottom-4 left-4 bg-[#7A75A5] text-white text-[10px] font-bold uppercase px-3 py-1 rounded">Bags</span>
-             </div>
-             <div className="relative h-full bg-[#F7F0E3]">
-               <Image src="/images/boho_hero_banner.png" alt="Lifestyle Textiles" fill className="object-cover" />
-               <span className="absolute bottom-4 right-4 bg-[#7A75A5] text-white text-[10px] font-bold uppercase px-3 py-1 rounded">Textiles</span>
-             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Related Products */}
-      <section className="bg-[#FDFBF7] py-20">
-        <div className="max-w-[1440px] mx-auto px-6">
-          <div className="flex justify-between items-center mb-10">
-            <h2 className="text-3xl font-black text-[#5D4E46]">Related Products</h2>
-            <div className="flex gap-2">
-              <button className="p-2 border border-[#5D4E46]/20 rounded-full hover:bg-[#5D4E46]/5"><ChevronLeft size={16}/></button>
-              <button className="p-2 border border-[#5D4E46]/20 rounded-full hover:bg-[#5D4E46]/5"><ChevronRight size={16}/></button>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {relatedProducts.map(p => (
-              <Link href={`/shop/${p.id}`} key={p.id} className="group">
-                <div className="relative aspect-square bg-white rounded-xl overflow-hidden mb-4 shadow-sm">
-                  <Image src={p.image} alt={p.name} fill className="object-contain p-4 group-hover:scale-105 transition-transform" />
-                  <span className="absolute top-3 right-3 bg-[#7A75A5] text-white text-[10px] font-black uppercase px-2 py-1 rounded">-15%</span>
-                </div>
-                <div className="text-center">
-                  <h3 className="font-bold text-[#5D4E46] text-sm mb-1">{p.name}</h3>
-                  <p className="text-xs font-medium text-[#5D4E46]/70">{p.price} NOK <span className="line-through opacity-50 ml-1">{(p.price * 1.15).toFixed(0)} NOK</span></p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQs */}
-      <section className="bg-white py-24 pb-32 px-6 text-center border-t border-[#5D4E46]/5">
-        <div className="max-w-3xl mx-auto">
-          <span className="bg-[#7A75A5] text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-sm mb-4 inline-block">Support FAQs</span>
-          <h2 className="text-4xl md:text-5xl font-black text-[#5D4E46] mb-12">Orders & Support</h2>
-          
-          <div className="space-y-4 text-left">
-            {[
-              { q: "How can I place an order?", a: "Placing an order is quick and easy. Simply browse our online store, select the products you desire, and add them to your cart. Proceed to checkout, where you'll provide your shipping and payment details." },
-              { q: "What payment methods do you accept?", a: "We accept all major credit cards, Stripe, VIPPS, and Klarna for a seamless checkout experience." },
-              { q: "How long will it take to receive my order?", a: "Orders are processed within 1-2 business days. Shipping times vary by location." },
-              { q: "Can I track my order?", a: "Yes, you will receive a tracking link via email once your order has been dispatched." },
-              { q: "What if I have questions or need assistance?", a: "Our support team is available 24/7. Reach out to us via email or the contact form." }
-            ].map((faq, i) => (
-              <div key={i} className="border border-[#5D4E46]/10 rounded-xl overflow-hidden shadow-sm">
-                <div onClick={() => setOpenFaqIndex(openFaqIndex === i ? null : i)} className="bg-[#FDFBF7] px-6 py-4 flex justify-between items-center cursor-pointer hover:bg-[#f5f3ef] transition-colors">
-                  <h4 className="font-bold text-sm text-[#5D4E46]">{faq.q}</h4>
-                  <ChevronDown size={16} className={`text-[#5D4E46]/50 transition-transform ${openFaqIndex === i ? 'rotate-180' : ''}`} />
-                </div>
-                {openFaqIndex === i && (
-                  <div className="px-6 py-4 bg-white text-sm text-[#5D4E46]/80 leading-relaxed border-t border-[#5D4E46]/5">
-                    {faq.a}
-                  </div>
-                )}
+            <div className="bg-[#FDFBF7] p-8 rounded-xl flex flex-col relative text-center items-center shadow-sm">
+              <div className="flex text-[#7A75A5] mb-4">
+                {[1,2,3,4,5].map(s => <Star key={s} size={12} fill="currentColor" />)}
               </div>
-            ))}
+              <p className="text-sm font-medium text-[#5D4E46]/80 mb-6">"The cushion cover brought so much life to our neutral living room. Beautiful natural textures."</p>
+              <span className="text-[10px] uppercase font-bold tracking-wider">Liam Wilson</span>
+            </div>
           </div>
         </div>
       </section>
@@ -466,7 +374,6 @@ export default function ProductDetailPage() {
       {showSticky && (
         <div className="fixed bottom-0 left-0 right-0 bg-white/98 backdrop-blur-md border-t border-[#5D4E46]/15 px-3 py-3 sm:px-6 sm:py-3.5 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.12)] pb-[max(0.75rem,env(safe-area-inset-bottom))] animate-fade-in-up">
           <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-3 sm:gap-6">
-            {/* Product Thumbnail & Details (compact on small screens, expands on tablet+) */}
             <div className="flex items-center gap-2.5 sm:gap-4 shrink min-w-0">
               <div className="w-11 h-11 sm:w-13 sm:h-13 relative bg-[#F7F4EE] rounded-xl overflow-hidden shrink-0 shadow-xs border border-[#5D4E46]/10 p-0.5">
                 <Image src={product.image} alt={product.name} fill className="object-contain" />
@@ -477,9 +384,7 @@ export default function ProductDetailPage() {
               </div>
             </div>
             
-            {/* Action Buttons: Large, prominent and thumb-friendly */}
             <div className="flex items-center gap-2 sm:gap-3 flex-1 sm:flex-initial justify-end">
-              {/* Quantity selector */}
               <div className="hidden sm:flex items-center border border-[#5D4E46]/20 rounded-xl bg-[#FDFBF7] h-11 w-28">
                 <button 
                   onClick={() => setQuantity(Math.max(1, quantity - 1))} 
@@ -498,7 +403,6 @@ export default function ProductDetailPage() {
                 </button>
               </div>
 
-              {/* Add to Cart - Large, high-visibility touch target */}
               <button 
                 onClick={() => {
                   for(let i=0; i<quantity; i++) addItem(product);
@@ -509,7 +413,6 @@ export default function ProductDetailPage() {
                 Legg i handlekurv
               </button>
 
-              {/* Instant Buy / Checkout Button */}
               <button 
                 onClick={() => {
                   for(let i=0; i<quantity; i++) addItem(product);
