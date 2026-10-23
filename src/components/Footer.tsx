@@ -2,18 +2,22 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Check, Copy } from 'lucide-react';
+import { MailCheck } from 'lucide-react';
 
 export default function Footer() {
   const [email, setEmail] = useState('');
+  const [subscribedEmail, setSubscribedEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanEmail = email.trim();
     if (!cleanEmail || !cleanEmail.includes('@')) return;
 
+    setLoading(true);
+
+    // 1. Store in localStorage for persistence
     if (typeof window !== 'undefined') {
       try {
         const stored = localStorage.getItem('pust_newsletter_subscribers');
@@ -26,16 +30,22 @@ export default function Footer() {
         // Safe fallback
       }
     }
-    setSubscribed(true);
-    setEmail('');
-  };
 
-  const copyDiscount = () => {
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText('WELCOME20');
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+    // 2. Dispatch email to backend route
+    try {
+      await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleanEmail }),
+      });
+    } catch {
+      // Non-blocking
     }
+
+    setSubscribedEmail(cleanEmail);
+    setSubscribed(true);
+    setLoading(false);
+    setEmail('');
   };
 
   return (
@@ -50,24 +60,18 @@ export default function Footer() {
             </p>
 
             {subscribed ? (
-              <div className="mt-2 p-3.5 bg-emerald-50 border border-emerald-200 rounded-lg text-[#5D4E46] text-xs flex flex-col gap-2">
-                <div className="flex items-center gap-1.5 font-medium text-emerald-800">
-                  <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Thank you for subscribing!</span>
+              <div className="mt-2 p-4 bg-[#F6F1EA] border border-[#5D4E46]/15 rounded-xl text-[#5D4E46] text-xs flex flex-col gap-2 shadow-sm">
+                <div className="flex items-center gap-2 font-medium text-[#5D4E46]">
+                  <MailCheck className="w-5 h-5 text-emerald-700 shrink-0" />
+                  <span className="font-serif text-sm">Check your inbox!</span>
                 </div>
-                <p className="text-[11px] text-[#5D4E46]/80 leading-snug">
-                  We'll send updates to your inbox. Use discount code below for 20% off:
+                <p className="text-[12px] text-[#5D4E46]/85 leading-relaxed">
+                  Thank you for subscribing! We have sent your <strong>20% discount code</strong> to{' '}
+                  <span className="font-semibold text-[#5D4E46] underline decoration-[#987C6F]">{subscribedEmail}</span>.
                 </p>
-                <div className="flex items-center justify-between bg-white px-2.5 py-1.5 rounded border border-emerald-300 font-mono text-xs">
-                  <span className="font-bold text-[#5D4E46] tracking-wider">WELCOME20</span>
-                  <button 
-                    onClick={copyDiscount}
-                    type="button"
-                    className="flex items-center gap-1 text-[11px] font-sans text-emerald-700 hover:text-emerald-900 font-medium ml-2 cursor-pointer"
-                  >
-                    {copied ? 'Copied!' : <><Copy className="w-3 h-3" /> Copy</>}
-                  </button>
-                </div>
+                <p className="text-[11px] text-[#5D4E46]/60">
+                  Please check your spam or promotions folder if it doesn't appear within a few minutes.
+                </p>
               </div>
             ) : (
               <form onSubmit={handleSubscribe} className="mt-2 flex border border-[#5D4E46]/20 rounded-md overflow-hidden bg-white max-w-sm focus-within:border-[#5D4E46] transition-colors">
@@ -77,10 +81,16 @@ export default function Footer() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email" 
                   required
-                  className="flex-1 px-4 py-2 text-sm outline-none bg-transparent text-[#5D4E46]" 
+                  disabled={loading}
+                  className="flex-1 px-4 py-2 text-sm outline-none bg-transparent text-[#5D4E46] disabled:opacity-50" 
                 />
-                <button type="submit" aria-label="Subscribe" className="px-4 text-[#5D4E46]/70 hover:text-[#5D4E46] font-medium transition-colors cursor-pointer">
-                  ›
+                <button 
+                  type="submit" 
+                  aria-label="Subscribe" 
+                  disabled={loading}
+                  className="px-4 text-[#5D4E46]/70 hover:text-[#5D4E46] font-medium transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {loading ? '…' : '›'}
                 </button>
               </form>
             )}
