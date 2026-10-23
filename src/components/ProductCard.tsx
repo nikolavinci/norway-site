@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, ShoppingBag, Check } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { Product } from '../shared/utils/products';
 import { useCartStore } from '../shared/utils/store';
 import { useFavoritesStore } from '../shared/utils/favorites';
@@ -44,13 +43,7 @@ export default function ProductCard({ product, isNew, discount }: ProductCardPro
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="group flex flex-col text-left"
-    >
+    <div className="group flex flex-col text-left transition-all duration-300">
       <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden mb-4 bg-[#FDFBF7] shadow-sm group-hover:shadow-md transition-shadow duration-300">
         {/* Badges */}
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
@@ -109,6 +102,6 @@ export default function ProductCard({ product, isNew, discount }: ProductCardPro
           {discount && <span className="text-[#5D4E46]/40 line-through ml-2 text-xs font-normal">{(product.price * 1.15).toFixed(0)} NOK</span>}
         </p>
       </Link>
-    </motion.div>
+    </div>
   );
 }
