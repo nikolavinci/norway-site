@@ -7,8 +7,9 @@ import FeaturedCarousel from '@/components/FeaturedCarousel';
 
 export default async function Home() {
   const popularProducts = await getPopularProducts(8);
-  const bagProducts = await getProductsByCategory('Bag', 8);
-  const cushionProducts = await getProductsByCategory('Cushion', 8);
+  const cushionProducts = await getProductsByCategory('Cushion covers', 8);
+  const blanketProducts = await getProductsByCategory('Blankets/Shawls', 8);
+  const quiltBagProducts = await getProductsByCategory('Quilt bags', 8);
   
   return (
     <div className="flex flex-col min-h-screen text-[#5D4E46] font-sans antialiased bg-[#FDFBF7]">
@@ -57,28 +58,7 @@ export default async function Home() {
           <FeaturedCarousel products={popularProducts} />
         </section>
 
-        {/* Bags Product Section */}
-        <section className="max-w-[1440px] mx-auto px-6 relative z-20 py-10 md:py-12 border-t border-[#5D4E46]/5">
-          <div className="flex justify-between items-end mb-6">
-            <div>
-              <span className="text-[10px] uppercase tracking-widest font-bold text-[#987C6F] block mb-1">
-                Artisan Collection
-              </span>
-              <h2 className="text-2xl md:text-3xl font-black text-[#5D4E46]">
-                Handcrafted Bags
-              </h2>
-            </div>
-            <Link 
-              href="/shop?category=Bag" 
-              className="text-xs font-bold text-[#5D4E46]/70 hover:text-[#7A75A5] uppercase tracking-wider flex items-center transition-colors"
-            >
-              Explore Bags <ChevronRight size={14} className="ml-1" />
-            </Link>
-          </div>
-          <FeaturedCarousel products={bagProducts} />
-        </section>
-
-        {/* Cushions Product Section */}
+        {/* 1. Cushion covers Section */}
         <section className="max-w-[1440px] mx-auto px-6 relative z-20 py-10 md:py-12 border-t border-[#5D4E46]/5">
           <div className="flex justify-between items-end mb-6">
             <div>
@@ -86,17 +66,59 @@ export default async function Home() {
                 Home & Living
               </span>
               <h2 className="text-2xl md:text-3xl font-black text-[#5D4E46]">
-                Artisan Cushions
+                Cushion Covers
               </h2>
             </div>
             <Link 
-              href="/shop?category=Cushion" 
+              href="/shop?category=Cushion+covers" 
               className="text-xs font-bold text-[#5D4E46]/70 hover:text-[#7A75A5] uppercase tracking-wider flex items-center transition-colors"
             >
-              Explore Cushions <ChevronRight size={14} className="ml-1" />
+              Explore Cushion Covers <ChevronRight size={14} className="ml-1" />
             </Link>
           </div>
           <FeaturedCarousel products={cushionProducts} />
+        </section>
+
+        {/* 2. Blankets / Shawls Section */}
+        <section className="max-w-[1440px] mx-auto px-6 relative z-20 py-10 md:py-12 border-t border-[#5D4E46]/5">
+          <div className="flex justify-between items-end mb-6">
+            <div>
+              <span className="text-[10px] uppercase tracking-widest font-bold text-[#987C6F] block mb-1">
+                Warmth & Drapes
+              </span>
+              <h2 className="text-2xl md:text-3xl font-black text-[#5D4E46]">
+                Blankets / Shawls
+              </h2>
+            </div>
+            <Link 
+              href="/shop?category=Blankets%2FShawls" 
+              className="text-xs font-bold text-[#5D4E46]/70 hover:text-[#7A75A5] uppercase tracking-wider flex items-center transition-colors"
+            >
+              Explore Blankets / Shawls <ChevronRight size={14} className="ml-1" />
+            </Link>
+          </div>
+          <FeaturedCarousel products={blanketProducts} />
+        </section>
+
+        {/* 3. Quilt bags Section */}
+        <section className="max-w-[1440px] mx-auto px-6 relative z-20 py-10 md:py-12 border-t border-[#5D4E46]/5">
+          <div className="flex justify-between items-end mb-6">
+            <div>
+              <span className="text-[10px] uppercase tracking-widest font-bold text-[#987C6F] block mb-1">
+                Artisan Collection
+              </span>
+              <h2 className="text-2xl md:text-3xl font-black text-[#5D4E46]">
+                Quilt Bags
+              </h2>
+            </div>
+            <Link 
+              href="/shop?category=Quilt+bags" 
+              className="text-xs font-bold text-[#5D4E46]/70 hover:text-[#7A75A5] uppercase tracking-wider flex items-center transition-colors"
+            >
+              Explore Quilt Bags <ChevronRight size={14} className="ml-1" />
+            </Link>
+          </div>
+          <FeaturedCarousel products={quiltBagProducts} />
         </section>
 
         {/* Full-width Feature Banner Section */}
@@ -119,9 +141,9 @@ export default async function Home() {
             <h2 className="text-3xl font-black text-[#5D4E46] mb-12 text-center">Testimonials</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
-                { name: "Sophia Johnson", text: "The handcrafted tote is absolutely stunning. The quality of the upholstery fabric is outstanding. Highly recommend!" },
-                { name: "Emma Harrison", text: "I bought some boho bedding and it completely transformed my space. Soft, beautiful, and sustainable." },
-                { name: "Liam Wilson", text: "The details on these bags are fantastic. You can really feel the artisan craftsmanship in every stitch." }
+                { name: "Sophia Johnson", text: "The handcrafted quilt bag is absolutely stunning. The quality of the fabric is outstanding. Highly recommend!" },
+                { name: "Emma Harrison", text: "I bought some boho cushion covers and a blanket, and it completely transformed my space. Soft, beautiful, and sustainable." },
+                { name: "Liam Wilson", text: "The details on these bags and blankets are fantastic. You can really feel the artisan craftsmanship in every stitch." }
               ].map((review, i) => (
                 <div key={i} className="bg-[#FDFBF7] p-8 rounded-xl text-center flex flex-col items-center shadow-sm relative pt-12 mt-6">
                   <div className="absolute -top-6 w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-md">

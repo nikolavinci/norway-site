@@ -1,38 +1,89 @@
 'use client';
 
-import Link from 'next/link';
+import { useCartStore } from '@/shared/utils/store';
+import { supabase } from '@/shared/utils/supabase';
+import { getProducts, Product } from '@/shared/utils/products';
 import Image from 'next/image';
-import { useCartStore } from '../shared/utils/store';
-import { Search, ShoppingBag, User, X, LayoutGrid, List, Menu, ChevronRight } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { supabase } from '../shared/utils/supabase';
-import { Product, getProducts } from '../shared/utils/products';
-import ProductCard from './ProductCard';
+import Link from 'next/link';
+import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Search, ShoppingBag, Menu, X, User, ChevronRight, LogOut } from 'lucide-react';
 
-export default function Header() {
-  const items = useCartStore((state) => state.items);
-  const toggleCart = useCartStore((state) => state.toggleCart);
-  
-  const itemCount = items.reduce((total, item) => total + item.quantity, 0);
+const PRODUCT_CATEGORIES = [
+  { label: 'Cushion covers', href: '/shop?category=Cushion+covers' },
+  { label: 'Blankets/Shawls', href: '/shop?category=Blankets%2FShawls' },
+  { label: 'Quilt bags', href: '/shop?category=Quilt+bags' },
+  { label: 'Others', href: '/shop?category=Others' },
+];
 
-  const [user, setUser] = useState<any>(null);
+function HeaderContent() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [products, setProducts] = useState<Product[]>([]);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [searchLayout, setSearchLayout] = useState<'grid' | 'list'>('grid');
+  const [user, setUser] = useState<any>(null);
+
+  const totalItems = useCartStore((state) => state.items);
+  const toggleCart = useCartStore((state) => state.toggleCart);
+
+  const itemCount = totalItems.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
+    // 1. Initial check Supabase session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+      if (session?.user) {
+        setUser(session.user);
+      } else if (typeof window !== 'undefined') {
+        const localUser = localStorage.getItem('pust_active_user');
+        if (localUser) {
+          try {
+            setUser(JSON.parse(localUser));
+          } catch {
+            setUser(null);
+          }
+        }
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      if (session?.user) {
+        setUser(session.user);
+      } else if (typeof window !== 'undefined') {
+        const localUser = localStorage.getItem('pust_active_user');
+        if (localUser) {
+          try {
+            setUser(JSON.parse(localUser));
+          } catch {
+            setUser(null);
+          }
+        } else {
+          setUser(null);
+        }
+      }
     });
 
-    return () => subscription.unsubscribe();
+    const handleStorageChange = () => {
+      if (typeof window !== 'undefined') {
+        const localUser = localStorage.getItem('pust_active_user');
+        if (localUser) {
+          try {
+            setUser(JSON.parse(localUser));
+          } catch {
+            setUser(null);
+          }
+        } else {
+          setUser(null);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      subscription.unsubscribe();
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -49,7 +100,12 @@ export default function Header() {
   }, [isSearchOpen, isMobileMenuOpen, products.length]);
 
   const handleLogout = async () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('pust_active_user');
+      window.dispatchEvent(new Event('storage'));
+    }
     await supabase.auth.signOut();
+    setUser(null);
   };
 
   const filteredProducts = products.filter(p => 
@@ -75,11 +131,17 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Center: Categories */}
-          <nav className="hidden md:flex gap-8 text-[13px] font-semibold tracking-wider uppercase text-gray-700 justify-center">
-            <Link href="/shop?category=Bag" className="hover:text-black transition-colors py-2">Bags</Link>
-            <Link href="/shop?category=Cushion" className="hover:text-black transition-colors py-2">Cushions</Link>
-            <Link href="/shop?category=Shawl" className="hover:text-black transition-colors py-2">Shawls</Link>
+          {/* Center: Reorganized Categories Menu */}
+          <nav className="hidden lg:flex gap-7 text-[12px] xl:text-[13px] font-semibold tracking-wider uppercase text-gray-700 justify-center">
+            {PRODUCT_CATEGORIES.map((cat) => (
+              <Link 
+                key={cat.label} 
+                href={cat.href} 
+                className="hover:text-black transition-colors py-2 whitespace-nowrap"
+              >
+                {cat.label}
+              </Link>
+            ))}
           </nav>
           
           {/* Right Nav & Search */}
@@ -161,11 +223,7 @@ export default function Header() {
                 Categories
               </span>
               <nav className="flex flex-col space-y-1 mb-6">
-                {[
-                  { label: 'Bags', href: '/shop?category=Bag' },
-                  { label: 'Cushions', href: '/shop?category=Cushion' },
-                  { label: 'Shawls', href: '/shop?category=Shawl' },
-                ].map((item) => (
+                {PRODUCT_CATEGORIES.map((item) => (
                   <Link 
                     key={item.href}
                     href={item.href} 
@@ -188,15 +246,13 @@ export default function Header() {
                   { label: 'About Us', href: '/about' },
                   { label: 'Contact', href: '/contact' },
                   { label: 'FAQ', href: '/faq' },
-                  { label: 'Shipping & Returns', href: '/shipping' },
-                  { label: 'Refund Policy', href: '/refund-policy' },
-                  { label: 'Legal Notice', href: '/legal' },
+                  { label: 'Returns & Refunds', href: '/refund-policy' },
                 ].map((item) => (
                   <Link 
                     key={item.href}
                     href={item.href} 
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-sm font-medium text-[#5D4E46]/80 hover:text-[#5D4E46] hover:bg-white/60 px-3 py-1.5 rounded-lg transition-all flex items-center justify-between group"
+                    className="text-sm font-medium text-[#5D4E46]/80 hover:text-[#5D4E46] hover:bg-white/60 px-3 py-2 rounded-lg transition-all flex items-center justify-between group"
                   >
                     <span>{item.label}</span>
                     <ChevronRight size={14} className="text-[#5D4E46]/20 group-hover:text-[#5D4E46]/60 transition-colors" />
@@ -207,7 +263,7 @@ export default function Header() {
               {/* Promo Banner in Drawer */}
               <div className="mt-8 p-4 rounded-2xl bg-[#F7F0E3] border border-[#E2DEBB]/60 text-center">
                 <p className="text-xs font-bold text-[#5D4E46] uppercase tracking-wider mb-1">Welcome Offer</p>
-                <p className="text-xs text-[#5D4E46]/80">Use code <span className="font-black text-[#5D4E46]">WELCOME</span> for 15% off your first purchase.</p>
+                <p className="text-xs text-[#5D4E46]/80">Use code <span className="font-black text-[#5D4E46]">WELCOME20</span> for 20% off your first purchase.</p>
               </div>
             </div>
 
@@ -227,7 +283,7 @@ export default function Header() {
                     </Link>
                     <button 
                       onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}
-                      className="text-xs font-bold text-red-600 hover:text-red-700 transition-colors cursor-pointer"
+                      className="text-xs font-bold text-red-600 hover:underline"
                     >
                       Log out
                     </button>
@@ -237,9 +293,9 @@ export default function Header() {
                 <Link 
                   href="/login" 
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full inline-flex items-center justify-center bg-[#5D4E46] text-white py-3 rounded-full font-bold text-sm hover:bg-[#3A3532] transition-colors shadow-sm"
+                  className="w-full py-3 bg-[#5D4E46] text-white text-center rounded-xl text-xs font-bold block hover:bg-[#3A3532] transition-colors"
                 >
-                  Sign In / Register
+                  Log in or Create Account
                 </Link>
               )}
             </div>
@@ -247,80 +303,73 @@ export default function Header() {
         </>
       )}
 
-      {/* Cinematic Dark Search Overlay */}
+      {/* Global Search Overlay */}
       {isSearchOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md animate-fade-in flex flex-col pt-24 px-6 overflow-y-auto">
-          <div className="max-w-4xl mx-auto w-full relative">
-            <button 
-              aria-label="Close search"
-              onClick={() => setIsSearchOpen(false)} 
-              className="absolute right-0 -top-12 text-white/50 hover:text-white transition-colors"
-            >
-              <X size={32} />
-            </button>
-            
-            <div className="relative border-b-2 border-white/20 pb-4 mb-12">
-              <Search size={32} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" />
+        <div className="fixed inset-0 bg-white/95 backdrop-blur-md z-50 overflow-y-auto">
+          <div className="max-w-4xl mx-auto px-6 py-8">
+            <div className="flex justify-between items-center mb-8 border-b border-gray-100 pb-4">
+              <span className="text-sm font-bold uppercase tracking-widest text-[#5D4E46]/50">Search Products</span>
+              <button 
+                onClick={() => setIsSearchOpen(false)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors text-[#5D4E46]"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="relative mb-8">
               <input 
-                type="text"
-                autoFocus
-                placeholder="What are you looking for?"
+                type="text" 
+                placeholder="Search cushions, blankets, quilt bags..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-transparent text-white text-xl md:text-5xl font-black outline-none pl-16 md:pl-20 pr-4 placeholder:text-white/20"
+                autoFocus
+                className="w-full text-2xl font-serif bg-transparent border-b-2 border-[#5D4E46]/20 pb-4 focus:outline-none focus:border-[#5D4E46] text-[#5D4E46] placeholder:text-[#5D4E46]/30"
               />
+              <Search className="absolute right-0 top-2 text-[#5D4E46]/40" size={24} />
             </div>
 
-            <div className="pb-24">
-              <div className="mb-6 flex justify-between items-end">
-                <h3 className="text-white/60 text-sm font-bold uppercase tracking-widest">
-                  {searchQuery.length > 0 ? `${filteredProducts.length} Results Found` : 'Trending Items'}
-                </h3>
-                <div className="flex items-center gap-2 md:hidden">
-                  <button aria-label="Grid view" onClick={() => setSearchLayout('grid')} className={`p-1.5 rounded-md transition-colors ${searchLayout === 'grid' ? 'bg-white/20 text-white' : 'text-white/40 hover:text-white/60'}`}>
-                    <LayoutGrid size={18} />
-                  </button>
-                  <button aria-label="List view" onClick={() => setSearchLayout('list')} className={`p-1.5 rounded-md transition-colors ${searchLayout === 'list' ? 'bg-white/20 text-white' : 'text-white/40 hover:text-white/60'}`}>
-                    <List size={18} />
-                  </button>
+            {searchQuery && (
+              <div>
+                <p className="text-xs uppercase font-bold tracking-wider text-[#5D4E46]/50 mb-4">
+                  {filteredProducts.length} Results
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  {filteredProducts.map(product => (
+                    <Link 
+                      key={product.id} 
+                      href={`/shop/${product.id}`}
+                      onClick={() => setIsSearchOpen(false)}
+                      className="group"
+                    >
+                      <div className="aspect-square bg-[#FDFBF7] rounded-xl overflow-hidden mb-2 relative">
+                        <Image 
+                          src={product.image} 
+                          alt={product.name} 
+                          fill 
+                          className="object-contain p-2 group-hover:scale-105 transition-transform"
+                        />
+                      </div>
+                      <h4 className="font-bold text-xs text-[#5D4E46] truncate group-hover:text-[#987C6F] transition-colors">{product.name}</h4>
+                      <p className="text-xs text-[#5D4E46]/70">{product.price} NOK</p>
+                    </Link>
+                  ))}
                 </div>
               </div>
-
-              <div className={searchLayout === 'grid' ? "grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6" : "flex flex-col gap-4"}>
-                {(searchQuery ? filteredProducts : products.slice(0, 4)).map((product) => (
-                  searchLayout === 'grid' ? (
-                    <div key={product.id} onClick={() => setIsSearchOpen(false)}>
-                      <ProductCard product={product} />
-                    </div>
-                  ) : (
-                    <Link 
-                      href={`/shop/${product.id}`} 
-                      key={product.id} 
-                      onClick={() => setIsSearchOpen(false)}
-                      className="group flex gap-4 items-center bg-white/5 rounded-xl p-3 border border-white/10 hover:border-white/30 transition-colors"
-                    >
-                      <div className="relative w-16 h-16 md:w-20 md:h-20 bg-white/5 rounded-lg overflow-hidden shrink-0">
-                        <Image src={product.image} alt={product.name} fill className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="text-white font-bold text-sm line-clamp-1 group-hover:text-[#AAB084] transition-colors">{product.name}</h4>
-                        <p className="text-white/60 text-xs font-medium">{product.price} NOK</p>
-                      </div>
-                    </Link>
-                  )
-                ))}
-                
-                {searchQuery.length > 0 && filteredProducts.length === 0 && (
-                  <div className="col-span-full text-center py-20">
-                    <p className="text-white/40 text-xl font-medium mb-2">No products found</p>
-                    <p className="text-white/20 text-sm">Try checking your spelling or searching for a different term.</p>
-                  </div>
-                )}
-              </div>
-            </div>
+            )}
           </div>
         </div>
       )}
     </>
+  );
+}
+
+export default function Header() {
+  return (
+    <Suspense fallback={
+      <header className="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-40 border-b border-gray-100 h-20" />
+    }>
+      <HeaderContent />
+    </Suspense>
   );
 }
